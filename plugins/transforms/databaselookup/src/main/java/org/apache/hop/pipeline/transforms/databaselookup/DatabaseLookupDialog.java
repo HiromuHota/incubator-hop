@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -46,78 +46,68 @@ import org.apache.hop.ui.core.widget.TextVar;
 import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
 import org.apache.hop.ui.pipeline.transform.ITableItemInsertListener;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class DatabaseLookupDialog extends BaseTransformDialog implements ITransformDialog {
-  private static Class<?> PKG = DatabaseLookupMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = DatabaseLookupMeta.class; // for i18n purposes, needed by Translator!!
 
   private MetaSelectionLine<DatabaseMeta> wConnection;
 
-  private Label wlCache;
   private Button wCache;
-  private FormData fdlCache, fdCache;
 
   private Label wlCacheLoadAll;
   private Button wCacheLoadAll;
-  private FormData fdlCacheLoadAll, fdCacheLoadAll;
 
   private Label wlCachesize;
   private Text wCachesize;
-  private FormData fdlCachesize, fdCachesize;
 
-  private Label wlKey;
   private TableView wKey;
-  private FormData fdlKey, fdKey;
 
-  private Label wlSchema;
   private TextVar wSchema;
-  private FormData fdlSchema, fdSchema;
-  private Button wbSchema;
-  private FormData fdbSchema;
 
-  private Label wlTable;
-  private Button wbTable;
   private TextVar wTable;
-  private FormData fdlTable, fdbTable, fdTable;
 
-  private Label wlReturn;
   private TableView wReturn;
-  private FormData fdlReturn, fdReturn;
 
   private Label wlOrderBy;
   private Text wOrderBy;
-  private FormData fdlOrderBy, fdOrderBy;
 
   private Label wlFailMultiple;
   private Button wFailMultiple;
-  private FormData fdlFailMultiple, fdFailMultiple;
 
-  private Label wlEatRows;
   private Button wEatRows;
-  private FormData fdlEatRows, fdEatRows;
 
-  private Button wGet, wGetLU;
-  private Listener lsGet, lsGetLU;
-
-  private DatabaseLookupMeta input;
+  private final DatabaseLookupMeta input;
 
   /**
    * List of ColumnInfo that should have the field names of the selected database table
    */
-  private List<ColumnInfo> tableFieldColumns = new ArrayList<ColumnInfo>();
+  private final List<ColumnInfo> tableFieldColumns = new ArrayList<>();
 
   /**
    * List of ColumnInfo that should have the previous fields combo box
    */
-  private List<ColumnInfo> fieldColumns = new ArrayList<ColumnInfo>();
+  private final List<ColumnInfo> fieldColumns = new ArrayList<>();
 
   /**
    * all fields from the previous transforms
@@ -138,11 +128,6 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
     setShellImage( shell, input );
 
     ModifyListener lsMod = e -> input.setChanged();
-
-    ModifyListener lsConnectionMod = e -> {
-      input.setChanged();
-      setTableFieldCombo();
-    };
 
     ModifyListener lsTableMod = arg0 -> {
       input.setChanged();
@@ -190,19 +175,19 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
     wConnection.addSelectionListener( lsSelection );
 
     // Schema line...
-    wlSchema = new Label( shell, SWT.RIGHT );
+    Label wlSchema = new Label( shell, SWT.RIGHT );
     wlSchema.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.TargetSchema.Label" ) );
     props.setLook( wlSchema );
-    fdlSchema = new FormData();
+    FormData fdlSchema = new FormData();
     fdlSchema.left = new FormAttachment( 0, 0 );
     fdlSchema.right = new FormAttachment( middle, -margin );
     fdlSchema.top = new FormAttachment( wConnection, margin * 2 );
     wlSchema.setLayoutData( fdlSchema );
 
-    wbSchema = new Button( shell, SWT.PUSH | SWT.CENTER );
+    Button wbSchema = new Button( shell, SWT.PUSH | SWT.CENTER );
     props.setLook( wbSchema );
     wbSchema.setText( BaseMessages.getString( PKG, "System.Button.Browse" ) );
-    fdbSchema = new FormData();
+    FormData fdbSchema = new FormData();
     fdbSchema.top = new FormAttachment( wConnection, 2 * margin );
     fdbSchema.right = new FormAttachment( 100, 0 );
     wbSchema.setLayoutData( fdbSchema );
@@ -210,26 +195,26 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
     wSchema = new TextVar( pipelineMeta, shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     props.setLook( wSchema );
     wSchema.addModifyListener( lsTableMod );
-    fdSchema = new FormData();
+    FormData fdSchema = new FormData();
     fdSchema.left = new FormAttachment( middle, 0 );
     fdSchema.top = new FormAttachment( wConnection, margin * 2 );
     fdSchema.right = new FormAttachment( wbSchema, -margin );
     wSchema.setLayoutData( fdSchema );
 
     // Table line...
-    wlTable = new Label( shell, SWT.RIGHT );
+    Label wlTable = new Label( shell, SWT.RIGHT );
     wlTable.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.Lookuptable.Label" ) );
     props.setLook( wlTable );
-    fdlTable = new FormData();
+    FormData fdlTable = new FormData();
     fdlTable.left = new FormAttachment( 0, 0 );
     fdlTable.right = new FormAttachment( middle, -margin );
     fdlTable.top = new FormAttachment( wbSchema, margin );
     wlTable.setLayoutData( fdlTable );
 
-    wbTable = new Button( shell, SWT.PUSH | SWT.CENTER );
+    Button wbTable = new Button( shell, SWT.PUSH | SWT.CENTER );
     props.setLook( wbTable );
     wbTable.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.Browse.Button" ) );
-    fdbTable = new FormData();
+    FormData fdbTable = new FormData();
     fdbTable.right = new FormAttachment( 100, 0 );
     fdbTable.top = new FormAttachment( wbSchema, margin );
     wbTable.setLayoutData( fdbTable );
@@ -237,26 +222,26 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
     wTable = new TextVar( pipelineMeta, shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     props.setLook( wTable );
     wTable.addModifyListener( lsTableMod );
-    fdTable = new FormData();
+    FormData fdTable = new FormData();
     fdTable.left = new FormAttachment( middle, 0 );
     fdTable.top = new FormAttachment( wbSchema, margin );
     fdTable.right = new FormAttachment( wbTable, -margin );
     wTable.setLayoutData( fdTable );
 
     // ICache?
-    wlCache = new Label( shell, SWT.RIGHT );
+    Label wlCache = new Label( shell, SWT.RIGHT );
     wlCache.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.Cache.Label" ) );
     props.setLook( wlCache );
-    fdlCache = new FormData();
+    FormData fdlCache = new FormData();
     fdlCache.left = new FormAttachment( 0, 0 );
     fdlCache.right = new FormAttachment( middle, -margin );
     fdlCache.top = new FormAttachment( wTable, margin );
     wlCache.setLayoutData( fdlCache );
     wCache = new Button( shell, SWT.CHECK );
     props.setLook( wCache );
-    fdCache = new FormData();
+    FormData fdCache = new FormData();
     fdCache.left = new FormAttachment( middle, 0 );
-    fdCache.top = new FormAttachment( wTable, margin );
+    fdCache.top = new FormAttachment( wlCache, 0, SWT.CENTER );
     wCache.setLayoutData( fdCache );
     wCache.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent e ) {
@@ -270,7 +255,7 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
     wlCachesize.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.Cachesize.Label" ) );
     props.setLook( wlCachesize );
     wlCachesize.setEnabled( input.isCached() );
-    fdlCachesize = new FormData();
+    FormData fdlCachesize = new FormData();
     fdlCachesize.left = new FormAttachment( 0, 0 );
     fdlCachesize.right = new FormAttachment( middle, -margin );
     fdlCachesize.top = new FormAttachment( wCache, margin );
@@ -279,7 +264,7 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
     props.setLook( wCachesize );
     wCachesize.setEnabled( input.isCached() );
     wCachesize.addModifyListener( lsMod );
-    fdCachesize = new FormData();
+    FormData fdCachesize = new FormData();
     fdCachesize.left = new FormAttachment( middle, 0 );
     fdCachesize.right = new FormAttachment( 100, 0 );
     fdCachesize.top = new FormAttachment( wCache, margin );
@@ -289,16 +274,16 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
     wlCacheLoadAll = new Label( shell, SWT.RIGHT );
     wlCacheLoadAll.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.CacheLoadAll.Label" ) );
     props.setLook( wlCacheLoadAll );
-    fdlCacheLoadAll = new FormData();
+    FormData fdlCacheLoadAll = new FormData();
     fdlCacheLoadAll.left = new FormAttachment( 0, 0 );
     fdlCacheLoadAll.right = new FormAttachment( middle, -margin );
     fdlCacheLoadAll.top = new FormAttachment( wCachesize, margin );
     wlCacheLoadAll.setLayoutData( fdlCacheLoadAll );
     wCacheLoadAll = new Button( shell, SWT.CHECK );
     props.setLook( wCacheLoadAll );
-    fdCacheLoadAll = new FormData();
+    FormData fdCacheLoadAll = new FormData();
     fdCacheLoadAll.left = new FormAttachment( middle, 0 );
-    fdCacheLoadAll.top = new FormAttachment( wCachesize, margin );
+    fdCacheLoadAll.top = new FormAttachment( wlCacheLoadAll, 0, SWT.CENTER );
     wCacheLoadAll.setLayoutData( fdCacheLoadAll );
     wCacheLoadAll.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent e ) {
@@ -307,10 +292,10 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
       }
     } );
 
-    wlKey = new Label( shell, SWT.NONE );
+    Label wlKey = new Label( shell, SWT.NONE );
     wlKey.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.Keys.Label" ) );
     props.setLook( wlKey );
-    fdlKey = new FormData();
+    FormData fdlKey = new FormData();
     fdlKey.left = new FormAttachment( 0, 0 );
     fdlKey.top = new FormAttachment( wCacheLoadAll, margin );
     wlKey.setLayoutData( fdlKey );
@@ -343,18 +328,18 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
         pipelineMeta, shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL, ciKey,
         nrKeyRows, lsMod, props );
 
-    fdKey = new FormData();
+    FormData fdKey = new FormData();
     fdKey.left = new FormAttachment( 0, 0 );
     fdKey.top = new FormAttachment( wlKey, margin );
     fdKey.right = new FormAttachment( 100, 0 );
-    fdKey.bottom = new FormAttachment( wlKey, 190 );
+    fdKey.bottom = new FormAttachment( wlKey, (int) ( 200 * props.getZoomFactor() ) );
     wKey.setLayoutData( fdKey );
 
     // THE UPDATE/INSERT TABLE
-    wlReturn = new Label( shell, SWT.NONE );
+    Label wlReturn = new Label( shell, SWT.NONE );
     wlReturn.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.Return.Label" ) );
     props.setLook( wlReturn );
-    fdlReturn = new FormData();
+    FormData fdlReturn = new FormData();
     fdlReturn.left = new FormAttachment( 0, 0 );
     fdlReturn.top = new FormAttachment( wKey, margin );
     wlReturn.setLayoutData( fdlReturn );
@@ -386,27 +371,27 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
         pipelineMeta, shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL, ciReturn,
         UpInsRows, lsMod, props );
 
-    fdReturn = new FormData();
+    FormData fdReturn = new FormData();
     fdReturn.left = new FormAttachment( 0, 0 );
     fdReturn.top = new FormAttachment( wlReturn, margin );
     fdReturn.right = new FormAttachment( 100, 0 );
-    fdReturn.bottom = new FormAttachment( wlReturn, 190 );
+    fdReturn.bottom = new FormAttachment( wlReturn, (int) ( 200 * props.getZoomFactor() ) );
     wReturn.setLayoutData( fdReturn );
 
     // EatRows?
-    wlEatRows = new Label( shell, SWT.RIGHT );
+    Label wlEatRows = new Label( shell, SWT.RIGHT );
     wlEatRows.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.EatRows.Label" ) );
     props.setLook( wlEatRows );
-    fdlEatRows = new FormData();
+    FormData fdlEatRows = new FormData();
     fdlEatRows.left = new FormAttachment( 0, 0 );
     fdlEatRows.top = new FormAttachment( wReturn, margin );
     fdlEatRows.right = new FormAttachment( middle, -margin );
     wlEatRows.setLayoutData( fdlEatRows );
     wEatRows = new Button( shell, SWT.CHECK );
     props.setLook( wEatRows );
-    fdEatRows = new FormData();
+    FormData fdEatRows = new FormData();
     fdEatRows.left = new FormAttachment( middle, 0 );
-    fdEatRows.top = new FormAttachment( wReturn, margin );
+    fdEatRows.top = new FormAttachment( wlEatRows, 0, SWT.CENTER );
     wEatRows.setLayoutData( fdEatRows );
     wEatRows.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent e ) {
@@ -419,16 +404,16 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
     wlFailMultiple = new Label( shell, SWT.RIGHT );
     wlFailMultiple.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.FailMultiple.Label" ) );
     props.setLook( wlFailMultiple );
-    fdlFailMultiple = new FormData();
+    FormData fdlFailMultiple = new FormData();
     fdlFailMultiple.left = new FormAttachment( 0, 0 );
     fdlFailMultiple.top = new FormAttachment( wEatRows, margin );
     fdlFailMultiple.right = new FormAttachment( middle, -margin );
     wlFailMultiple.setLayoutData( fdlFailMultiple );
     wFailMultiple = new Button( shell, SWT.CHECK );
     props.setLook( wFailMultiple );
-    fdFailMultiple = new FormData();
+    FormData fdFailMultiple = new FormData();
     fdFailMultiple.left = new FormAttachment( middle, 0 );
-    fdFailMultiple.top = new FormAttachment( wEatRows, margin );
+    fdFailMultiple.top = new FormAttachment( wlFailMultiple, 0, SWT.CENTER );
     wFailMultiple.setLayoutData( fdFailMultiple );
     wFailMultiple.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent e ) {
@@ -441,14 +426,14 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
     wlOrderBy = new Label( shell, SWT.RIGHT );
     wlOrderBy.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.Orderby.Label" ) );
     props.setLook( wlOrderBy );
-    fdlOrderBy = new FormData();
+    FormData fdlOrderBy = new FormData();
     fdlOrderBy.left = new FormAttachment( 0, 0 );
     fdlOrderBy.top = new FormAttachment( wFailMultiple, margin );
     fdlOrderBy.right = new FormAttachment( middle, -margin );
     wlOrderBy.setLayoutData( fdlOrderBy );
     wOrderBy = new Text( shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     props.setLook( wOrderBy );
-    fdOrderBy = new FormData();
+    FormData fdOrderBy = new FormData();
     fdOrderBy.left = new FormAttachment( middle, 0 );
     fdOrderBy.top = new FormAttachment( wFailMultiple, margin );
     fdOrderBy.right = new FormAttachment( 100, 0 );
@@ -458,19 +443,19 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
     // THE BUTTONS
     wOk = new Button( shell, SWT.PUSH );
     wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
-    wGet = new Button( shell, SWT.PUSH );
+    Button wGet = new Button( shell, SWT.PUSH );
     wGet.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.GetFields.Button" ) );
-    wGetLU = new Button( shell, SWT.PUSH );
+    Button wGetLU = new Button( shell, SWT.PUSH );
     wGetLU.setText( BaseMessages.getString( PKG, "DatabaseLookupDialog.GetLookupFields.Button" ) );
     wCancel = new Button( shell, SWT.PUSH );
     wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
 
-    setButtonPositions( new Button[] { wOk, wCancel, wGet, wGetLU }, margin, wOrderBy );
+    setButtonPositions( new Button[] { wOk, wGet, wGetLU, wCancel }, margin, wOrderBy );
 
     // Add listeners
     lsOk = e -> ok();
-    lsGet = e -> get();
-    lsGetLU = e -> getlookup();
+    Listener lsGet = e -> get();
+    Listener lsGetLU = e -> getlookup();
     lsCancel = e -> cancel();
 
     wOk.addListener( SWT.Selection, lsOk );
@@ -650,8 +635,8 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
     if ( input.getSchemaName() != null ) {
       wSchema.setText( input.getSchemaName() );
     }
-    if ( input.getTablename() != null ) {
-      wTable.setText( input.getTablename() );
+    if ( input.getTableName() != null ) {
+      wTable.setText( input.getTableName() );
     }
     if ( input.getDatabaseMeta() != null ) {
       wConnection.setText( input.getDatabaseMeta().getName() );
@@ -722,7 +707,7 @@ public class DatabaseLookupDialog extends BaseTransformDialog implements ITransf
     }
 
     input.setSchemaName( wSchema.getText() );
-    input.setTablename( wTable.getText() );
+    input.setTableName( wTable.getText() );
     input.setDatabaseMeta( pipelineMeta.findDatabase( wConnection.getText() ) );
     input.setOrderByClause( wOrderBy.getText() );
     input.setFailingOnMultipleResults( wFailMultiple.getSelection() );

@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -22,9 +23,6 @@
 
 package org.apache.hop.pipeline.transforms.xml.xmljoin;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-
 import org.apache.hop.core.IRowSet;
 import org.apache.hop.core.exception.HopException;
 import org.apache.hop.core.exception.HopTransformException;
@@ -38,7 +36,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.sql.RowSet;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 /**
  * Test for XmlJoin step
@@ -74,8 +76,8 @@ public class XmlJoinOmitNullValuesTest {
     doReturn( createTargetRowSet( targetXml ) ).when( spy ).findInputRowSet( "target" );
 
     XmlJoinMeta stepMeta = smh.iTransformMeta;
-    when( stepMeta.getSourceXmlStep() ).thenReturn( "source" );
-    when( stepMeta.getTargetXmlStep() ).thenReturn( "target" );
+    when( stepMeta.getSourceXmlTransform() ).thenReturn( "source" );
+    when( stepMeta.getTargetXmlTransform() ).thenReturn( "target" );
     when( stepMeta.getSourceXmlField() ).thenReturn( "sourceField" );
     when( stepMeta.getTargetXmlField() ).thenReturn( "targetField" );
     when( stepMeta.getValueXmlField() ).thenReturn( "resultField" );

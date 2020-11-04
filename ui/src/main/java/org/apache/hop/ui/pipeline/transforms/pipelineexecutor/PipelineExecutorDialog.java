@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -28,6 +29,7 @@ import org.apache.hop.core.exception.HopException;
 import org.apache.hop.core.extension.ExtensionPointHandler;
 import org.apache.hop.core.extension.HopExtensionPoint;
 import org.apache.hop.core.logging.LogChannel;
+import org.apache.hop.core.plugins.IPlugin;
 import org.apache.hop.core.row.value.ValueMetaFactory;
 import org.apache.hop.core.util.Utils;
 import org.apache.hop.core.vfs.HopVfs;
@@ -36,6 +38,7 @@ import org.apache.hop.pipeline.PipelineMeta;
 import org.apache.hop.pipeline.config.PipelineRunConfiguration;
 import org.apache.hop.pipeline.transform.BaseTransformMeta;
 import org.apache.hop.pipeline.transform.ITransformDialog;
+import org.apache.hop.pipeline.transform.TransformMeta;
 import org.apache.hop.pipeline.transforms.pipelineexecutor.PipelineExecutorMeta;
 import org.apache.hop.pipeline.transforms.pipelineexecutor.PipelineExecutorParameters;
 import org.apache.hop.ui.core.ConstUi;
@@ -56,7 +59,6 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -71,9 +73,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
@@ -82,7 +82,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PipelineExecutorDialog extends BaseTransformDialog implements ITransformDialog {
-  private static Class<?> PKG = PipelineExecutorMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = PipelineExecutorMeta.class; // for i18n purposes, needed by Translator!!
 
   private static int FIELD_DESCRIPTION = 1;
   private static int FIELD_NAME = 2;
@@ -190,6 +190,15 @@ public class PipelineExecutorDialog extends BaseTransformDialog implements ITran
     wicon.setLayoutData( fdlicon );
     props.setLook( wicon );
 
+    // Some buttons
+    wCancel = new Button( shell, SWT.PUSH );
+    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
+    wCancel.addListener( SWT.Selection, e -> cancel() );
+    wOk = new Button( shell, SWT.PUSH );
+    wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
+    wOk.addListener( SWT.Selection, e -> ok() );
+    positionBottomButtons( shell, new Button[] { wOk, wCancel}, props.getMargin(), null );
+
     // TransformName line
     wlTransformName = new Label( shell, SWT.RIGHT );
     wlTransformName.setText( BaseMessages.getString( PKG, "PipelineExecutorDialog.TransformName.Label" ) );
@@ -204,7 +213,7 @@ public class PipelineExecutorDialog extends BaseTransformDialog implements ITran
     props.setLook( wTransformName );
     wTransformName.addModifyListener( lsMod );
     fdTransformName = new FormData();
-    fdTransformName.width = 250;
+    fdTransformName.right = new FormAttachment( wicon, -5 );
     fdTransformName.left = new FormAttachment( 0, 0 );
     fdTransformName.top = new FormAttachment( wlTransformName, 5 );
     wTransformName.setLayoutData( fdTransformName );
@@ -225,27 +234,22 @@ public class PipelineExecutorDialog extends BaseTransformDialog implements ITran
     fdlTransformation.right = new FormAttachment( 50, 0 );
     wlPath.setLayoutData( fdlTransformation );
 
+    wbBrowse = new Button( shell, SWT.PUSH );
+    props.setLook( wbBrowse );
+    wbBrowse.setText( BaseMessages.getString( PKG, "PipelineExecutorDialog.Browse.Label" ) );
+    FormData fdBrowse = new FormData();
+    fdBrowse.right = new FormAttachment( 100, 0 );
+    fdBrowse.top = new FormAttachment( wlPath, Const.isOSX() ? 0 : 5 );
+    wbBrowse.setLayoutData( fdBrowse );
+    wbBrowse.addListener( SWT.Selection, e -> selectPipelineFile() );    
+
     wPath = new TextVar( pipelineMeta, shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     props.setLook( wPath );
     FormData fdTransformation = new FormData();
     fdTransformation.left = new FormAttachment( 0, 0 );
     fdTransformation.top = new FormAttachment( wlPath, 5 );
-    fdTransformation.width = 350;
+    fdTransformation.right = new FormAttachment( wbBrowse, -props.getMargin() );
     wPath.setLayoutData( fdTransformation );
-
-    wbBrowse = new Button( shell, SWT.PUSH );
-    props.setLook( wbBrowse );
-    wbBrowse.setText( BaseMessages.getString( PKG, "PipelineExecutorDialog.Browse.Label" ) );
-    FormData fdBrowse = new FormData();
-    fdBrowse.left = new FormAttachment( wPath, 5 );
-    fdBrowse.top = new FormAttachment( wlPath, Const.isOSX() ? 0 : 5 );
-    wbBrowse.setLayoutData( fdBrowse );
-
-    wbBrowse.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
-        selectFilePipeline();
-      }
-    } );
 
     wlRunConfiguration = new Label( shell, SWT.LEFT );
     wlRunConfiguration.setText( "Run configuration" ); // TODO i18n
@@ -260,10 +264,11 @@ public class PipelineExecutorDialog extends BaseTransformDialog implements ITran
     props.setLook( wlRunConfiguration );
     FormData fdRunConfiguration = new FormData();
     fdRunConfiguration.left = new FormAttachment( 0, 0 );
-    fdRunConfiguration.top = new FormAttachment( wlRunConfiguration, 0, SWT.CENTER );
+    fdRunConfiguration.top = new FormAttachment( wlRunConfiguration, props.getMargin() );
     fdRunConfiguration.right = new FormAttachment( 100, 0 );
     wRunConfiguration.setLayoutData( fdRunConfiguration );
-
+    props.setLook( wRunConfiguration );
+    
     //
     // Add a tab folder for the parameters and various input and output
     // streams
@@ -273,20 +278,6 @@ public class PipelineExecutorDialog extends BaseTransformDialog implements ITran
     wTabFolder.setSimple( false );
     wTabFolder.setUnselectedCloseVisible( true );
 
-    wCancel = new Button( shell, SWT.PUSH );
-    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
-    FormData fdCancel = new FormData();
-    fdCancel.right = new FormAttachment( 100, 0 );
-    fdCancel.bottom = new FormAttachment( 100, 0 );
-    wCancel.setLayoutData( fdCancel );
-
-    // Some buttons
-    wOk = new Button( shell, SWT.PUSH );
-    wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
-    FormData fdOk = new FormData();
-    fdOk.right = new FormAttachment( wCancel, -5 );
-    fdOk.bottom = new FormAttachment( 100, 0 );
-    wOk.setLayoutData( fdOk );
 
     Label hSpacer = new Label( shell, SWT.HORIZONTAL | SWT.SEPARATOR );
     FormData fdhSpacer = new FormData();
@@ -297,7 +288,7 @@ public class PipelineExecutorDialog extends BaseTransformDialog implements ITran
 
     FormData fdTabFolder = new FormData();
     fdTabFolder.left = new FormAttachment( 0, 0 );
-    fdTabFolder.top = new FormAttachment( wPath, 20 );
+    fdTabFolder.top = new FormAttachment( wRunConfiguration, 20 );
     fdTabFolder.right = new FormAttachment( 100, 0 );
     fdTabFolder.bottom = new FormAttachment( hSpacer, -15 );
     wTabFolder.setLayoutData( fdTabFolder );
@@ -311,11 +302,7 @@ public class PipelineExecutorDialog extends BaseTransformDialog implements ITran
     addResultFilesTab();
 
     // Add listeners
-    lsCancel = e -> cancel();
-    lsOk = e -> ok();
 
-    wCancel.addListener( SWT.Selection, lsCancel );
-    wOk.addListener( SWT.Selection, lsOk );
 
     lsDef = new SelectionAdapter() {
       public void widgetDefaultSelected( SelectionEvent e ) {
@@ -355,7 +342,7 @@ public class PipelineExecutorDialog extends BaseTransformDialog implements ITran
       .getImage( shell.getDisplay(), getClass().getClassLoader(), "TRNEx.svg", ConstUi.LARGE_ICON_SIZE, ConstUi.LARGE_ICON_SIZE );
   }
 
-  private void selectFilePipeline() {
+  private void selectPipelineFile() {
     String curFile = pipelineMeta.environmentSubstitute( wPath.getText() );
 
 
@@ -1095,4 +1082,11 @@ public class PipelineExecutorDialog extends BaseTransformDialog implements ITran
     }
 
   }
+
+  @Override
+  protected Button createHelpButton(Shell shell, TransformMeta stepMeta, IPlugin plugin) {
+    plugin.setDocumentationUrl("https://www.project-hop.org/manual/latest/plugins/transforms/pipelineexcecutor.html");
+    return super.createHelpButton(shell, stepMeta, plugin);
+  }
+
 }

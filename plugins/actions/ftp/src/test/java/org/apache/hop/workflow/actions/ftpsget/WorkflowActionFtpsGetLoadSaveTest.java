@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -54,7 +55,7 @@ public class WorkflowActionFtpsGetLoadSaveTest extends WorkflowActionLoadSaveTes
   @Override
   protected Map<String, IFieldLoadSaveValidator<?>> createAttributeValidatorsMap() {
     Map<String, IFieldLoadSaveValidator<?>> validators = new HashMap<String, IFieldLoadSaveValidator<?>>();
-    validators.put( "connection_type", new IntLoadSaveValidator( FtpsConnection.connection_type_Code.length ) );
+    validators.put( "connection_type", new IntLoadSaveValidator( FtpsConnection.connectionTypeCode.length ) );
     validators.put( "ifFileExists", new IntLoadSaveValidator( ActionFtpsGet.FILE_EXISTS_ACTIONS.length ) );
 
     return validators;

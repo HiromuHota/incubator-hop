@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -187,9 +187,9 @@ public abstract class BasePainter<Hop extends BaseHopMeta<?>, Part extends IBase
     gc.setBackground( notePadMeta.getBackGroundColorRed(), notePadMeta.getBackGroundColorGreen(), notePadMeta.getBackGroundColorBlue() );
     gc.setForeground( notePadMeta.getBorderColorRed(), notePadMeta.getBorderColorGreen(), notePadMeta.getBorderColorBlue() );
 
-    // Radius is 10% of width+height
+    // Radius is half the font height
     //
-    int radius = Math.round( ((float)noteShape.height+(float)noteShape.width)/10 );
+    int radius = (int)Math.round( zoomFactor * notePadMeta.getFontSize()/2 );
 
     gc.fillRoundRectangle( noteShape.x, noteShape.y, noteShape.width, noteShape.height, radius, radius );
     gc.drawRoundRectangle( noteShape.x, noteShape.y, noteShape.width, noteShape.height, radius, radius );
@@ -474,10 +474,10 @@ public abstract class BasePainter<Hop extends BaseHopMeta<?>, Part extends IBase
   }
 
   protected void drawArrow( EImage arrow, int[] line, Hop hop, Object startObject, Object endObject ) throws HopException {
-    Point screen_from = real2screen( line[ 0 ], line[ 1 ] );
-    Point screen_to = real2screen( line[ 2 ], line[ 3 ] );
+    Point screenFrom = real2screen( line[ 0 ], line[ 1 ] );
+    Point screenTo = real2screen( line[ 2 ], line[ 3 ] );
 
-    drawArrow( arrow, screen_from.x, screen_from.y, screen_to.x, screen_to.y, theta, calcArrowLength(), -1, hop,
+    drawArrow( arrow, screenFrom.x, screenFrom.y, screenTo.x, screenTo.y, theta, calcArrowLength(), -1, hop,
       startObject, endObject );
   }
 

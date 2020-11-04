@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -37,9 +37,9 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.*;
 
 public class FilesFromResultDialog extends BaseTransformDialog implements ITransformDialog {
-  private static Class<?> PKG = FilesFromResultMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = FilesFromResultMeta.class; // for i18n purposes, needed by Translator!!
 
-  private FilesFromResultMeta input;
+  private final FilesFromResultMeta input;
 
   public FilesFromResultDialog( Shell parent, Object in, PipelineMeta pipelineMeta, String sname ) {
     super( parent, (BaseTransformMeta) in, pipelineMeta, sname );

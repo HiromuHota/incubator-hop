@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -49,7 +50,7 @@ public class XsltData extends BaseTransformData implements ITransformData {
   public int fielxslfiledposition;
   public String xslfilename;
 
-  public int[] fields_used;
+  public int[] fieldsUsed;
 
   public TransformerFactory factory;
   public HashMap<String, Transformer> transformers;

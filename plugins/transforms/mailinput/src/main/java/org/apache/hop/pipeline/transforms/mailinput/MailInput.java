@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -56,7 +57,7 @@ import java.util.List;
  */
 
 public class MailInput extends BaseTransform<MailInputMeta, MailInputData> implements ITransform<MailInputMeta, MailInputData> {
-  private static Class<?> PKG = MailInputMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = MailInputMeta.class; // for i18n purposes, needed by Translator!!
 
   private MessageParser instance = new MessageParser();
 
@@ -295,12 +296,12 @@ public class MailInput extends BaseTransform<MailInputMeta, MailInputData> imple
           }
 
           // get folder
-          String foldername = data.inputRowMeta.getString( data.readrow, data.indexOfFolderField );
+          String folderName = data.inputRowMeta.getString( data.readrow, data.indexOfFolderField );
           if ( isDebug() ) {
             logDebug( BaseMessages.getString(
-              PKG, "MailInput.Log.FoldernameInStream", meta.getFolderField(), foldername ) );
+              PKG, "MailInput.Log.FoldernameInStream", meta.getFolderField(), folderName ) );
           }
-          data.folders = getFolders( foldername );
+          data.folders = getFolders( folderName );
         } // end if first
 
         if ( data.folderenr >= data.folders.length ) {
@@ -314,8 +315,8 @@ public class MailInput extends BaseTransform<MailInputMeta, MailInputData> imple
             return false;
           }
           // get folder
-          String foldername = data.inputRowMeta.getString( data.readrow, data.indexOfFolderField );
-          data.folders = getFolders( foldername );
+          String folderName = data.inputRowMeta.getString( data.readrow, data.indexOfFolderField );
+          data.folders = getFolders( folderName );
         }
       }
 

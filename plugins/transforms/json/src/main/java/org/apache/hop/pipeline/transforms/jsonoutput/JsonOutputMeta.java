@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -60,7 +61,7 @@ import java.util.List;
         documentationUrl = "https://www.project-hop.org/manual/latest/plugins/transforms/jsonoutput.html"
   )
 public class JsonOutputMeta extends BaseFileOutputMeta implements ITransformMeta<JsonOutput, JsonOutputData> {
-  private static Class<?> PKG = JsonOutputMeta.class; // for i18n purposes, needed by Translator2!!
+  private static final Class<?> PKG = JsonOutputMeta.class; // for i18n purposes, needed by Translator2!!
 
   /**
    * Operations type
@@ -410,20 +411,20 @@ public class JsonOutputMeta extends BaseFileOutputMeta implements ITransformMeta
           "JsonOutputMeta.CheckResult.FieldsReceived", "" + prev.size() ), transformMeta );
       remarks.add( cr );
 
-      String error_message = "";
-      boolean error_found = false;
+      String errorMessage = "";
+      boolean errorFound = false;
 
       // Starting from selected fields in ...
       for ( int i = 0; i < outputFields.length; i++ ) {
         int idx = prev.indexOfValue( outputFields[ i ].getFieldName() );
         if ( idx < 0 ) {
-          error_message += "\t\t" + outputFields[ i ].getFieldName() + Const.CR;
-          error_found = true;
+          errorMessage += "\t\t" + outputFields[ i ].getFieldName() + Const.CR;
+          errorFound = true;
         }
       }
-      if ( error_found ) {
-        error_message = BaseMessages.getString( PKG, "JsonOutputMeta.CheckResult.FieldsNotFound", error_message );
-        cr = new CheckResult( CheckResult.TYPE_RESULT_ERROR, error_message, transformMeta );
+      if ( errorFound ) {
+        errorMessage = BaseMessages.getString( PKG, "JsonOutputMeta.CheckResult.FieldsNotFound", errorMessage );
+        cr = new CheckResult( CheckResult.TYPE_RESULT_ERROR, errorMessage, transformMeta );
         remarks.add( cr );
       } else {
         cr =

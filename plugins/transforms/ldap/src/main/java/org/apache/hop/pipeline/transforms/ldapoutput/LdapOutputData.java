@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -19,7 +20,6 @@
  * limitations under the License.
  *
  ******************************************************************************/
-
 package org.apache.hop.pipeline.transforms.ldapoutput;
 
 import org.apache.hop.pipeline.transform.BaseTransformData;
@@ -31,21 +31,21 @@ import org.apache.hop.pipeline.transforms.ldapinput.LdapConnection;
  * @since 21-09-2007
  */
 public class LdapOutputData extends BaseTransformData implements ITransformData {
-  public LdapConnection connection;
-  public int indexOfDNField;
-  public int[] fieldStream;
-  public String[] fieldsAttribute;
-  public int nrFields;
-  public int nrFieldsToUpdate;
-  public String separator;
-  public String[] attributes;
-  public String[] attributesToUpdate;
+  LdapConnection connection;
+  int indexOfDNField;
+  int[] fieldStream;
+  String[] fieldsAttribute;
+  int nrFields;
+  int nrFieldsToUpdate;
+  String separator;
+  String[] attributes;
+  String[] attributesToUpdate;
 
-  public int[] fieldStreamToUpdate;
-  public String[] fieldsAttributeToUpdate;
+  int[] fieldStreamToUpdate;
+  String[] fieldsAttributeToUpdate;
 
-  public int indexOfOldDNField;
-  public int indexOfNewDNField;
+  int indexOfOldDNField;
+  int indexOfNewDNField;
 
   public LdapOutputData() {
     super();
@@ -59,5 +59,4 @@ public class LdapOutputData extends BaseTransformData implements ITransformData 
     this.indexOfOldDNField = -1;
     this.indexOfNewDNField = -1;
   }
-
 }

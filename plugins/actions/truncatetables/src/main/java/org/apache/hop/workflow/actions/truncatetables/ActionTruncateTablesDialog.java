@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -22,8 +23,6 @@
 
 package org.apache.hop.workflow.actions.truncatetables;
 
-import java.util.Arrays;
-
 import org.apache.hop.core.Const;
 import org.apache.hop.core.database.Database;
 import org.apache.hop.core.database.DatabaseMeta;
@@ -43,23 +42,13 @@ import org.apache.hop.workflow.WorkflowMeta;
 import org.apache.hop.workflow.action.IAction;
 import org.apache.hop.workflow.action.IActionDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
+
+import java.util.Arrays;
 
 /**
  * This dialog allows you to edit the Truncate Tables action settings. (select the connection and the table to be
@@ -71,6 +60,8 @@ import org.eclipse.swt.widgets.Text;
 public class ActionTruncateTablesDialog extends ActionDialog implements IActionDialog {
   private static final Class<?> PKG = ActionTruncateTables.class; // for i18n purposes, needed by Translator!!
 
+  private Shell shell;
+  
   private Button wbTable;
 
   private Text wName;
@@ -88,7 +79,7 @@ public class ActionTruncateTablesDialog extends ActionDialog implements IActionD
   private Button wPrevious;
 
   public ActionTruncateTablesDialog( Shell parent, IAction action, WorkflowMeta workflowMeta ) {
-    super( parent, action, workflowMeta );
+    super( parent, workflowMeta );
     this.action = (ActionTruncateTables) action;
     if ( this.action.getName() == null ) {
       this.action.setName( BaseMessages.getString( PKG, "ActionTruncateTables.Name.Default" ) );
@@ -216,7 +207,7 @@ public class ActionTruncateTablesDialog extends ActionDialog implements IActionD
 
     wFields =
       new TableView(
-        workflowMeta, shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, FieldsRows, lsMod, props );
+    		  getWorkflowMeta(), shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, FieldsRows, lsMod, props );
 
     FormData fdFields = new FormData();
     fdFields.left = new FormAttachment( 0, 0 );
@@ -347,12 +338,12 @@ public class ActionTruncateTablesDialog extends ActionDialog implements IActionD
       return;
     }
     action.setName( wName.getText() );
-    action.setDatabase( workflowMeta.findDatabase( wConnection.getText() ) );
+    action.setDatabase( getWorkflowMeta().findDatabase( wConnection.getText() ) );
     action.setArgFromPrevious(wPrevious.getSelection());
 
-    int nritems = wFields.nrNonEmpty();
+    int nrItems = wFields.nrNonEmpty();
     int nr = 0;
-    for ( int i = 0; i < nritems; i++ ) {
+    for ( int i = 0; i < nrItems; i++ ) {
       String arg = wFields.getNonEmpty( i ).getText( 1 );
       if ( arg != null && arg.length() != 0 ) {
         nr++;
@@ -361,7 +352,7 @@ public class ActionTruncateTablesDialog extends ActionDialog implements IActionD
     String[] tables = new String[ nr ];
     String[] schemas =new String[ nr ];
     nr = 0;
-    for ( int i = 0; i < nritems; i++ ) {
+    for ( int i = 0; i < nrItems; i++ ) {
       String arg = wFields.getNonEmpty( i ).getText( 1 );
       String wild = wFields.getNonEmpty( i ).getText( 2 );
       if ( arg != null && arg.length() != 0 ) {
@@ -378,7 +369,7 @@ public class ActionTruncateTablesDialog extends ActionDialog implements IActionD
   }
 
   private void getTableName() {
-    DatabaseMeta databaseMeta = workflowMeta.findDatabase( wConnection.getText() );
+    DatabaseMeta databaseMeta = getWorkflowMeta().findDatabase( wConnection.getText() );
     if ( databaseMeta != null ) {
       Database database = new Database( loggingObject, databaseMeta );
       try {

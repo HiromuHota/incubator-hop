@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -32,36 +33,20 @@ import org.apache.hop.pipeline.PipelineMeta;
 import org.apache.hop.pipeline.transform.BaseTransformMeta;
 import org.apache.hop.pipeline.transform.ITransformDialog;
 import org.apache.hop.pipeline.transform.TransformMeta;
-import org.apache.hop.pipeline.transforms.replacestring.ReplaceStringMeta;
 import org.apache.hop.ui.core.dialog.ErrorDialog;
 import org.apache.hop.ui.core.widget.ColumnInfo;
 import org.apache.hop.ui.core.widget.TableView;
 import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
 import org.apache.hop.ui.pipeline.transform.ITableItemInsertListener;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Search and replace in string.
@@ -70,24 +55,20 @@ import java.util.Set;
  * @since 28 September 2007
  */
 public class ReplaceStringDialog extends BaseTransformDialog implements ITransformDialog {
-  private static Class<?> PKG = ReplaceStringMeta.class; // for i18n purposes, needed by Translator!!
-
-  private Label wlKey;
+  private static final Class<?> PKG = ReplaceStringMeta.class; // for i18n purposes, needed by Translator!!
 
   private TableView wFields;
 
-  private FormData fdlKey, fdKey;
+  private final ReplaceStringMeta input;
 
-  private ReplaceStringMeta input;
-
-  private Map<String, Integer> inputFields;
+  private final Map<String, Integer> inputFields;
 
   private ColumnInfo[] ciKey;
 
   public ReplaceStringDialog( Shell parent, Object in, PipelineMeta tr, String sname ) {
     super( parent, (BaseTransformMeta) in, tr, sname );
     input = (ReplaceStringMeta) in;
-    inputFields = new HashMap<String, Integer>();
+    inputFields = new HashMap<>();
   }
 
   public String open() {
@@ -130,13 +111,25 @@ public class ReplaceStringDialog extends BaseTransformDialog implements ITransfo
     fdTransformName.right = new FormAttachment( 100, 0 );
     wTransformName.setLayoutData( fdTransformName );
 
-    wlKey = new Label( shell, SWT.NONE );
+    // THE BUTTONS
+    wOk = new Button( shell, SWT.PUSH );
+    wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
+    wOk.addListener( SWT.Selection, e -> ok() );
+    wCancel = new Button( shell, SWT.PUSH );
+    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
+    wCancel.addListener( SWT.Selection, e -> cancel() );
+    wGet = new Button( shell, SWT.PUSH );
+    wGet.setText( BaseMessages.getString( PKG, "ReplaceStringDialog.GetFields.Button" ) );
+    wGet.addListener( SWT.Selection, e -> get() );
+    setButtonPositions( new Button[] { wOk, wGet, wCancel }, margin, null );
+
+    Label wlKey = new Label(shell, SWT.NONE);
     wlKey.setText( BaseMessages.getString( PKG, "ReplaceStringDialog.Fields.Label" ) );
-    props.setLook( wlKey );
-    fdlKey = new FormData();
+    props.setLook(wlKey);
+    FormData fdlKey = new FormData();
     fdlKey.left = new FormAttachment( 0, 0 );
     fdlKey.top = new FormAttachment( wTransformName, 2 * margin );
-    wlKey.setLayoutData( fdlKey );
+    wlKey.setLayoutData(fdlKey);
 
     int nrFieldCols = 10;
     int nrFieldRows = ( input.getFieldInStream() != null ? input.getFieldInStream().length : 1 );
@@ -196,12 +189,12 @@ public class ReplaceStringDialog extends BaseTransformDialog implements ITransfo
         pipelineMeta, shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL, ciKey,
         nrFieldRows, lsMod, props );
 
-    fdKey = new FormData();
+    FormData fdKey = new FormData();
     fdKey.left = new FormAttachment( 0, 0 );
-    fdKey.top = new FormAttachment( wlKey, margin );
+    fdKey.top = new FormAttachment(wlKey, margin );
     fdKey.right = new FormAttachment( 100, -margin );
-    fdKey.bottom = new FormAttachment( 100, -30 );
-    wFields.setLayoutData( fdKey );
+    fdKey.bottom = new FormAttachment( wOk, -2*margin );
+    wFields.setLayoutData(fdKey);
 
     //
     // Search the fields in the background
@@ -215,7 +208,7 @@ public class ReplaceStringDialog extends BaseTransformDialog implements ITransfo
 
           // Remember these fields...
           for ( int i = 0; i < row.size(); i++ ) {
-            inputFields.put( row.getValueMeta( i ).getName(), new Integer( i ) );
+            inputFields.put( row.getValueMeta( i ).getName(), i);
           }
 
           setComboBoxes();
@@ -226,29 +219,9 @@ public class ReplaceStringDialog extends BaseTransformDialog implements ITransfo
     };
     new Thread( runnable ).start();
 
-    // THE BUTTONS
-    wOk = new Button( shell, SWT.PUSH );
-    wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
-    wCancel = new Button( shell, SWT.PUSH );
-    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
 
-    wGet = new Button( shell, SWT.PUSH );
-    wGet.setText( BaseMessages.getString( PKG, "ReplaceStringDialog.GetFields.Button" ) );
-    fdGet = new FormData();
-    fdGet.right = new FormAttachment( 100, 0 );
-    fdGet.top = new FormAttachment( wTransformName, 3 * middle );
-    wGet.setLayoutData( fdGet );
 
-    setButtonPositions( new Button[] { wOk, wGet, wCancel }, margin, null );
 
-    // Add listeners
-    lsOk = e -> ok();
-    lsGet = e -> get();
-    lsCancel = e -> cancel();
-
-    wOk.addListener( SWT.Selection, lsOk );
-    wGet.addListener( SWT.Selection, lsGet );
-    wCancel.addListener( SWT.Selection, lsCancel );
 
     lsDef = new SelectionAdapter() {
       public void widgetDefaultSelected( SelectionEvent e ) {
@@ -283,7 +256,7 @@ public class ReplaceStringDialog extends BaseTransformDialog implements ITransfo
   protected void setComboBoxes() {
     // Something was changed in the row.
     //
-    final Map<String, Integer> fields = new HashMap<String, Integer>();
+    final Map<String, Integer> fields = new HashMap<>();
 
     // Add the currentMeta fields...
     fields.putAll( inputFields );

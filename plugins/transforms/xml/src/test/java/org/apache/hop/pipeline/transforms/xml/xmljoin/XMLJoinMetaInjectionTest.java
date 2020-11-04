@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -51,7 +52,7 @@ public class XMLJoinMetaInjectionTest extends BaseMetadataInjectionTest<XmlJoinM
 
     check( "COMPLEX_JOIN", () -> meta.isComplexJoin() );
 
-    check( "TARGET_XML_STEP", () -> meta.getTargetXmlField() );
+    check( "TARGET_XML_TRANSFORM", () -> meta.getTargetXmlTransform() );
 
     check( "TARGET_XML_FIELD", () -> meta.getTargetXmlField() );
 
@@ -61,7 +62,7 @@ public class XMLJoinMetaInjectionTest extends BaseMetadataInjectionTest<XmlJoinM
 
     check( "TARGET_XPATH", () -> meta.getTargetXPath() );
 
-    check( "SOURCE_XML_STEP", () -> meta.getSourceXmlStep() );
+    check( "SOURCE_XML_TRANSFORM", () -> meta.getSourceXmlTransform() );
 
     check( "JOIN_COMPARE_FIELD", () -> meta.getJoinCompareField() );
 

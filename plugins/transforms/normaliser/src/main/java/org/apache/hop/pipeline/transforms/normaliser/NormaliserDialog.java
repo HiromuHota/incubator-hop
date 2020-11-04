@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -54,24 +55,20 @@ public class NormaliserDialog extends BaseTransformDialog implements ITransformD
 
   private static final int NORM_INDEX = 3;
 
-  private Label wlTypefield;
   private Text wTypefield;
-  private FormData fdlTypefield, fdTypefield;
 
-  private Label wlFields;
   private TableView wFields;
-  private FormData fdlFields, fdFields;
 
-  private NormaliserMeta input;
+  private final NormaliserMeta input;
 
   private ColumnInfo[] colinf;
 
-  private Map<String, Integer> inputFields;
+  private final Map<String, Integer> inputFields;
 
   public NormaliserDialog( Shell parent, Object in, PipelineMeta pipelineMeta, String sname ) {
     super( parent, (BaseTransformMeta) in, pipelineMeta, sname );
     input = (NormaliserMeta) in;
-    inputFields = new HashMap<String, Integer>();
+    inputFields = new HashMap<>();
   }
 
   public String open() {
@@ -95,6 +92,18 @@ public class NormaliserDialog extends BaseTransformDialog implements ITransformD
     int middle = props.getMiddlePct();
     int margin = props.getMargin();
 
+    // Buttons at the bottom
+    wOk = new Button( shell, SWT.PUSH );
+    wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
+    wOk.addListener( SWT.Selection, e -> ok() );
+    wGet = new Button( shell, SWT.PUSH );
+    wGet.setText( BaseMessages.getString( PKG, "NormaliserDialog.GetFields.Button" ) );
+    wGet.addListener( SWT.Selection, e -> get() );
+    wCancel = new Button( shell, SWT.PUSH );
+    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
+    wCancel.addListener( SWT.Selection, e -> cancel() );
+    setButtonPositions( new Button[] { wOk, wGet, wCancel }, margin, null );
+
     // TransformName line
     wlTransformName = new Label( shell, SWT.RIGHT );
     wlTransformName.setText( BaseMessages.getString( PKG, "NormaliserDialog.TransformName.Label" ) );
@@ -115,40 +124,31 @@ public class NormaliserDialog extends BaseTransformDialog implements ITransformD
     wTransformName.setLayoutData( fdTransformName );
 
     // Typefield line
-    wlTypefield = new Label( shell, SWT.RIGHT );
+    Label wlTypefield = new Label(shell, SWT.RIGHT);
     wlTypefield.setText( BaseMessages.getString( PKG, "NormaliserDialog.TypeField.Label" ) );
-    props.setLook( wlTypefield );
-    fdlTypefield = new FormData();
+    props.setLook(wlTypefield);
+    FormData fdlTypefield = new FormData();
     fdlTypefield.left = new FormAttachment( 0, 0 );
     fdlTypefield.right = new FormAttachment( middle, -margin );
     fdlTypefield.top = new FormAttachment( wTransformName, margin );
-    wlTypefield.setLayoutData( fdlTypefield );
+    wlTypefield.setLayoutData(fdlTypefield);
     wTypefield = new Text( shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     wTypefield.setText( "" );
     props.setLook( wTypefield );
     wTypefield.addModifyListener( lsMod );
-    fdTypefield = new FormData();
+    FormData fdTypefield = new FormData();
     fdTypefield.left = new FormAttachment( middle, 0 );
     fdTypefield.top = new FormAttachment( wTransformName, margin );
     fdTypefield.right = new FormAttachment( 100, 0 );
-    wTypefield.setLayoutData( fdTypefield );
+    wTypefield.setLayoutData(fdTypefield);
 
-    wlFields = new Label( shell, SWT.NONE );
+    Label wlFields = new Label(shell, SWT.NONE);
     wlFields.setText( BaseMessages.getString( PKG, "NormaliserDialog.Fields.Label" ) );
-    props.setLook( wlFields );
-    fdlFields = new FormData();
+    props.setLook(wlFields);
+    FormData fdlFields = new FormData();
     fdlFields.left = new FormAttachment( 0, 0 );
     fdlFields.top = new FormAttachment( wTypefield, margin );
-    wlFields.setLayoutData( fdlFields );
-
-    wOk = new Button( shell, SWT.PUSH );
-    wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
-    wGet = new Button( shell, SWT.PUSH );
-    wGet.setText( BaseMessages.getString( PKG, "NormaliserDialog.GetFields.Button" ) );
-    wCancel = new Button( shell, SWT.PUSH );
-    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
-
-    setButtonPositions( new Button[] { wOk, wCancel, wGet }, margin, null );
+    wlFields.setLayoutData(fdlFields);
 
     final int fieldsCols = 3;
     final int fieldsRows = input.getNormaliserFields().length;
@@ -170,12 +170,12 @@ public class NormaliserDialog extends BaseTransformDialog implements ITransformD
       new TableView(
         pipelineMeta, shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, fieldsRows, lsMod, props );
 
-    fdFields = new FormData();
+    FormData fdFields = new FormData();
     fdFields.left = new FormAttachment( 0, 0 );
-    fdFields.top = new FormAttachment( wlFields, margin );
+    fdFields.top = new FormAttachment(wlFields, margin );
     fdFields.right = new FormAttachment( 100, 0 );
     fdFields.bottom = new FormAttachment( wOk, -2 * margin );
-    wFields.setLayoutData( fdFields );
+    wFields.setLayoutData(fdFields);
 
     //
     // Search the fields in the background
@@ -188,7 +188,7 @@ public class NormaliserDialog extends BaseTransformDialog implements ITransformD
 
           // Remember these fields...
           for ( int i = 0; i < row.size(); i++ ) {
-            inputFields.put( row.getValueMeta( i ).getName(), Integer.valueOf( i ) );
+            inputFields.put( row.getValueMeta( i ).getName(), i);
           }
           setComboBoxes();
         } catch ( HopException e ) {
@@ -199,14 +199,6 @@ public class NormaliserDialog extends BaseTransformDialog implements ITransformD
     new Thread( runnable ).start();
 
     // Add listeners
-    lsOk = e -> ok();
-    lsGet = e -> get();
-    lsCancel = e -> cancel();
-
-    wOk.addListener( SWT.Selection, lsOk );
-    wGet.addListener( SWT.Selection, lsGet );
-    wCancel.addListener( SWT.Selection, lsCancel );
-
     lsDef = new SelectionAdapter() {
       public void widgetDefaultSelected( SelectionEvent e ) {
         ok();
@@ -239,7 +231,7 @@ public class NormaliserDialog extends BaseTransformDialog implements ITransformD
   protected void setComboBoxes() {
     // Something was changed in the row.
     //
-    final Map<String, Integer> fields = new HashMap<String, Integer>();
+    final Map<String, Integer> fields = new HashMap<>();
 
     // Add the currentMeta fields...
     fields.putAll( inputFields );

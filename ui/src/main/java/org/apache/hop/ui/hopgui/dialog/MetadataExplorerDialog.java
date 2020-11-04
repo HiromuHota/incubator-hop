@@ -37,7 +37,7 @@ import org.apache.hop.ui.core.PropsUi;
 import org.apache.hop.ui.core.dialog.ErrorDialog;
 import org.apache.hop.ui.core.gui.GuiResource;
 import org.apache.hop.ui.core.gui.WindowProperty;
-import org.apache.hop.ui.core.metastore.MetadataManager;
+import org.apache.hop.ui.core.metadata.MetadataManager;
 import org.apache.hop.ui.core.widget.TreeMemory;
 import org.apache.hop.ui.core.widget.TreeUtil;
 import org.apache.hop.ui.hopgui.HopGui;
@@ -67,7 +67,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class MetadataExplorerDialog {
-  private static Class<?> PKG = MetadataExplorerDialog.class; // for i18n purposes, needed by Translator
+  private static final Class<?> PKG = MetadataExplorerDialog.class; // for i18n purposes, needed by Translator
 
   private static final String METADATA_EXPLORER_DIALOG_TREE = "Metadata explorer dialog tree";
 

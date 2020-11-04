@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -40,7 +40,7 @@ import org.apache.hop.ui.core.PropsUi;
 import org.apache.hop.ui.core.gui.GuiCompositeWidgets;
 import org.apache.hop.ui.core.gui.GuiResource;
 import org.apache.hop.ui.core.gui.WindowProperty;
-import org.apache.hop.ui.core.metastore.IMetadataDialog;
+import org.apache.hop.ui.core.metadata.IMetadataDialog;
 import org.apache.hop.ui.core.widget.ColumnInfo;
 import org.apache.hop.ui.core.widget.ComboVar;
 import org.apache.hop.ui.core.widget.TableView;
@@ -84,7 +84,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class PipelineRunConfigurationDialog extends Dialog implements IMetadataDialog {
 
-  private static Class<?> PKG = PipelineRunConfigurationDialog.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = PipelineRunConfigurationDialog.class; // for i18n purposes, needed by Translator!!
 
   private Shell parent;
   private Shell shell;

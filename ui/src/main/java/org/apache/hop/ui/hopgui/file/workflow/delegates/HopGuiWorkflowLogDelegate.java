@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -33,7 +34,7 @@ import org.apache.hop.ui.core.gui.GuiResource;
 import org.apache.hop.ui.core.gui.GuiToolbarWidgets;
 import org.apache.hop.ui.hopgui.file.IHopFileTypeHandler;
 import org.apache.hop.workflow.WorkflowMeta;
-import org.apache.hop.workflow.action.ActionCopy;
+import org.apache.hop.workflow.action.ActionMeta;
 import org.apache.hop.ui.core.dialog.EnterSelectionDialog;
 import org.apache.hop.ui.hopgui.HopGui;
 import org.apache.hop.ui.hopgui.file.workflow.HopGuiWorkflowGraph;
@@ -53,7 +54,7 @@ import java.util.ArrayList;
 
 @GuiPlugin
 public class HopGuiWorkflowLogDelegate {
-  private static Class<?> PKG = HopGuiWorkflowGraph.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = HopGuiWorkflowGraph.class; // for i18n purposes, needed by Translator!!
 
   private static final String GUI_PLUGIN_TOOLBAR_PARENT_ID = "HopGuiWorkflowLogDelegate-ToolBar";
   public static final String TOOLBAR_ICON_CLEAR_LOG_VIEW = "ToolbarIcon-10000-ClearLog";
@@ -243,9 +244,9 @@ public class HopGuiWorkflowLogDelegate {
       if ( line != null ) {
         WorkflowMeta workflowMeta = workflowGraph.getManagedObject();
         for ( i = 0; i < workflowMeta.nrActions(); i++ ) {
-          ActionCopy entryCopy = workflowMeta.getAction( i );
+          ActionMeta entryCopy = workflowMeta.getAction( i );
           if ( line.indexOf( entryCopy.getName() ) >= 0 ) {
-            workflowGraph.editJobEntry( workflowMeta, entryCopy );
+            workflowGraph.editAction( workflowMeta, entryCopy );
           }
         }
       }

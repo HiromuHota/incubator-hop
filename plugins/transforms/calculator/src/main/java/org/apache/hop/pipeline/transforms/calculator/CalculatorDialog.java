@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -51,24 +51,18 @@ import java.util.*;
 
 
 public class CalculatorDialog extends BaseTransformDialog implements ITransformDialog {
-  private static Class<?> PKG = CalculatorMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = CalculatorMeta.class; // for i18n purposes, needed by Translator!!
 
-  private Label wlTransformName;
   private Text wTransformName;
-  private FormData fdlTransformName, fdTransformName;
 
-  private Label wlFailIfNoFile;
   private Button wFailIfNoFile;
-  private FormData fdlFailIfNoFile, fdFailIfNoFile;
 
-  private Label wlFields;
   private TableView wFields;
-  private FormData fdlFields, fdFields;
 
-  private CalculatorMeta currentMeta;
-  private CalculatorMeta originalMeta;
+  private final CalculatorMeta currentMeta;
+  private final CalculatorMeta originalMeta;
 
-  private Map<String, Integer> inputFields;
+  private final Map<String, Integer> inputFields;
   private ColumnInfo[] colinf;
 
   public CalculatorDialog( Shell parent, Object in, PipelineMeta tr, String sname ) {
@@ -77,7 +71,7 @@ public class CalculatorDialog extends BaseTransformDialog implements ITransformD
     // The order here is important... currentMeta is looked at for changes
     currentMeta = (CalculatorMeta) in;
     originalMeta = (CalculatorMeta) currentMeta.clone();
-    inputFields = new HashMap<String, Integer>();
+    inputFields = new HashMap<>();
   }
 
   @Override
@@ -104,23 +98,33 @@ public class CalculatorDialog extends BaseTransformDialog implements ITransformD
     int margin = props.getMargin();
     int fdMargin = 15;
 
+    // Buttons at the very bottom
+    //
+    wOk = new Button( shell, SWT.PUSH );
+    wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
+    wOk.addListener( SWT.Selection,  e -> ok() );
+    wCancel = new Button( shell, SWT.PUSH );
+    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
+    wCancel.addListener( SWT.Selection, e -> cancel() );
+    positionBottomButtons( shell, new Button[] { wOk, wCancel }, fdMargin, null );
+
     // TransformName line
-    wlTransformName = new Label( shell, SWT.LEFT );
+    Label wlTransformName = new Label(shell, SWT.LEFT);
     wlTransformName.setText( BaseMessages.getString( PKG, "System.Label.TransformName" ) );
-    props.setLook( wlTransformName );
-    fdlTransformName = new FormData();
+    props.setLook(wlTransformName);
+    FormData fdlTransformName = new FormData();
     fdlTransformName.left = new FormAttachment( 0, 0 );
     fdlTransformName.top = new FormAttachment( 0, 0 );
-    wlTransformName.setLayoutData( fdlTransformName );
+    wlTransformName.setLayoutData(fdlTransformName);
     wTransformName = new Text( shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     wTransformName.setText( transformName );
     props.setLook( wTransformName );
     wTransformName.addModifyListener( lsMod );
-    fdTransformName = new FormData();
+    FormData fdTransformName = new FormData();
     fdTransformName.left = new FormAttachment( 0, 0 );
-    fdTransformName.top = new FormAttachment( wlTransformName, margin );
+    fdTransformName.top = new FormAttachment(wlTransformName, margin );
     fdTransformName.right = new FormAttachment( middle, 0 );
-    wTransformName.setLayoutData( fdTransformName );
+    wTransformName.setLayoutData(fdTransformName);
 
     //Image
     Label wIcon = new Label( shell, SWT.RIGHT );
@@ -143,26 +147,19 @@ public class CalculatorDialog extends BaseTransformDialog implements ITransformD
     wFailIfNoFile = new Button( shell, SWT.CHECK );
     props.setLook( wFailIfNoFile );
     wFailIfNoFile.setToolTipText( BaseMessages.getString( PKG, "CalculatorDialog.FailIfNoFileTooltip" ) );
-    fdFailIfNoFile = new FormData();
+    wFailIfNoFile.setText( BaseMessages.getString( PKG, "CalculatorDialog.FailIfNoFile" ) );
+    FormData fdFailIfNoFile = new FormData();
     fdFailIfNoFile.left = new FormAttachment( 0, 0 );
     fdFailIfNoFile.top = new FormAttachment( separator, fdMargin );
-    wFailIfNoFile.setLayoutData( fdFailIfNoFile );
-    wlFailIfNoFile = new Label( shell, SWT.LEFT );
-    wlFailIfNoFile.setText( BaseMessages.getString( PKG, "CalculatorDialog.FailIfNoFile" ) );
-    props.setLook( wlFailIfNoFile );
-    fdlFailIfNoFile = new FormData();
-    fdlFailIfNoFile.left = new FormAttachment( wFailIfNoFile, margin );
-    fdlFailIfNoFile.top = new FormAttachment( separator, fdMargin );
-    //fdlFailIfNoFile.right = new FormAttachment( 0, -margin );
-    wlFailIfNoFile.setLayoutData( fdlFailIfNoFile );
+    wFailIfNoFile.setLayoutData(fdFailIfNoFile);
 
-    wlFields = new Label( shell, SWT.NONE );
+    Label wlFields = new Label(shell, SWT.NONE);
     wlFields.setText( BaseMessages.getString( PKG, "CalculatorDialog.Fields.Label" ) );
-    props.setLook( wlFields );
-    fdlFields = new FormData();
+    props.setLook(wlFields);
+    FormData fdlFields = new FormData();
     fdlFields.left = new FormAttachment( 0, 0 );
     fdlFields.top = new FormAttachment( wFailIfNoFile, fdMargin );
-    wlFields.setLayoutData( fdlFields );
+    wlFields.setLayoutData(fdlFields);
 
     final int FieldsRows = currentMeta.getCalculation() != null ? currentMeta.getCalculation().length : 1;
 
@@ -226,41 +223,27 @@ public class CalculatorDialog extends BaseTransformDialog implements ITransformD
       }
     } );
 
-    wCancel = new Button( shell, SWT.PUSH );
-    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
-    FormData fdCancel = new FormData();
-    fdCancel.right = new FormAttachment( 100, 0 );
-    fdCancel.bottom = new FormAttachment( 100, 0 );
-    wCancel.setLayoutData( fdCancel );
 
-    wOk = new Button( shell, SWT.PUSH );
-    wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
-    FormData fdOk = new FormData();
-    fdOk.right = new FormAttachment( wCancel, -margin );
-    fdOk.bottom = new FormAttachment( 100, 0 );
-    wOk.setLayoutData( fdOk );
-    wOk.setLayoutData( fdOk );
 
-    //positionBottomRightButtons( shell, new Button[] { wOk, wCancel }, fdMargin, null );
 
     // Draw line separator
     Label hSeparator = new Label( shell, SWT.HORIZONTAL | SWT.SEPARATOR );
     FormData fdhSeparator = new FormData();
     fdhSeparator.left = new FormAttachment( 0, 0 );
     fdhSeparator.right = new FormAttachment( 100, 0 );
-    fdhSeparator.bottom = new FormAttachment( wCancel, -fdMargin );
+    fdhSeparator.bottom = new FormAttachment( wOk, -fdMargin );
     hSeparator.setLayoutData( fdhSeparator );
 
     wFields =
       new TableView(
         pipelineMeta, shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, FieldsRows, lsMod, props );
 
-    fdFields = new FormData();
+    FormData fdFields = new FormData();
     fdFields.left = new FormAttachment( 0, 0 );
-    fdFields.top = new FormAttachment( wlFields, margin );
+    fdFields.top = new FormAttachment(wlFields, margin );
     fdFields.right = new FormAttachment( 100, 0 );
     fdFields.bottom = new FormAttachment( hSeparator, -fdMargin );
-    wFields.setLayoutData( fdFields );
+    wFields.setLayoutData(fdFields);
 
     //
     // Search the fields in the background
@@ -273,7 +256,7 @@ public class CalculatorDialog extends BaseTransformDialog implements ITransformD
 
           // Remember these fields...
           for ( int i = 0; i < row.size(); i++ ) {
-            inputFields.put( row.getValueMeta( i ).getName(), Integer.valueOf( i ) );
+            inputFields.put( row.getValueMeta( i ).getName(), i);
           }
 
           setComboBoxes();
@@ -291,12 +274,6 @@ public class CalculatorDialog extends BaseTransformDialog implements ITransformD
     } );
 
     // Add listeners
-    lsCancel = e -> cancel();
-    lsOk = e -> ok();
-
-    wCancel.addListener( SWT.Selection, lsCancel );
-    wOk.addListener( SWT.Selection, lsOk );
-
     lsDef = new SelectionAdapter() {
       @Override
       public void widgetDefaultSelected( SelectionEvent e ) {
@@ -332,7 +309,7 @@ public class CalculatorDialog extends BaseTransformDialog implements ITransformD
   protected void setComboBoxes() {
     // Something was changed in the row.
     //
-    final Map<String, Integer> fields = new HashMap<String, Integer>();
+    final Map<String, Integer> fields = new HashMap<>();
 
     // Add the currentMeta fields...
     fields.putAll( inputFields );
@@ -343,7 +320,7 @@ public class CalculatorDialog extends BaseTransformDialog implements ITransformD
       int nrNonEmptyFields = wFields.nrNonEmpty();
       for ( int i = 0; i < nrNonEmptyFields; i++ ) {
         TableItem item = wFields.getNonEmpty( i );
-        fields.put( item.getText( 1 ), Integer.valueOf( 1000000 + i ) ); // The number is just to debug the origin of
+        fields.put( item.getText( 1 ), 1000000 + i); // The number is just to debug the origin of
         // the fieldname
       }
     } );

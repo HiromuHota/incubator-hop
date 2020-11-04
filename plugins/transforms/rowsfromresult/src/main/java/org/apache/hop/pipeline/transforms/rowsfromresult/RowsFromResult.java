@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -41,9 +42,9 @@ import org.apache.hop.pipeline.transform.ITransform;
  * @since 2-jun-2003
  */
 public class RowsFromResult extends BaseTransform<RowsFromResultMeta, RowsFromResultData> implements ITransform<RowsFromResultMeta, RowsFromResultData> {
-  private static Class<?> PKG = RowsFromResult.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = RowsFromResult.class; // for i18n purposes, needed by Translator!!
 
-  private RowsFromResultData data;
+  public RowsFromResultData data;
 
   public RowsFromResult( TransformMeta transformMeta, RowsFromResultMeta meta, RowsFromResultData data, int copyNr, PipelineMeta pipelineMeta,
                          Pipeline pipeline ) {

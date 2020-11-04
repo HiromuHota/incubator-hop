@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -36,7 +36,7 @@ public interface IUndo {
    * @param type_of_change The type of change that's being done to the pipeline.
    * @param nextAlso       indicates that the next undo operation needs to follow this one.
    */
-  void addUndo( Object[] from, Object[] to, int[] pos, Point[] prev, Point[] curr, int type_of_change,
+  void addUndo( Object[] from, Object[] to, int[] pos, Point[] prev, Point[] curr, int typeOfChange,
                 boolean nextAlso );
 
   /**

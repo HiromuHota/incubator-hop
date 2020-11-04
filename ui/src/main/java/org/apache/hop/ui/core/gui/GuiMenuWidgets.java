@@ -212,6 +212,9 @@ public class GuiMenuWidgets extends BaseGuiWidgets {
       if ( keyCode == SWT.ESC ) {
         return s + "Esc";
       }
+      if ( keyCode == SWT.DEL ) {
+          return s + "Delete";
+        }
       if ( keyCode == SWT.ARROW_LEFT ) {
         return s + "LEFT";
       }
@@ -292,7 +295,7 @@ public class GuiMenuWidgets extends BaseGuiWidgets {
    */
   public MenuItem enableMenuItem( String id, boolean enabled ) {
     MenuItem menuItem = menuItemMap.get( id );
-    if ( menuItem == null ) {
+    if ( menuItem == null || menuItem.isDisposed() ) {
       return null;
     }
     menuItem.setEnabled( enabled );
@@ -326,7 +329,7 @@ public class GuiMenuWidgets extends BaseGuiWidgets {
    */
   public MenuItem enableMenuItem( IHopFileType fileType, String id, String permission, boolean active ) {
     MenuItem menuItem = menuItemMap.get( id );
-    if ( menuItem == null ) {
+    if ( menuItem == null || menuItem.isDisposed() ) {
       return null;
     }
     boolean hasCapability = fileType.hasCapability( permission );

@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -42,4 +42,6 @@ public @interface HopPerspectivePlugin {
   String name() default "";
 
   String description() default "";
+  
+  String image() default "";
 }

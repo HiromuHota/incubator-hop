@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -44,7 +45,7 @@ import java.util.Random;
 public class ReservoirSamplingData extends BaseTransformData implements ITransformData {
 
   // the output data format
-  protected IRowMeta m_outputRowMeta;
+  protected IRowMeta mOutputRowMeta;
 
   // holds the sampled rows
   protected List<Object[]> m_sample = null;
@@ -71,7 +72,7 @@ public class ReservoirSamplingData extends BaseTransformData implements ITransfo
    * @param rmi a <code>IRowMeta</code> value
    */
   public void setOutputRowMeta( IRowMeta rmi ) {
-    m_outputRowMeta = rmi;
+    mOutputRowMeta = rmi;
   }
 
   /**
@@ -80,7 +81,7 @@ public class ReservoirSamplingData extends BaseTransformData implements ITransfo
    * @return a <code>IRowMeta</code> value
    */
   public IRowMeta getOutputRowMeta() {
-    return m_outputRowMeta;
+    return mOutputRowMeta;
   }
 
   /**

@@ -39,7 +39,7 @@ import org.apache.hop.ui.core.dialog.ErrorDialog;
 import org.apache.hop.ui.core.dialog.PreviewRowsDialog;
 import org.apache.hop.ui.core.gui.GuiResource;
 import org.apache.hop.ui.core.gui.WindowProperty;
-import org.apache.hop.ui.core.metastore.IMetadataDialog;
+import org.apache.hop.ui.core.metadata.IMetadataDialog;
 import org.apache.hop.ui.core.widget.ColumnInfo;
 import org.apache.hop.ui.core.widget.TableView;
 import org.apache.hop.ui.core.widget.TextVar;
@@ -67,7 +67,7 @@ import java.io.File;
 import java.util.List;
 
 public class DataSetDialog extends Dialog implements IMetadataDialog {
-  private static Class<?> PKG = DataSetDialog.class; // for i18n purposes, needed by Translator2!!
+  private static final Class<?> PKG = DataSetDialog.class; // for i18n purposes, needed by Translator2!!
 
   private DataSet dataSet;
 

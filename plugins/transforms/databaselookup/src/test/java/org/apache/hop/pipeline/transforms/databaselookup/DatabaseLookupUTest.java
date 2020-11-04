@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -51,8 +51,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -159,7 +157,7 @@ public class DatabaseLookupUTest {
 
     DatabaseLookupMeta meta = new DatabaseLookupMeta();
     meta.setDatabaseMeta( dbMeta );
-    meta.setTablename( "VirtualTable" );
+    meta.setTableName( "VirtualTable" );
 
     meta.setTableKeyField( new String[] { ID_FIELD } );
     meta.setKeyCondition( new String[] { "=" } );
@@ -258,7 +256,7 @@ public class DatabaseLookupUTest {
 
     DatabaseLookupMeta meta = new DatabaseLookupMeta();
     meta.setDatabaseMeta( dbMeta );
-    meta.setTablename( "VirtualTable" );
+    meta.setTableName( "VirtualTable" );
 
     meta.setTableKeyField( new String[] { "ID1", "ID2" } );
     meta.setKeyCondition( new String[] { "=", "IS NULL" } );

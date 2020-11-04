@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -213,7 +213,6 @@ public class PipelineExecutor extends BaseTransform<PipelineExecutorMeta, Pipeli
       // If not still pass the null parameter values
       passParametersToPipeline( lastIncomingFieldValues != null && !lastIncomingFieldValues.isEmpty() ? lastIncomingFieldValues : incomingFieldValues );
     }
-
 
     // keep track for drill down in HopGui...
     getPipeline().addActiveSubPipeline( getTransformName(), executorPipeline );

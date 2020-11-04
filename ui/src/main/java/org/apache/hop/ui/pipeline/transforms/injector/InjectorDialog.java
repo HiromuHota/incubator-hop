@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -23,12 +24,14 @@
 package org.apache.hop.ui.pipeline.transforms.injector;
 
 import org.apache.hop.core.Const;
+import org.apache.hop.core.plugins.IPlugin;
 import org.apache.hop.core.row.value.ValueMetaFactory;
 import org.apache.hop.core.util.Utils;
 import org.apache.hop.i18n.BaseMessages;
 import org.apache.hop.pipeline.PipelineMeta;
 import org.apache.hop.pipeline.transform.BaseTransformMeta;
 import org.apache.hop.pipeline.transform.ITransformDialog;
+import org.apache.hop.pipeline.transform.TransformMeta;
 import org.apache.hop.pipeline.transforms.injector.InjectorMeta;
 import org.apache.hop.ui.core.widget.ColumnInfo;
 import org.apache.hop.ui.core.widget.TableView;
@@ -41,7 +44,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.*;
 
 public class InjectorDialog extends BaseTransformDialog implements ITransformDialog {
-  private static Class<?> PKG = InjectorMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = InjectorMeta.class; // for i18n purposes, needed by Translator!!
 
   private Label wlFields;
   private TableView wFields;
@@ -217,4 +220,11 @@ public class InjectorDialog extends BaseTransformDialog implements ITransformDia
     }
     dispose();
   }
+
+  @Override
+  protected Button createHelpButton(Shell shell, TransformMeta stepMeta, IPlugin plugin) {
+    plugin.setDocumentationUrl("https://www.project-hop.org/manual/latest/plugins/transforms/injector.html");
+    return super.createHelpButton(shell, stepMeta, plugin);
+  }
+
 }

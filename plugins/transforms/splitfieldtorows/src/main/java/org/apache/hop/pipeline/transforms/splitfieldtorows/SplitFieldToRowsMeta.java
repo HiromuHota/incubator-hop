@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -195,7 +196,7 @@ public class SplitFieldToRowsMeta extends BaseTransformMeta implements  ITransfo
   public void check( List<ICheckResult> remarks, PipelineMeta pipelineMeta, TransformMeta transformMeta,
                      IRowMeta prev, String[] input, String[] output, IRowMeta info, IVariables variables,
                      IHopMetadataProvider metadataProvider ) {
-    String error_message = "";
+    String errorMessage = "";
     CheckResult cr;
 
     // Look up fields in the input stream <prev>
@@ -205,14 +206,14 @@ public class SplitFieldToRowsMeta extends BaseTransformMeta implements  ITransfo
           PKG, "SplitFieldToRowsMeta.CheckResult.TransformReceivingFields", prev.size() + "" ), transformMeta );
       remarks.add( cr );
 
-      error_message = "";
+      errorMessage = "";
 
       IValueMeta v = prev.searchValueMeta( splitField );
       if ( v == null ) {
-        error_message =
+        errorMessage =
           BaseMessages.getString(
             PKG, "SplitFieldToRowsMeta.CheckResult.FieldToSplitNotPresentInInputStream", splitField );
-        cr = new CheckResult( CheckResult.TYPE_RESULT_ERROR, error_message, transformMeta );
+        cr = new CheckResult( CheckResult.TYPE_RESULT_ERROR, errorMessage, transformMeta );
         remarks.add( cr );
       } else {
         cr =
@@ -221,10 +222,10 @@ public class SplitFieldToRowsMeta extends BaseTransformMeta implements  ITransfo
         remarks.add( cr );
       }
     } else {
-      error_message =
+      errorMessage =
         BaseMessages.getString( PKG, "SplitFieldToRowsMeta.CheckResult.CouldNotReadFieldsFromPreviousTransform" )
           + Const.CR;
-      cr = new CheckResult( CheckResult.TYPE_RESULT_ERROR, error_message, transformMeta );
+      cr = new CheckResult( CheckResult.TYPE_RESULT_ERROR, errorMessage, transformMeta );
       remarks.add( cr );
     }
 

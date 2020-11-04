@@ -40,22 +40,11 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -75,7 +64,7 @@ public class KafkaProducerOutputDialog extends BaseTransformDialog implements IT
   private static final int SHELL_MIN_HEIGHT = 569;
   private static final int INPUT_WIDTH = 350;
 
-  private KafkaProducerOutputMeta meta;
+  private final KafkaProducerOutputMeta meta;
   private ModifyListener lsMod;
 
   private TextVar wClientId;
@@ -89,8 +78,8 @@ public class KafkaProducerOutputDialog extends BaseTransformDialog implements IT
   private TextVar wBootstrapServers;
 
   public KafkaProducerOutputDialog( Shell parent, Object in,
-                                    PipelineMeta pipelineMeta, String stepName ) {
-    super( parent, (BaseTransformMeta) in, pipelineMeta, stepName );
+                                    PipelineMeta pipelineMeta, String TransformName ) {
+    super( parent, (BaseTransformMeta) in, pipelineMeta, TransformName );
     meta = (KafkaProducerOutputMeta) in;
   }
 
@@ -158,15 +147,13 @@ public class KafkaProducerOutputDialog extends BaseTransformDialog implements IT
     wTabFolder.setSimple( false );
     wTabFolder.setUnselectedCloseVisible( true );
 
-    wCancel = new Button( shell, SWT.PUSH );
-    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
-    wCancel.addListener( SWT.Selection, lsCancel );
-
     wOk = new Button( shell, SWT.PUSH );
     wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
     wOk.addListener( SWT.Selection, lsOk );
-
-    positionBottomButtons( shell, new Button[] { wCancel, wOk }, props.getMargin(), null );
+    wCancel = new Button( shell, SWT.PUSH );
+    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
+    wCancel.addListener( SWT.Selection, lsCancel );
+    positionBottomButtons( shell, new Button[] { wOk, wCancel }, props.getMargin(), null );
 
     Label bottomSeparator = new Label( shell, SWT.HORIZONTAL | SWT.SEPARATOR );
     props.setLook( bottomSeparator );

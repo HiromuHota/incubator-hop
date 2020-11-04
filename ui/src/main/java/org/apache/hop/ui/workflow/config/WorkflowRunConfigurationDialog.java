@@ -35,7 +35,7 @@ import org.apache.hop.ui.core.PropsUi;
 import org.apache.hop.ui.core.gui.GuiCompositeWidgets;
 import org.apache.hop.ui.core.gui.GuiResource;
 import org.apache.hop.ui.core.gui.WindowProperty;
-import org.apache.hop.ui.core.metastore.IMetadataDialog;
+import org.apache.hop.ui.core.metadata.IMetadataDialog;
 import org.apache.hop.ui.core.widget.ComboVar;
 import org.apache.hop.ui.hopgui.HopGui;
 import org.apache.hop.ui.hopgui.HopGuiEnvironment;
@@ -74,7 +74,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class WorkflowRunConfigurationDialog extends Dialog implements IMetadataDialog {
 
-  private static Class<?> PKG = WorkflowRunConfigurationDialog.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = WorkflowRunConfigurationDialog.class; // for i18n purposes, needed by Translator!!
 
   private Shell parent;
   private Shell shell;

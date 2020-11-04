@@ -3,9 +3,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.hop</groupId>
+  <groupId>org.apache.hop</groupId>
   <artifactId>hop-plugins-transforms</artifactId>
-  <version>0.40-SNAPSHOT</version>
+  <version>0.50-SNAPSHOT</version>
     <modules>
     </modules>
     <packaging>pom</packaging>
@@ -13,9 +13,9 @@
   <name>Hop Plugins Transforms</name>
 
   <parent>
-    <groupId>org.hop</groupId>
+    <groupId>org.apache.hop</groupId>
     <artifactId>hop-plugins</artifactId>
-    <version>0.40-SNAPSHOT</version>
+    <version>0.50-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -59,7 +59,8 @@
         <module>clonerow</module>
         <module>closure</module>
         <module>columnexists</module>
-        <module>combinationlookup</module>        
+        <module>combinationlookup</module>
+        <module>concatfields</module>
         <module>constant</module>
         <module>creditcardvalidator</module>
         <module>cubeinput</module>
@@ -81,10 +82,12 @@
         <module>excelwriter</module>
         <module>execprocess</module>
         <module>execsqlrow</module>
+        <module>fake</module>
         <module>fieldschangesequence</module>
         <module>fieldsplitter</module>
         <module>fileexists</module>
         <module>filelocked</module>
+        <module>filemetadata</module>
         <module>filesfromresult</module>
         <module>filestoresult</module>
         <module>filterrows</module>
@@ -112,22 +115,29 @@
         <module>mail</module>
         <module>mailinput</module>
         <module>mailvalidator</module>
+        <module>mapping</module>
         <module>memgroupby</module>
         <module>mergejoin</module>
         <module>mergerows</module>
+        <module>metainject</module>
+        <module>multimerge</module>
         <module>normaliser</module>
         <module>nullif</module>
         <module>numberrange</module>
         <module>pgbulkloader</module>
+        <module>pgp</module>
+        <module>processfiles</module>
         <module>propertyinput</module>
         <module>propertyoutput</module>
         <module>randomvalue</module>
+        <module>regexeval</module>
         <module>replacestring</module>
         <module>reservoirsampling</module>
         <module>rest</module>
         <module>rowgenerator</module>
         <module>rowsfromresult</module>
         <module>rowstoresult</module>
+        <module>samplerows</module>
         <module>selectvalues</module>
         <module>setvalueconstant</module>
         <module>setvaluefield</module>
@@ -136,10 +146,14 @@
         <module>sortedmerge</module>
         <module>splitfieldtorows</module>
         <module>sql</module>
+        <module>sqlfileoutput</module>
+        <module>ssh</module>
         <module>streamlookup</module>
+        <module>streamschemamerge</module>
         <module>stringcut</module>
         <module>stringoperations</module>
         <module>switchcase</module>
+        <module>synchronizeaftermerge</module>
         <module>syslog</module>
         <module>systemdata</module>
         <module>tablecompare</module>
@@ -150,11 +164,14 @@
         <module>uniquerows</module>
         <module>uniquerowsbyhashset</module>
         <module>update</module>
+<!--        <module>userdefinedjavaclass</module>-->
         <module>valuemapper</module>
         <module>webserviceavailable</module>
         <module>webservices</module>
         <module>writetolog</module>
         <module>xml</module>
+        <module>yamlinput</module>
+        <module>zipfile</module>
       </modules>
     </profile>
 
@@ -162,7 +179,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-core</artifactId>
       <scope>compile</scope>
     </dependency>
@@ -173,20 +190,20 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-ui-swt</artifactId>
-      <version>0.40-SNAPSHOT</version>
+      <version>0.50-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-engine</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-core</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
@@ -209,7 +226,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.hop</groupId>
+        <groupId>org.apache.hop</groupId>
         <artifactId>hop-core</artifactId>
         <version>${project.version}</version>
         <scope>provided</scope>
@@ -224,7 +241,7 @@
       </dependency>
 
       <dependency>
-        <groupId>org.hop</groupId>
+        <groupId>org.apache.hop</groupId>
         <artifactId>hop-core</artifactId>
         <version>${project.version}</version>
         <classifier>test</classifier>
@@ -232,7 +249,7 @@
       </dependency>
 
       <dependency>
-        <groupId>org.hop</groupId>
+        <groupId>org.apache.hop</groupId>
         <artifactId>hop-engine</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
@@ -240,7 +257,7 @@
       </dependency>
 
       <dependency>
-        <groupId>org.hop</groupId>
+        <groupId>org.apache.hop</groupId>
         <artifactId>hop-core</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>

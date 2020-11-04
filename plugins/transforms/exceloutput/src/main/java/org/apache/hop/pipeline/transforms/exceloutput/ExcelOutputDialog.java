@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -60,214 +60,113 @@ import java.util.List;
 import java.util.*;
 
 public class ExcelOutputDialog extends BaseTransformDialog implements ITransformDialog {
-  private static Class<?> PKG = ExcelOutputMeta.class; // for i18n purposes, needed by Translator!!
-
-  private CTabFolder wTabFolder;
-  private FormData fdTabFolder;
+  private static final Class<?> PKG = ExcelOutputMeta.class; // for i18n purposes, needed by Translator!!
 
   private Label wlTempDirectory;
   private TextVar wTempDirectory;
-  private FormData fdlTempDirectory, fdTempDirectory;
 
   private Button wbTempDir;
-  private FormData fdbTempDir;
 
-  private Group wFontHeaderGroup;
-  private FormData fdFontHeaderGroup;
-
-  private Label wlHeaderFontName;
   private CCombo wHeaderFontName;
-  private FormData fdlHeaderFontName, fdHeaderFontName;
 
-  private Label wlHeaderFontSize;
   private TextVar wHeaderFontSize;
-  private FormData fdlHeaderFontSize, fdHeaderFontSize;
 
-  private Label wlRowFontSize;
   private TextVar wRowFontSize;
-  private FormData fdlRowFontSize, fdRowFontSize;
 
   private CCombo wRowFontColor;
-  private FormData fdRowFontColor;
-  private Label wlRowFontColor;
-  private FormData fdlRowFontColor;
 
-  private Label wlImage;
-  private Button wbImage;
   private TextVar wImage;
-  private FormData fdlImage, fdbImage, fdImage;
 
-  private Label wlHeaderRowHeight;
   private TextVar wHeaderRowHeight;
-  private FormData fdlHeaderRowHeight, fdHeaderRowHeight;
 
-  private Label wlRowFontName;
   private CCombo wRowFontName;
-  private FormData fdlRowFontName, fdRowFontName;
 
-  private Label wlHeaderFontUnderline;
   private CCombo wHeaderFontUnderline;
-  private FormData fdlHeaderFontUnderline, fdHeaderFontUnderline;
 
-  private Label wlHeaderFontOrientation;
   private CCombo wHeaderFontOrientation;
-  private FormData fdlHeaderFontOrientation, fdHeaderFontOrientation;
 
-  private Label wlHeaderAlignment;
   private CCombo wHeaderAlignment;
-  private FormData fdlHeaderAlignment, fdHeaderAlignment;
 
-  private Group wFontRowGroup;
-
-  private CTabItem wFileTab, wContentTab, wCustomTab, wFieldsTab;
-
-  private FormData fdFileComp, fdContentComp, fdFieldsComp, fdCustomComp;
-
-  private Label wlFilename;
-  private Button wbFilename;
   private TextVar wFilename;
-  private FormData fdlFilename, fdbFilename, fdFilename;
 
-  private Label wlExtension;
   private TextVar wExtension;
-  private FormData fdlExtension, fdExtension;
 
-  private Label wlAddTransformNr;
   private Button wAddTransformNr;
-  private FormData fdlAddTransformNr, fdAddTransformNr;
 
   private Label wlAddDate;
   private Button wAddDate;
-  private FormData fdlAddDate, fdAddDate;
 
-  private Label wlHeaderFontBold;
   private Button wHeaderFontBold;
-  private FormData fdlHeaderFontBold, fdHeaderFontBold;
 
-  private Label wlHeaderFontItalic;
   private Button wHeaderFontItalic;
-  private FormData fdlHeaderFontItalic, fdHeaderFontItalic;
 
   private CCombo wHeaderFontColor;
-  private FormData fdHeaderFontColor;
-  private Label wlHeaderFontColor;
-  private FormData fdlHeaderFontColor;
 
   private CCombo wHeaderBackGroundColor;
-  private FormData fdHeaderBackGroundColor;
-  private Label wlHeaderBackGroundColor;
-  private FormData fdlHeaderBackGroundColor;
 
   private CCombo wRowBackGroundColor;
-  private FormData fdFontRowGroup;
-  private FormData fdRowBackGroundColor;
-  private Label wlRowBackGroundColor;
-  private FormData fdlRowBackGroundColor;
 
   private Label wlAddTime;
   private Button wAddTime;
-  private FormData fdlAddTime, fdAddTime;
 
-  private Label wlProtectSheet;
   private Button wProtectSheet;
-  private FormData fdlProtectSheet, fdProtectSheet;
 
-  private Button wbShowFiles;
-  private FormData fdbShowFiles;
-
-  private Label wlHeader;
   private Button wHeader;
-  private FormData fdlHeader, fdHeader;
 
-  private Label wlFooter;
   private Button wFooter;
-  private FormData fdlFooter, fdFooter;
 
-  private Label wlEncoding;
   private CCombo wEncoding;
-  private FormData fdlEncoding, fdEncoding;
 
-  private Label wlSplitEvery;
   private Text wSplitEvery;
-  private FormData fdlSplitEvery, fdSplitEvery;
 
-  private Label wlTemplate;
   private Button wTemplate;
-  private FormData fdlTemplate, fdTemplate;
 
   private Label wlTemplateAppend;
   private Button wTemplateAppend;
-  private FormData fdlTemplateAppend, fdTemplateAppend;
 
   private Label wlTemplateFilename;
   private Button wbTemplateFilename;
   private TextVar wTemplateFilename;
-  private FormData fdlTemplateFilename, fdbTemplateFilename, fdTemplateFilename;
 
   private Label wlPassword;
   private TextVar wPassword;
-  private FormData fdlPassword, fdPassword;
 
-  private Label wlSheetname;
   private TextVar wSheetname;
-  private FormData fdlSheetname, fdSheetname;
 
   private TableView wFields;
-  private FormData fdFields;
 
-  private ExcelOutputMeta input;
+  private final ExcelOutputMeta input;
 
   private Button wMinWidth;
-  private Listener lsMinWidth;
   private boolean gotEncodings = false;
 
-  private Label wlAddToResult;
   private Button wAddToResult;
-  private FormData fdlAddToResult, fdAddToResult;
 
-  private Label wlAppend;
   private Button wAppend;
-  private FormData fdlAppend, fdAppend;
 
-  private Label wlDoNotOpenNewFileInit;
   private Button wDoNotOpenNewFileInit;
-  private FormData fdlDoNotOpenNewFileInit, fdDoNotOpenNewFileInit;
 
-  private Label wlSpecifyFormat;
   private Button wSpecifyFormat;
-  private FormData fdlSpecifyFormat, fdSpecifyFormat;
 
   private Label wlDateTimeFormat;
   private CCombo wDateTimeFormat;
-  private FormData fdlDateTimeFormat, fdDateTimeFormat;
 
-  private Label wlAutoSize;
   private Button wAutoSize;
-  private FormData fdlAutoSize, fdAutoSize;
 
-  private Label wlNullIsBlank;
   private Button wNullIsBlank;
-  private FormData fdlNullIsBlank, fdNullIsBlank;
 
-  private Group wTemplateGroup;
-  private FormData fdTemplateGroup;
+  private Button wUseTempFiles;
 
-  private Label wluseTempFiles;
-  private Button wuseTempFiles;
-  private FormData fdluseTempFiles, fduseTempFiles;
-
-  private Label wlCreateParentFolder;
   private Button wCreateParentFolder;
-  private FormData fdlCreateParentFolder, fdCreateParentFolder;
 
   private ColumnInfo[] colinf;
 
-  private Map<String, Integer> inputFields;
+  private final Map<String, Integer> inputFields;
 
   public ExcelOutputDialog( Shell parent, Object in, PipelineMeta pipelineMeta, String sname ) {
     super( parent, (BaseTransformMeta) in, pipelineMeta, sname );
     input = (ExcelOutputMeta) in;
-    inputFields = new HashMap<String, Integer>();
+    inputFields = new HashMap<>();
   }
 
   @Override
@@ -292,6 +191,16 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     int middle = props.getMiddlePct();
     int margin = props.getMargin();
 
+    // Buttons at the bottom
+    wOk = new Button( shell, SWT.PUSH );
+    wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
+    wOk.addListener( SWT.Selection, e -> ok() );
+    wCancel = new Button( shell, SWT.PUSH );
+    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
+    wCancel.addListener( SWT.Selection, e -> cancel() );
+    setButtonPositions( new Button[] { wOk, wCancel }, margin, null);
+
+
     // TransformName line
     wlTransformName = new Label( shell, SWT.RIGHT );
     wlTransformName.setText( BaseMessages.getString( PKG, "System.Label.TransformName" ) );
@@ -311,16 +220,16 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     fdTransformName.right = new FormAttachment( 100, 0 );
     wTransformName.setLayoutData( fdTransformName );
 
-    wTabFolder = new CTabFolder( shell, SWT.BORDER );
-    props.setLook( wTabFolder, Props.WIDGET_STYLE_TAB );
+    CTabFolder wTabFolder = new CTabFolder(shell, SWT.BORDER);
+    props.setLook(wTabFolder, Props.WIDGET_STYLE_TAB );
 
     // ////////////////////////
     // START OF FILE TAB///
     // /
-    wFileTab = new CTabItem( wTabFolder, SWT.NONE );
+    CTabItem wFileTab = new CTabItem(wTabFolder, SWT.NONE);
     wFileTab.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.FileTab.TabTitle" ) );
 
-    Composite wFileComp = new Composite( wTabFolder, SWT.NONE );
+    Composite wFileComp = new Composite(wTabFolder, SWT.NONE );
     props.setLook( wFileComp );
 
     FormLayout fileLayout = new FormLayout();
@@ -329,50 +238,50 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     wFileComp.setLayout( fileLayout );
 
     // Filename line
-    wlFilename = new Label( wFileComp, SWT.RIGHT );
+    Label wlFilename = new Label(wFileComp, SWT.RIGHT);
     wlFilename.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.Filename.Label" ) );
-    props.setLook( wlFilename );
-    fdlFilename = new FormData();
+    props.setLook(wlFilename);
+    FormData fdlFilename = new FormData();
     fdlFilename.left = new FormAttachment( 0, 0 );
     fdlFilename.top = new FormAttachment( 0, margin );
     fdlFilename.right = new FormAttachment( middle, -margin );
-    wlFilename.setLayoutData( fdlFilename );
+    wlFilename.setLayoutData(fdlFilename);
 
-    wbFilename = new Button( wFileComp, SWT.PUSH | SWT.CENTER );
-    props.setLook( wbFilename );
+    Button wbFilename = new Button(wFileComp, SWT.PUSH | SWT.CENTER);
+    props.setLook(wbFilename);
     wbFilename.setText( BaseMessages.getString( PKG, "System.Button.Browse" ) );
-    fdbFilename = new FormData();
+    FormData fdbFilename = new FormData();
     fdbFilename.right = new FormAttachment( 100, 0 );
     fdbFilename.top = new FormAttachment( 0, 0 );
-    wbFilename.setLayoutData( fdbFilename );
+    wbFilename.setLayoutData(fdbFilename);
 
     wFilename = new TextVar( pipelineMeta, wFileComp, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     props.setLook( wFilename );
     wFilename.addModifyListener( lsMod );
-    fdFilename = new FormData();
+    FormData fdFilename = new FormData();
     fdFilename.left = new FormAttachment( middle, 0 );
     fdFilename.top = new FormAttachment( 0, margin );
-    fdFilename.right = new FormAttachment( wbFilename, -margin );
-    wFilename.setLayoutData( fdFilename );
+    fdFilename.right = new FormAttachment(wbFilename, -margin );
+    wFilename.setLayoutData(fdFilename);
 
     // Create Parent Folder
-    wlCreateParentFolder = new Label( wFileComp, SWT.RIGHT );
+    Label wlCreateParentFolder = new Label(wFileComp, SWT.RIGHT);
     wlCreateParentFolder.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.CreateParentFolder.Label" ) );
-    props.setLook( wlCreateParentFolder );
-    fdlCreateParentFolder = new FormData();
+    props.setLook(wlCreateParentFolder);
+    FormData fdlCreateParentFolder = new FormData();
     fdlCreateParentFolder.left = new FormAttachment( 0, 0 );
     fdlCreateParentFolder.top = new FormAttachment( wFilename, margin );
     fdlCreateParentFolder.right = new FormAttachment( middle, -margin );
-    wlCreateParentFolder.setLayoutData( fdlCreateParentFolder );
+    wlCreateParentFolder.setLayoutData(fdlCreateParentFolder);
     wCreateParentFolder = new Button( wFileComp, SWT.CHECK );
     wCreateParentFolder.setToolTipText( BaseMessages.getString(
       PKG, "ExcelOutputDialog.CreateParentFolder.Tooltip" ) );
     props.setLook( wCreateParentFolder );
-    fdCreateParentFolder = new FormData();
+    FormData fdCreateParentFolder = new FormData();
     fdCreateParentFolder.left = new FormAttachment( middle, 0 );
-    fdCreateParentFolder.top = new FormAttachment( wFilename, margin );
+    fdCreateParentFolder.top = new FormAttachment( wlCreateParentFolder, 0, SWT.CENTER );
     fdCreateParentFolder.right = new FormAttachment( 100, 0 );
-    wCreateParentFolder.setLayoutData( fdCreateParentFolder );
+    wCreateParentFolder.setLayoutData(fdCreateParentFolder);
     wCreateParentFolder.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -381,23 +290,23 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     } );
 
     // Open new File at Init
-    wlDoNotOpenNewFileInit = new Label( wFileComp, SWT.RIGHT );
+    Label wlDoNotOpenNewFileInit = new Label(wFileComp, SWT.RIGHT);
     wlDoNotOpenNewFileInit.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.DoNotOpenNewFileInit.Label" ) );
-    props.setLook( wlDoNotOpenNewFileInit );
-    fdlDoNotOpenNewFileInit = new FormData();
+    props.setLook(wlDoNotOpenNewFileInit);
+    FormData fdlDoNotOpenNewFileInit = new FormData();
     fdlDoNotOpenNewFileInit.left = new FormAttachment( 0, 0 );
     fdlDoNotOpenNewFileInit.top = new FormAttachment( wCreateParentFolder, margin );
     fdlDoNotOpenNewFileInit.right = new FormAttachment( middle, -margin );
-    wlDoNotOpenNewFileInit.setLayoutData( fdlDoNotOpenNewFileInit );
+    wlDoNotOpenNewFileInit.setLayoutData(fdlDoNotOpenNewFileInit);
     wDoNotOpenNewFileInit = new Button( wFileComp, SWT.CHECK );
     wDoNotOpenNewFileInit.setToolTipText( BaseMessages.getString(
       PKG, "ExcelOutputDialog.DoNotOpenNewFileInit.Tooltip" ) );
     props.setLook( wDoNotOpenNewFileInit );
-    fdDoNotOpenNewFileInit = new FormData();
+    FormData fdDoNotOpenNewFileInit = new FormData();
     fdDoNotOpenNewFileInit.left = new FormAttachment( middle, 0 );
-    fdDoNotOpenNewFileInit.top = new FormAttachment( wCreateParentFolder, margin );
+    fdDoNotOpenNewFileInit.top = new FormAttachment( wlDoNotOpenNewFileInit, 0, SWT.CENTER );
     fdDoNotOpenNewFileInit.right = new FormAttachment( 100, 0 );
-    wDoNotOpenNewFileInit.setLayoutData( fdDoNotOpenNewFileInit );
+    wDoNotOpenNewFileInit.setLayoutData(fdDoNotOpenNewFileInit);
     wDoNotOpenNewFileInit.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -406,40 +315,40 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     } );
 
     // Extension line
-    wlExtension = new Label( wFileComp, SWT.RIGHT );
+    Label wlExtension = new Label(wFileComp, SWT.RIGHT);
     wlExtension.setText( BaseMessages.getString( PKG, "System.Label.Extension" ) );
-    props.setLook( wlExtension );
-    fdlExtension = new FormData();
+    props.setLook(wlExtension);
+    FormData fdlExtension = new FormData();
     fdlExtension.left = new FormAttachment( 0, 0 );
     fdlExtension.top = new FormAttachment( wDoNotOpenNewFileInit, margin );
     fdlExtension.right = new FormAttachment( middle, -margin );
-    wlExtension.setLayoutData( fdlExtension );
+    wlExtension.setLayoutData(fdlExtension);
     wExtension = new TextVar( pipelineMeta, wFileComp, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     wExtension.setText( "" );
     props.setLook( wExtension );
     wExtension.addModifyListener( lsMod );
-    fdExtension = new FormData();
+    FormData fdExtension = new FormData();
     fdExtension.left = new FormAttachment( middle, 0 );
     fdExtension.top = new FormAttachment( wDoNotOpenNewFileInit, margin );
-    fdExtension.right = new FormAttachment( wbFilename, -margin );
-    wExtension.setLayoutData( fdExtension );
+    fdExtension.right = new FormAttachment(wbFilename, -margin );
+    wExtension.setLayoutData(fdExtension);
 
     // Create multi-part file?
-    wlAddTransformNr = new Label( wFileComp, SWT.RIGHT );
+    Label wlAddTransformNr = new Label(wFileComp, SWT.RIGHT);
     wlAddTransformNr.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.AddTransformnr.Label" ) );
-    props.setLook( wlAddTransformNr );
-    fdlAddTransformNr = new FormData();
+    props.setLook(wlAddTransformNr);
+    FormData fdlAddTransformNr = new FormData();
     fdlAddTransformNr.left = new FormAttachment( 0, 0 );
     fdlAddTransformNr.top = new FormAttachment( wExtension, margin );
     fdlAddTransformNr.right = new FormAttachment( middle, -margin );
-    wlAddTransformNr.setLayoutData( fdlAddTransformNr );
+    wlAddTransformNr.setLayoutData(fdlAddTransformNr);
     wAddTransformNr = new Button( wFileComp, SWT.CHECK );
     props.setLook( wAddTransformNr );
-    fdAddTransformNr = new FormData();
+    FormData fdAddTransformNr = new FormData();
     fdAddTransformNr.left = new FormAttachment( middle, 0 );
-    fdAddTransformNr.top = new FormAttachment( wExtension, margin );
+    fdAddTransformNr.top = new FormAttachment( wlAddTransformNr, 0, SWT.CENTER );
     fdAddTransformNr.right = new FormAttachment( 100, 0 );
-    wAddTransformNr.setLayoutData( fdAddTransformNr );
+    wAddTransformNr.setLayoutData(fdAddTransformNr);
     wAddTransformNr.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -451,18 +360,18 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     wlAddDate = new Label( wFileComp, SWT.RIGHT );
     wlAddDate.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.AddDate.Label" ) );
     props.setLook( wlAddDate );
-    fdlAddDate = new FormData();
+    FormData fdlAddDate = new FormData();
     fdlAddDate.left = new FormAttachment( 0, 0 );
     fdlAddDate.top = new FormAttachment( wAddTransformNr, margin );
     fdlAddDate.right = new FormAttachment( middle, -margin );
-    wlAddDate.setLayoutData( fdlAddDate );
+    wlAddDate.setLayoutData(fdlAddDate);
     wAddDate = new Button( wFileComp, SWT.CHECK );
     props.setLook( wAddDate );
-    fdAddDate = new FormData();
+    FormData fdAddDate = new FormData();
     fdAddDate.left = new FormAttachment( middle, 0 );
-    fdAddDate.top = new FormAttachment( wAddTransformNr, margin );
+    fdAddDate.top = new FormAttachment( wlAddDate, 0, SWT.CENTER );
     fdAddDate.right = new FormAttachment( 100, 0 );
-    wAddDate.setLayoutData( fdAddDate );
+    wAddDate.setLayoutData(fdAddDate);
     wAddDate.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -473,41 +382,42 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     wlAddTime = new Label( wFileComp, SWT.RIGHT );
     wlAddTime.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.AddTime.Label" ) );
     props.setLook( wlAddTime );
-    fdlAddTime = new FormData();
+    FormData fdlAddTime = new FormData();
     fdlAddTime.left = new FormAttachment( 0, 0 );
     fdlAddTime.top = new FormAttachment( wAddDate, margin );
     fdlAddTime.right = new FormAttachment( middle, -margin );
-    wlAddTime.setLayoutData( fdlAddTime );
+    wlAddTime.setLayoutData(fdlAddTime);
     wAddTime = new Button( wFileComp, SWT.CHECK );
     props.setLook( wAddTime );
-    fdAddTime = new FormData();
+    FormData fdAddTime = new FormData();
     fdAddTime.left = new FormAttachment( middle, 0 );
-    fdAddTime.top = new FormAttachment( wAddDate, margin );
+    fdAddTime.top = new FormAttachment( wlAddTime, 0, SWT.CENTER );
     fdAddTime.right = new FormAttachment( 100, 0 );
-    wAddTime.setLayoutData( fdAddTime );
+    wAddTime.setLayoutData(fdAddTime);
     wAddTime.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         input.setChanged();
       }
     } );
+
     // Specify date time format?
-    wlSpecifyFormat = new Label( wFileComp, SWT.RIGHT );
+    Label wlSpecifyFormat = new Label(wFileComp, SWT.RIGHT);
     wlSpecifyFormat.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.SpecifyFormat.Label" ) );
-    props.setLook( wlSpecifyFormat );
-    fdlSpecifyFormat = new FormData();
+    props.setLook(wlSpecifyFormat);
+    FormData fdlSpecifyFormat = new FormData();
     fdlSpecifyFormat.left = new FormAttachment( 0, 0 );
     fdlSpecifyFormat.top = new FormAttachment( wAddTime, margin );
     fdlSpecifyFormat.right = new FormAttachment( middle, -margin );
-    wlSpecifyFormat.setLayoutData( fdlSpecifyFormat );
+    wlSpecifyFormat.setLayoutData(fdlSpecifyFormat);
     wSpecifyFormat = new Button( wFileComp, SWT.CHECK );
     props.setLook( wSpecifyFormat );
     wSpecifyFormat.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.SpecifyFormat.Tooltip" ) );
-    fdSpecifyFormat = new FormData();
+    FormData fdSpecifyFormat = new FormData();
     fdSpecifyFormat.left = new FormAttachment( middle, 0 );
-    fdSpecifyFormat.top = new FormAttachment( wAddTime, margin );
+    fdSpecifyFormat.top = new FormAttachment( wlSpecifyFormat, 0, SWT.CENTER );
     fdSpecifyFormat.right = new FormAttachment( 100, 0 );
-    wSpecifyFormat.setLayoutData( fdSpecifyFormat );
+    wSpecifyFormat.setLayoutData(fdSpecifyFormat);
     wSpecifyFormat.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -523,32 +433,32 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     wlDateTimeFormat = new Label( wFileComp, SWT.RIGHT );
     wlDateTimeFormat.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.DateTimeFormat.Label" ) );
     props.setLook( wlDateTimeFormat );
-    fdlDateTimeFormat = new FormData();
+    FormData fdlDateTimeFormat = new FormData();
     fdlDateTimeFormat.left = new FormAttachment( 0, 0 );
-    fdlDateTimeFormat.top = new FormAttachment( wSpecifyFormat, margin );
+    fdlDateTimeFormat.top = new FormAttachment( wSpecifyFormat, 2*margin );
     fdlDateTimeFormat.right = new FormAttachment( middle, -margin );
-    wlDateTimeFormat.setLayoutData( fdlDateTimeFormat );
+    wlDateTimeFormat.setLayoutData(fdlDateTimeFormat);
     wDateTimeFormat = new CCombo( wFileComp, SWT.BORDER | SWT.READ_ONLY );
     wDateTimeFormat.setEditable( true );
     props.setLook( wDateTimeFormat );
     wDateTimeFormat.addModifyListener( lsMod );
-    fdDateTimeFormat = new FormData();
+    FormData fdDateTimeFormat = new FormData();
     fdDateTimeFormat.left = new FormAttachment( middle, 0 );
-    fdDateTimeFormat.top = new FormAttachment( wSpecifyFormat, margin );
+    fdDateTimeFormat.top = new FormAttachment( wSpecifyFormat, 2*margin );
     fdDateTimeFormat.right = new FormAttachment( 100, 0 );
-    wDateTimeFormat.setLayoutData( fdDateTimeFormat );
-    for ( int x = 0; x < dats.length; x++ ) {
-      wDateTimeFormat.add( dats[ x ] );
+    wDateTimeFormat.setLayoutData(fdDateTimeFormat);
+    for (String dat : dats) {
+      wDateTimeFormat.add(dat);
     }
 
-    wbShowFiles = new Button( wFileComp, SWT.PUSH | SWT.CENTER );
-    props.setLook( wbShowFiles );
+    Button wbShowFiles = new Button(wFileComp, SWT.PUSH | SWT.CENTER);
+    props.setLook(wbShowFiles);
     wbShowFiles.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.ShowFiles.Button" ) );
-    fdbShowFiles = new FormData();
+    FormData fdbShowFiles = new FormData();
     fdbShowFiles.left = new FormAttachment( middle, 0 );
     fdbShowFiles.top = new FormAttachment( wDateTimeFormat, margin * 3 );
-    wbShowFiles.setLayoutData( fdbShowFiles );
-    wbShowFiles.addSelectionListener( new SelectionAdapter() {
+    wbShowFiles.setLayoutData(fdbShowFiles);
+    wbShowFiles.addSelectionListener(new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         ExcelOutputMeta tfoi = new ExcelOutputMeta();
@@ -571,22 +481,22 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     } );
 
     // Add File to the result files name
-    wlAddToResult = new Label( wFileComp, SWT.RIGHT );
+    Label wlAddToResult = new Label(wFileComp, SWT.RIGHT);
     wlAddToResult.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.AddFileToResult.Label" ) );
-    props.setLook( wlAddToResult );
-    fdlAddToResult = new FormData();
+    props.setLook(wlAddToResult);
+    FormData fdlAddToResult = new FormData();
     fdlAddToResult.left = new FormAttachment( 0, 0 );
-    fdlAddToResult.top = new FormAttachment( wbShowFiles, 2 * margin );
+    fdlAddToResult.top = new FormAttachment(wbShowFiles, 2 * margin );
     fdlAddToResult.right = new FormAttachment( middle, -margin );
-    wlAddToResult.setLayoutData( fdlAddToResult );
+    wlAddToResult.setLayoutData(fdlAddToResult);
     wAddToResult = new Button( wFileComp, SWT.CHECK );
     wAddToResult.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.AddFileToResult.Tooltip" ) );
     props.setLook( wAddToResult );
-    fdAddToResult = new FormData();
+    FormData fdAddToResult = new FormData();
     fdAddToResult.left = new FormAttachment( middle, 0 );
-    fdAddToResult.top = new FormAttachment( wbShowFiles, 2 * margin );
+    fdAddToResult.top = new FormAttachment( wlAddToResult, 0, SWT.CENTER );
     fdAddToResult.right = new FormAttachment( 100, 0 );
-    wAddToResult.setLayoutData( fdAddToResult );
+    wAddToResult.setLayoutData(fdAddToResult);
     SelectionAdapter lsSelR = new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent arg0 ) {
@@ -595,12 +505,12 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     };
     wAddToResult.addSelectionListener( lsSelR );
 
-    fdFileComp = new FormData();
+    FormData fdFileComp = new FormData();
     fdFileComp.left = new FormAttachment( 0, 0 );
     fdFileComp.top = new FormAttachment( 0, 0 );
     fdFileComp.right = new FormAttachment( 100, 0 );
     fdFileComp.bottom = new FormAttachment( 100, 0 );
-    wFileComp.setLayoutData( fdFileComp );
+    wFileComp.setLayoutData(fdFileComp);
 
     wFileComp.layout();
     wFileTab.setControl( wFileComp );
@@ -612,34 +522,34 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     // ////////////////////////
     // START OF CONTENT TAB///
     // /
-    wContentTab = new CTabItem( wTabFolder, SWT.NONE );
+    CTabItem wContentTab = new CTabItem(wTabFolder, SWT.NONE);
     wContentTab.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.ContentTab.TabTitle" ) );
 
     FormLayout contentLayout = new FormLayout();
     contentLayout.marginWidth = 3;
     contentLayout.marginHeight = 3;
 
-    Composite wContentComp = new Composite( wTabFolder, SWT.NONE );
+    Composite wContentComp = new Composite(wTabFolder, SWT.NONE );
     props.setLook( wContentComp );
     wContentComp.setLayout( contentLayout );
 
     // Append checkbox
-    wlAppend = new Label( wContentComp, SWT.RIGHT );
+    Label wlAppend = new Label(wContentComp, SWT.RIGHT);
     wlAppend.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.Append.Label" ) );
-    props.setLook( wlAppend );
-    fdlAppend = new FormData();
+    props.setLook(wlAppend);
+    FormData fdlAppend = new FormData();
     fdlAppend.left = new FormAttachment( 0, 0 );
     fdlAppend.top = new FormAttachment( 0, 0 );
     fdlAppend.right = new FormAttachment( middle, -margin );
-    wlAppend.setLayoutData( fdlAppend );
+    wlAppend.setLayoutData(fdlAppend);
     wAppend = new Button( wContentComp, SWT.CHECK );
     props.setLook( wAppend );
     wAppend.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.Append.Tooltip" ) );
-    fdAppend = new FormData();
+    FormData fdAppend = new FormData();
     fdAppend.left = new FormAttachment( middle, 0 );
-    fdAppend.top = new FormAttachment( 0, 0 );
+    fdAppend.top = new FormAttachment( wlAppend, 0, SWT.CENTER );
     fdAppend.right = new FormAttachment( 100, 0 );
-    wAppend.setLayoutData( fdAppend );
+    wAppend.setLayoutData(fdAppend);
     wAppend.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent arg0 ) {
@@ -647,21 +557,21 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
       }
     } );
 
-    wlHeader = new Label( wContentComp, SWT.RIGHT );
+    Label wlHeader = new Label(wContentComp, SWT.RIGHT);
     wlHeader.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.Header.Label" ) );
-    props.setLook( wlHeader );
-    fdlHeader = new FormData();
+    props.setLook(wlHeader);
+    FormData fdlHeader = new FormData();
     fdlHeader.left = new FormAttachment( 0, 0 );
     fdlHeader.top = new FormAttachment( wAppend, margin );
     fdlHeader.right = new FormAttachment( middle, -margin );
-    wlHeader.setLayoutData( fdlHeader );
+    wlHeader.setLayoutData(fdlHeader);
     wHeader = new Button( wContentComp, SWT.CHECK );
     props.setLook( wHeader );
-    fdHeader = new FormData();
+    FormData fdHeader = new FormData();
     fdHeader.left = new FormAttachment( middle, 0 );
-    fdHeader.top = new FormAttachment( wAppend, margin );
+    fdHeader.top = new FormAttachment( wlHeader, 0, SWT.CENTER );
     fdHeader.right = new FormAttachment( 100, 0 );
-    wHeader.setLayoutData( fdHeader );
+    wHeader.setLayoutData(fdHeader);
     wHeader.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -669,21 +579,21 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
       }
     } );
 
-    wlFooter = new Label( wContentComp, SWT.RIGHT );
+    Label wlFooter = new Label(wContentComp, SWT.RIGHT);
     wlFooter.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.Footer.Label" ) );
-    props.setLook( wlFooter );
-    fdlFooter = new FormData();
+    props.setLook(wlFooter);
+    FormData fdlFooter = new FormData();
     fdlFooter.left = new FormAttachment( 0, 0 );
     fdlFooter.top = new FormAttachment( wHeader, margin );
     fdlFooter.right = new FormAttachment( middle, -margin );
-    wlFooter.setLayoutData( fdlFooter );
+    wlFooter.setLayoutData(fdlFooter);
     wFooter = new Button( wContentComp, SWT.CHECK );
     props.setLook( wFooter );
-    fdFooter = new FormData();
+    FormData fdFooter = new FormData();
     fdFooter.left = new FormAttachment( middle, 0 );
-    fdFooter.top = new FormAttachment( wHeader, margin );
+    fdFooter.top = new FormAttachment( wlFooter, 0, SWT.CENTER );
     fdFooter.right = new FormAttachment( 100, 0 );
-    wFooter.setLayoutData( fdFooter );
+    wFooter.setLayoutData(fdFooter);
     wFooter.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -691,23 +601,23 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
       }
     } );
 
-    wlEncoding = new Label( wContentComp, SWT.RIGHT );
+    Label wlEncoding = new Label(wContentComp, SWT.RIGHT);
     wlEncoding.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.Encoding.Label" ) );
-    props.setLook( wlEncoding );
-    fdlEncoding = new FormData();
+    props.setLook(wlEncoding);
+    FormData fdlEncoding = new FormData();
     fdlEncoding.left = new FormAttachment( 0, 0 );
-    fdlEncoding.top = new FormAttachment( wFooter, margin );
+    fdlEncoding.top = new FormAttachment( wFooter, 2*margin );
     fdlEncoding.right = new FormAttachment( middle, -margin );
-    wlEncoding.setLayoutData( fdlEncoding );
+    wlEncoding.setLayoutData(fdlEncoding);
     wEncoding = new CCombo( wContentComp, SWT.BORDER | SWT.READ_ONLY );
     wEncoding.setEditable( true );
     props.setLook( wEncoding );
     wEncoding.addModifyListener( lsMod );
-    fdEncoding = new FormData();
+    FormData fdEncoding = new FormData();
     fdEncoding.left = new FormAttachment( middle, 0 );
-    fdEncoding.top = new FormAttachment( wFooter, margin );
+    fdEncoding.top = new FormAttachment( wFooter, 2*margin );
     fdEncoding.right = new FormAttachment( 100, 0 );
-    wEncoding.setLayoutData( fdEncoding );
+    wEncoding.setLayoutData(fdEncoding);
     wEncoding.addFocusListener( new FocusListener() {
       @Override
       public void focusLost( org.eclipse.swt.events.FocusEvent e ) {
@@ -723,58 +633,58 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
       }
     } );
 
-    wlSplitEvery = new Label( wContentComp, SWT.RIGHT );
+    Label wlSplitEvery = new Label(wContentComp, SWT.RIGHT);
     wlSplitEvery.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.SplitEvery.Label" ) );
-    props.setLook( wlSplitEvery );
-    fdlSplitEvery = new FormData();
+    props.setLook(wlSplitEvery);
+    FormData fdlSplitEvery = new FormData();
     fdlSplitEvery.left = new FormAttachment( 0, 0 );
     fdlSplitEvery.top = new FormAttachment( wEncoding, margin );
     fdlSplitEvery.right = new FormAttachment( middle, -margin );
-    wlSplitEvery.setLayoutData( fdlSplitEvery );
+    wlSplitEvery.setLayoutData(fdlSplitEvery);
     wSplitEvery = new Text( wContentComp, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     props.setLook( wSplitEvery );
     wSplitEvery.addModifyListener( lsMod );
-    fdSplitEvery = new FormData();
+    FormData fdSplitEvery = new FormData();
     fdSplitEvery.left = new FormAttachment( middle, 0 );
     fdSplitEvery.top = new FormAttachment( wEncoding, margin );
     fdSplitEvery.right = new FormAttachment( 100, 0 );
-    wSplitEvery.setLayoutData( fdSplitEvery );
+    wSplitEvery.setLayoutData(fdSplitEvery);
 
     // Sheet name line
-    wlSheetname = new Label( wContentComp, SWT.RIGHT );
+    Label wlSheetname = new Label(wContentComp, SWT.RIGHT);
     wlSheetname.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.Sheetname.Label" ) );
-    props.setLook( wlSheetname );
-    fdlSheetname = new FormData();
+    props.setLook(wlSheetname);
+    FormData fdlSheetname = new FormData();
     fdlSheetname.left = new FormAttachment( 0, 0 );
     fdlSheetname.top = new FormAttachment( wSplitEvery, margin );
     fdlSheetname.right = new FormAttachment( middle, -margin );
-    wlSheetname.setLayoutData( fdlSheetname );
+    wlSheetname.setLayoutData(fdlSheetname);
     wSheetname = new TextVar( pipelineMeta, wContentComp, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     wSheetname.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.Sheetname.Tooltip" ) );
     props.setLook( wSheetname );
     wSheetname.addModifyListener( lsMod );
-    fdSheetname = new FormData();
+    FormData fdSheetname = new FormData();
     fdSheetname.left = new FormAttachment( middle, 0 );
     fdSheetname.top = new FormAttachment( wSplitEvery, margin );
     fdSheetname.right = new FormAttachment( 100, 0 );
-    wSheetname.setLayoutData( fdSheetname );
+    wSheetname.setLayoutData(fdSheetname);
 
     // Protect Sheet?
-    wlProtectSheet = new Label( wContentComp, SWT.RIGHT );
+    Label wlProtectSheet = new Label(wContentComp, SWT.RIGHT);
     wlProtectSheet.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.ProtectSheet.Label" ) );
-    props.setLook( wlProtectSheet );
-    fdlProtectSheet = new FormData();
+    props.setLook(wlProtectSheet);
+    FormData fdlProtectSheet = new FormData();
     fdlProtectSheet.left = new FormAttachment( 0, 0 );
     fdlProtectSheet.top = new FormAttachment( wSheetname, margin );
     fdlProtectSheet.right = new FormAttachment( middle, -margin );
-    wlProtectSheet.setLayoutData( fdlProtectSheet );
+    wlProtectSheet.setLayoutData(fdlProtectSheet);
     wProtectSheet = new Button( wContentComp, SWT.CHECK );
     props.setLook( wProtectSheet );
-    fdProtectSheet = new FormData();
+    FormData fdProtectSheet = new FormData();
     fdProtectSheet.left = new FormAttachment( middle, 0 );
-    fdProtectSheet.top = new FormAttachment( wSheetname, margin );
+    fdProtectSheet.top = new FormAttachment( wlProtectSheet, 0, SWT.CENTER );
     fdProtectSheet.right = new FormAttachment( 100, 0 );
-    wProtectSheet.setLayoutData( fdProtectSheet );
+    wProtectSheet.setLayoutData(fdProtectSheet);
     wProtectSheet.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -787,38 +697,38 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     wlPassword = new Label( wContentComp, SWT.RIGHT );
     wlPassword.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.Password.Label" ) );
     props.setLook( wlPassword );
-    fdlPassword = new FormData();
+    FormData fdlPassword = new FormData();
     fdlPassword.left = new FormAttachment( 0, 0 );
     fdlPassword.top = new FormAttachment( wProtectSheet, margin );
     fdlPassword.right = new FormAttachment( middle, -margin );
-    wlPassword.setLayoutData( fdlPassword );
+    wlPassword.setLayoutData(fdlPassword);
     wPassword = new PasswordTextVar( pipelineMeta, wContentComp, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     wPassword.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.Password.Tooltip" ) );
     props.setLook( wPassword );
     wPassword.addModifyListener( lsMod );
-    fdPassword = new FormData();
+    FormData fdPassword = new FormData();
     fdPassword.left = new FormAttachment( middle, 0 );
     fdPassword.top = new FormAttachment( wProtectSheet, margin );
     fdPassword.right = new FormAttachment( 100, 0 );
-    wPassword.setLayoutData( fdPassword );
+    wPassword.setLayoutData(fdPassword);
 
     // auto size columns?
-    wlAutoSize = new Label( wContentComp, SWT.RIGHT );
+    Label wlAutoSize = new Label(wContentComp, SWT.RIGHT);
     wlAutoSize.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.AutoSize.Label" ) );
-    props.setLook( wlAutoSize );
-    fdlAutoSize = new FormData();
+    props.setLook(wlAutoSize);
+    FormData fdlAutoSize = new FormData();
     fdlAutoSize.left = new FormAttachment( 0, 0 );
     fdlAutoSize.top = new FormAttachment( wPassword, margin );
     fdlAutoSize.right = new FormAttachment( middle, -margin );
-    wlAutoSize.setLayoutData( fdlAutoSize );
+    wlAutoSize.setLayoutData(fdlAutoSize);
     wAutoSize = new Button( wContentComp, SWT.CHECK );
     props.setLook( wAutoSize );
     wAutoSize.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.AutoSize.Tooltip" ) );
-    fdAutoSize = new FormData();
+    FormData fdAutoSize = new FormData();
     fdAutoSize.left = new FormAttachment( middle, 0 );
-    fdAutoSize.top = new FormAttachment( wPassword, margin );
+    fdAutoSize.top = new FormAttachment( wlAutoSize, 0, SWT.CENTER );
     fdAutoSize.right = new FormAttachment( 100, 0 );
-    wAutoSize.setLayoutData( fdAutoSize );
+    wAutoSize.setLayoutData(fdAutoSize);
     wAutoSize.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -827,41 +737,41 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     } );
 
     // write null values as blank cells ?
-    wlNullIsBlank = new Label( wContentComp, SWT.RIGHT );
+    Label wlNullIsBlank = new Label(wContentComp, SWT.RIGHT);
     wlNullIsBlank.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.NullIsBlank.Label" ) );
-    props.setLook( wlNullIsBlank );
-    fdlNullIsBlank = new FormData();
+    props.setLook(wlNullIsBlank);
+    FormData fdlNullIsBlank = new FormData();
     fdlNullIsBlank.left = new FormAttachment( 0, 0 );
     fdlNullIsBlank.top = new FormAttachment( wAutoSize, margin );
     fdlNullIsBlank.right = new FormAttachment( middle, -margin );
-    wlNullIsBlank.setLayoutData( fdlNullIsBlank );
+    wlNullIsBlank.setLayoutData(fdlNullIsBlank);
     wNullIsBlank = new Button( wContentComp, SWT.CHECK );
     props.setLook( wNullIsBlank );
     wNullIsBlank.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.NullIsBlank.Tooltip" ) );
-    fdNullIsBlank = new FormData();
+    FormData fdNullIsBlank = new FormData();
     fdNullIsBlank.left = new FormAttachment( middle, 0 );
-    fdNullIsBlank.top = new FormAttachment( wAutoSize, margin );
+    fdNullIsBlank.top = new FormAttachment( wlNullIsBlank, 0, SWT.CENTER );
     fdNullIsBlank.right = new FormAttachment( 100, 0 );
-    wNullIsBlank.setLayoutData( fdNullIsBlank );
+    wNullIsBlank.setLayoutData(fdNullIsBlank);
 
     // use temporary files?
-    wluseTempFiles = new Label( wContentComp, SWT.RIGHT );
-    wluseTempFiles.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.useTempFile.Label" ) );
-    props.setLook( wluseTempFiles );
-    fdluseTempFiles = new FormData();
-    fdluseTempFiles.left = new FormAttachment( 0, 0 );
-    fdluseTempFiles.top = new FormAttachment( wNullIsBlank, margin );
-    fdluseTempFiles.right = new FormAttachment( middle, -margin );
-    wluseTempFiles.setLayoutData( fdluseTempFiles );
-    wuseTempFiles = new Button( wContentComp, SWT.CHECK );
-    props.setLook( wuseTempFiles );
-    wuseTempFiles.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.useTempFile.Tooltip" ) );
-    fduseTempFiles = new FormData();
-    fduseTempFiles.left = new FormAttachment( middle, 0 );
-    fduseTempFiles.top = new FormAttachment( wNullIsBlank, margin );
-    fduseTempFiles.right = new FormAttachment( 100, 0 );
-    wuseTempFiles.setLayoutData( fduseTempFiles );
-    wuseTempFiles.addSelectionListener( new SelectionAdapter() {
+    Label wlUseTempFiles = new Label(wContentComp, SWT.RIGHT);
+    wlUseTempFiles.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.useTempFile.Label" ) );
+    props.setLook(wlUseTempFiles);
+    FormData fdlUseTempFiles = new FormData();
+    fdlUseTempFiles.left = new FormAttachment( 0, 0 );
+    fdlUseTempFiles.top = new FormAttachment( wNullIsBlank, margin );
+    fdlUseTempFiles.right = new FormAttachment( middle, -margin );
+    wlUseTempFiles.setLayoutData(fdlUseTempFiles);
+    wUseTempFiles = new Button( wContentComp, SWT.CHECK );
+    props.setLook( wUseTempFiles );
+    wUseTempFiles.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.useTempFile.Tooltip" ) );
+    FormData fdUseTempFiles = new FormData();
+    fdUseTempFiles.left = new FormAttachment( middle, 0 );
+    fdUseTempFiles.top = new FormAttachment( wlUseTempFiles, 0, SWT.CENTER );
+    fdUseTempFiles.right = new FormAttachment( 100, 0 );
+    wUseTempFiles.setLayoutData(fdUseTempFiles);
+    wUseTempFiles.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         input.setChanged();
@@ -873,38 +783,38 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     wlTempDirectory = new Label( wContentComp, SWT.RIGHT );
     wlTempDirectory.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.TempDirectory.Label" ) );
     props.setLook( wlTempDirectory );
-    fdlTempDirectory = new FormData();
+    FormData fdlTempDirectory = new FormData();
     fdlTempDirectory.left = new FormAttachment( 0, 0 );
-    fdlTempDirectory.top = new FormAttachment( wuseTempFiles, margin );
+    fdlTempDirectory.top = new FormAttachment( wUseTempFiles, margin );
     fdlTempDirectory.right = new FormAttachment( middle, -margin );
-    wlTempDirectory.setLayoutData( fdlTempDirectory );
+    wlTempDirectory.setLayoutData(fdlTempDirectory);
 
     // Select TempDir
     wbTempDir = new Button( wContentComp, SWT.PUSH | SWT.CENTER );
     props.setLook( wbTempDir );
     wbTempDir.setText( BaseMessages.getString( PKG, "System.Button.Browse" ) );
-    fdbTempDir = new FormData();
+    FormData fdbTempDir = new FormData();
     fdbTempDir.right = new FormAttachment( 100, -margin );
-    fdbTempDir.top = new FormAttachment( wuseTempFiles, margin );
-    wbTempDir.setLayoutData( fdbTempDir );
+    fdbTempDir.top = new FormAttachment( wUseTempFiles, margin );
+    wbTempDir.setLayoutData(fdbTempDir);
 
     wTempDirectory = new TextVar( pipelineMeta, wContentComp, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     wTempDirectory.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.TempDirectory.Tooltip" ) );
     props.setLook( wTempDirectory );
     wTempDirectory.addModifyListener( lsMod );
-    fdTempDirectory = new FormData();
+    FormData fdTempDirectory = new FormData();
     fdTempDirectory.left = new FormAttachment( middle, 0 );
-    fdTempDirectory.top = new FormAttachment( wuseTempFiles, margin );
+    fdTempDirectory.top = new FormAttachment( wUseTempFiles, margin );
     fdTempDirectory.right = new FormAttachment( wbTempDir, -margin );
-    wTempDirectory.setLayoutData( fdTempDirectory );
+    wTempDirectory.setLayoutData(fdTempDirectory);
     wTempDirectory.addModifyListener( e -> input.setChanged() );
 
     // ///////////////////////////////
     // START OF Template Group GROUP //
     // ///////////////////////////////
 
-    wTemplateGroup = new Group( wContentComp, SWT.SHADOW_NONE );
-    props.setLook( wTemplateGroup );
+    Group wTemplateGroup = new Group(wContentComp, SWT.SHADOW_NONE);
+    props.setLook(wTemplateGroup);
     wTemplateGroup.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.TemplateGroup.Label" ) );
 
     FormLayout TemplateGroupgroupLayout = new FormLayout();
@@ -913,21 +823,21 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     wTemplateGroup.setLayout( TemplateGroupgroupLayout );
 
     // Use template
-    wlTemplate = new Label( wTemplateGroup, SWT.RIGHT );
+    Label wlTemplate = new Label(wTemplateGroup, SWT.RIGHT);
     wlTemplate.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.Template.Label" ) );
-    props.setLook( wlTemplate );
-    fdlTemplate = new FormData();
+    props.setLook(wlTemplate);
+    FormData fdlTemplate = new FormData();
     fdlTemplate.left = new FormAttachment( 0, 0 );
     fdlTemplate.top = new FormAttachment( wTempDirectory, margin );
     fdlTemplate.right = new FormAttachment( middle, -margin );
-    wlTemplate.setLayoutData( fdlTemplate );
-    wTemplate = new Button( wTemplateGroup, SWT.CHECK );
+    wlTemplate.setLayoutData(fdlTemplate);
+    wTemplate = new Button(wTemplateGroup, SWT.CHECK );
     props.setLook( wTemplate );
-    fdTemplate = new FormData();
+    FormData fdTemplate = new FormData();
     fdTemplate.left = new FormAttachment( middle, 0 );
-    fdTemplate.top = new FormAttachment( wTempDirectory, margin );
+    fdTemplate.top = new FormAttachment( wlTemplate, 0, SWT.CENTER );
     fdTemplate.right = new FormAttachment( 100, 0 );
-    wTemplate.setLayoutData( fdTemplate );
+    wTemplate.setLayoutData(fdTemplate);
     wTemplate.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -936,48 +846,48 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     } );
 
     // TemplateFilename line
-    wlTemplateFilename = new Label( wTemplateGroup, SWT.RIGHT );
+    wlTemplateFilename = new Label(wTemplateGroup, SWT.RIGHT );
     wlTemplateFilename.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.TemplateFilename.Label" ) );
     props.setLook( wlTemplateFilename );
-    fdlTemplateFilename = new FormData();
+    FormData fdlTemplateFilename = new FormData();
     fdlTemplateFilename.left = new FormAttachment( 0, 0 );
     fdlTemplateFilename.top = new FormAttachment( wTemplate, margin );
     fdlTemplateFilename.right = new FormAttachment( middle, -margin );
-    wlTemplateFilename.setLayoutData( fdlTemplateFilename );
+    wlTemplateFilename.setLayoutData(fdlTemplateFilename);
 
-    wbTemplateFilename = new Button( wTemplateGroup, SWT.PUSH | SWT.CENTER );
+    wbTemplateFilename = new Button(wTemplateGroup, SWT.PUSH | SWT.CENTER );
     props.setLook( wbTemplateFilename );
     wbTemplateFilename.setText( BaseMessages.getString( PKG, "System.Button.Browse" ) );
-    fdbTemplateFilename = new FormData();
+    FormData fdbTemplateFilename = new FormData();
     fdbTemplateFilename.right = new FormAttachment( 100, 0 );
     fdbTemplateFilename.top = new FormAttachment( wTemplate, 0 );
-    wbTemplateFilename.setLayoutData( fdbTemplateFilename );
+    wbTemplateFilename.setLayoutData(fdbTemplateFilename);
 
     wTemplateFilename = new TextVar( pipelineMeta, wTemplateGroup, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     props.setLook( wTemplateFilename );
     wTemplateFilename.addModifyListener( lsMod );
-    fdTemplateFilename = new FormData();
+    FormData fdTemplateFilename = new FormData();
     fdTemplateFilename.left = new FormAttachment( middle, 0 );
     fdTemplateFilename.top = new FormAttachment( wTemplate, margin );
     fdTemplateFilename.right = new FormAttachment( wbTemplateFilename, -margin );
-    wTemplateFilename.setLayoutData( fdTemplateFilename );
+    wTemplateFilename.setLayoutData(fdTemplateFilename);
 
     // Template Append
-    wlTemplateAppend = new Label( wTemplateGroup, SWT.RIGHT );
+    wlTemplateAppend = new Label(wTemplateGroup, SWT.RIGHT );
     wlTemplateAppend.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.TemplateAppend.Label" ) );
     props.setLook( wlTemplateAppend );
-    fdlTemplateAppend = new FormData();
+    FormData fdlTemplateAppend = new FormData();
     fdlTemplateAppend.left = new FormAttachment( 0, 0 );
     fdlTemplateAppend.top = new FormAttachment( wTemplateFilename, margin );
     fdlTemplateAppend.right = new FormAttachment( middle, -margin );
-    wlTemplateAppend.setLayoutData( fdlTemplateAppend );
-    wTemplateAppend = new Button( wTemplateGroup, SWT.CHECK );
+    wlTemplateAppend.setLayoutData(fdlTemplateAppend);
+    wTemplateAppend = new Button(wTemplateGroup, SWT.CHECK );
     props.setLook( wTemplateAppend );
-    fdTemplateAppend = new FormData();
+    FormData fdTemplateAppend = new FormData();
     fdTemplateAppend.left = new FormAttachment( middle, 0 );
-    fdTemplateAppend.top = new FormAttachment( wTemplateFilename, margin );
+    fdTemplateAppend.top = new FormAttachment( wlTemplateAppend, 0, SWT.CENTER );
     fdTemplateAppend.right = new FormAttachment( 100, 0 );
-    wTemplateAppend.setLayoutData( fdTemplateAppend );
+    wTemplateAppend.setLayoutData(fdTemplateAppend);
     wTemplateAppend.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -985,22 +895,22 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
       }
     } );
 
-    fdTemplateGroup = new FormData();
+    FormData fdTemplateGroup = new FormData();
     fdTemplateGroup.left = new FormAttachment( 0, margin );
     fdTemplateGroup.top = new FormAttachment( wTempDirectory, margin );
     fdTemplateGroup.right = new FormAttachment( 100, -margin );
-    wTemplateGroup.setLayoutData( fdTemplateGroup );
+    wTemplateGroup.setLayoutData(fdTemplateGroup);
 
     // ///////////////////////////////////////////////////////////
     // / END OF Template Group GROUP
     // ///////////////////////////////////////////////////////////
 
-    fdContentComp = new FormData();
+    FormData fdContentComp = new FormData();
     fdContentComp.left = new FormAttachment( 0, 0 );
     fdContentComp.top = new FormAttachment( 0, 0 );
     fdContentComp.right = new FormAttachment( 100, 0 );
     fdContentComp.bottom = new FormAttachment( 100, 0 );
-    wContentComp.setLayoutData( fdContentComp );
+    wContentComp.setLayoutData(fdContentComp);
 
     wContentComp.layout();
     wContentTab.setControl( wContentComp );
@@ -1011,14 +921,14 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
 
     // Custom tab...
     //
-    wCustomTab = new CTabItem( wTabFolder, SWT.NONE );
+    CTabItem wCustomTab = new CTabItem(wTabFolder, SWT.NONE);
     wCustomTab.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.CustomTab.TabTitle" ) );
 
     FormLayout CustomLayout = new FormLayout();
     CustomLayout.marginWidth = Const.FORM_MARGIN;
     CustomLayout.marginHeight = Const.FORM_MARGIN;
 
-    Composite wCustomComp = new Composite( wTabFolder, SWT.NONE );
+    Composite wCustomComp = new Composite(wTabFolder, SWT.NONE );
     wCustomComp.setLayout( CustomLayout );
     props.setLook( wCustomComp );
 
@@ -1026,8 +936,8 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     // START OF Header Font GROUP //
     // ///////////////////////////////
 
-    wFontHeaderGroup = new Group( wCustomComp, SWT.SHADOW_NONE );
-    props.setLook( wFontHeaderGroup );
+    Group wFontHeaderGroup = new Group(wCustomComp, SWT.SHADOW_NONE);
+    props.setLook(wFontHeaderGroup);
     wFontHeaderGroup.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.FontHeaderGroup.Label" ) );
 
     FormLayout FontHeadergroupLayout = new FormLayout();
@@ -1036,59 +946,59 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     wFontHeaderGroup.setLayout( FontHeadergroupLayout );
 
     // Header font name
-    wlHeaderFontName = new Label( wFontHeaderGroup, SWT.RIGHT );
+    Label wlHeaderFontName = new Label(wFontHeaderGroup, SWT.RIGHT);
     wlHeaderFontName.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.HeaderFontName.Label" ) );
-    props.setLook( wlHeaderFontName );
-    fdlHeaderFontName = new FormData();
+    props.setLook(wlHeaderFontName);
+    FormData fdlHeaderFontName = new FormData();
     fdlHeaderFontName.left = new FormAttachment( 0, 0 );
     fdlHeaderFontName.top = new FormAttachment( 0, margin );
     fdlHeaderFontName.right = new FormAttachment( middle, -margin );
-    wlHeaderFontName.setLayoutData( fdlHeaderFontName );
-    wHeaderFontName = new CCombo( wFontHeaderGroup, SWT.BORDER | SWT.READ_ONLY );
-    wHeaderFontName.setItems( ExcelOutputMeta.font_name_desc );
+    wlHeaderFontName.setLayoutData(fdlHeaderFontName);
+    wHeaderFontName = new CCombo(wFontHeaderGroup, SWT.BORDER | SWT.READ_ONLY );
+    wHeaderFontName.setItems( ExcelOutputMeta.fontNameDesc );
     props.setLook( wHeaderFontName );
     wHeaderFontName.addModifyListener( lsMod );
-    fdHeaderFontName = new FormData();
+    FormData fdHeaderFontName = new FormData();
     fdHeaderFontName.left = new FormAttachment( middle, 0 );
     fdHeaderFontName.top = new FormAttachment( 0, margin );
     fdHeaderFontName.right = new FormAttachment( 100, 0 );
-    wHeaderFontName.setLayoutData( fdHeaderFontName );
+    wHeaderFontName.setLayoutData(fdHeaderFontName);
 
     // Header font size
-    wlHeaderFontSize = new Label( wFontHeaderGroup, SWT.RIGHT );
+    Label wlHeaderFontSize = new Label(wFontHeaderGroup, SWT.RIGHT);
     wlHeaderFontSize.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.HeaderFontSize.Label" ) );
-    props.setLook( wlHeaderFontSize );
-    fdlHeaderFontSize = new FormData();
+    props.setLook(wlHeaderFontSize);
+    FormData fdlHeaderFontSize = new FormData();
     fdlHeaderFontSize.left = new FormAttachment( 0, 0 );
     fdlHeaderFontSize.top = new FormAttachment( wHeaderFontName, margin );
     fdlHeaderFontSize.right = new FormAttachment( middle, -margin );
-    wlHeaderFontSize.setLayoutData( fdlHeaderFontSize );
+    wlHeaderFontSize.setLayoutData(fdlHeaderFontSize);
     wHeaderFontSize = new TextVar( pipelineMeta, wFontHeaderGroup, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     wHeaderFontSize.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.HeaderFontSize.Tooltip" ) );
     props.setLook( wHeaderFontSize );
     wHeaderFontSize.addModifyListener( lsMod );
-    fdHeaderFontSize = new FormData();
+    FormData fdHeaderFontSize = new FormData();
     fdHeaderFontSize.left = new FormAttachment( middle, 0 );
     fdHeaderFontSize.top = new FormAttachment( wHeaderFontName, margin );
     fdHeaderFontSize.right = new FormAttachment( 100, 0 );
-    wHeaderFontSize.setLayoutData( fdHeaderFontSize );
+    wHeaderFontSize.setLayoutData(fdHeaderFontSize);
 
     // Header font bold?
-    wlHeaderFontBold = new Label( wFontHeaderGroup, SWT.RIGHT );
+    Label wlHeaderFontBold = new Label(wFontHeaderGroup, SWT.RIGHT);
     wlHeaderFontBold.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.HeaderFontBold.Label" ) );
-    props.setLook( wlHeaderFontBold );
-    fdlHeaderFontBold = new FormData();
+    props.setLook(wlHeaderFontBold);
+    FormData fdlHeaderFontBold = new FormData();
     fdlHeaderFontBold.left = new FormAttachment( 0, 0 );
     fdlHeaderFontBold.top = new FormAttachment( wHeaderFontSize, margin );
     fdlHeaderFontBold.right = new FormAttachment( middle, -margin );
-    wlHeaderFontBold.setLayoutData( fdlHeaderFontBold );
-    wHeaderFontBold = new Button( wFontHeaderGroup, SWT.CHECK );
+    wlHeaderFontBold.setLayoutData(fdlHeaderFontBold);
+    wHeaderFontBold = new Button(wFontHeaderGroup, SWT.CHECK );
     props.setLook( wHeaderFontBold );
-    fdHeaderFontBold = new FormData();
+    FormData fdHeaderFontBold = new FormData();
     fdHeaderFontBold.left = new FormAttachment( middle, 0 );
-    fdHeaderFontBold.top = new FormAttachment( wHeaderFontSize, margin );
+    fdHeaderFontBold.top = new FormAttachment( wlHeaderFontBold, 0, SWT.CENTER );
     fdHeaderFontBold.right = new FormAttachment( 100, 0 );
-    wHeaderFontBold.setLayoutData( fdHeaderFontBold );
+    wHeaderFontBold.setLayoutData(fdHeaderFontBold);
     wHeaderFontBold.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -1097,21 +1007,21 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     } );
 
     // Header font bold?
-    wlHeaderFontItalic = new Label( wFontHeaderGroup, SWT.RIGHT );
+    Label wlHeaderFontItalic = new Label(wFontHeaderGroup, SWT.RIGHT);
     wlHeaderFontItalic.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.HeaderFontItalic.Label" ) );
-    props.setLook( wlHeaderFontItalic );
-    fdlHeaderFontItalic = new FormData();
+    props.setLook(wlHeaderFontItalic);
+    FormData fdlHeaderFontItalic = new FormData();
     fdlHeaderFontItalic.left = new FormAttachment( 0, 0 );
     fdlHeaderFontItalic.top = new FormAttachment( wHeaderFontBold, margin );
     fdlHeaderFontItalic.right = new FormAttachment( middle, -margin );
-    wlHeaderFontItalic.setLayoutData( fdlHeaderFontItalic );
-    wHeaderFontItalic = new Button( wFontHeaderGroup, SWT.CHECK );
+    wlHeaderFontItalic.setLayoutData(fdlHeaderFontItalic);
+    wHeaderFontItalic = new Button(wFontHeaderGroup, SWT.CHECK );
     props.setLook( wHeaderFontItalic );
-    fdHeaderFontItalic = new FormData();
+    FormData fdHeaderFontItalic = new FormData();
     fdHeaderFontItalic.left = new FormAttachment( middle, 0 );
-    fdHeaderFontItalic.top = new FormAttachment( wHeaderFontBold, margin );
+    fdHeaderFontItalic.top = new FormAttachment( wlHeaderFontItalic, 0, SWT.CENTER );
     fdHeaderFontItalic.right = new FormAttachment( 100, 0 );
-    wHeaderFontItalic.setLayoutData( fdHeaderFontItalic );
+    wHeaderFontItalic.setLayoutData(fdHeaderFontItalic);
     wHeaderFontItalic.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent e ) {
@@ -1120,129 +1030,129 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     } );
 
     // Font header uderline?
-    wlHeaderFontUnderline = new Label( wFontHeaderGroup, SWT.RIGHT );
+    Label wlHeaderFontUnderline = new Label(wFontHeaderGroup, SWT.RIGHT);
     wlHeaderFontUnderline.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.HeaderFontUnderline.Label" ) );
-    props.setLook( wlHeaderFontUnderline );
-    fdlHeaderFontUnderline = new FormData();
+    props.setLook(wlHeaderFontUnderline);
+    FormData fdlHeaderFontUnderline = new FormData();
     fdlHeaderFontUnderline.left = new FormAttachment( 0, 0 );
     fdlHeaderFontUnderline.top = new FormAttachment( wHeaderFontItalic, margin );
     fdlHeaderFontUnderline.right = new FormAttachment( middle, -margin );
-    wlHeaderFontUnderline.setLayoutData( fdlHeaderFontUnderline );
-    wHeaderFontUnderline = new CCombo( wFontHeaderGroup, SWT.BORDER | SWT.READ_ONLY );
-    wHeaderFontUnderline.setItems( ExcelOutputMeta.font_underline_desc );
+    wlHeaderFontUnderline.setLayoutData(fdlHeaderFontUnderline);
+    wHeaderFontUnderline = new CCombo(wFontHeaderGroup, SWT.BORDER | SWT.READ_ONLY );
+    wHeaderFontUnderline.setItems( ExcelOutputMeta.font_underlineDesc );
     props.setLook( wHeaderFontUnderline );
     wHeaderFontUnderline.addModifyListener( lsMod );
-    fdHeaderFontUnderline = new FormData();
+    FormData fdHeaderFontUnderline = new FormData();
     fdHeaderFontUnderline.left = new FormAttachment( middle, 0 );
     fdHeaderFontUnderline.top = new FormAttachment( wHeaderFontItalic, margin );
     fdHeaderFontUnderline.right = new FormAttachment( 100, 0 );
-    wHeaderFontUnderline.setLayoutData( fdHeaderFontUnderline );
+    wHeaderFontUnderline.setLayoutData(fdHeaderFontUnderline);
 
     // Font header orientation
-    wlHeaderFontOrientation = new Label( wFontHeaderGroup, SWT.RIGHT );
+    Label wlHeaderFontOrientation = new Label(wFontHeaderGroup, SWT.RIGHT);
     wlHeaderFontOrientation
       .setText( BaseMessages.getString( PKG, "ExcelOutputDialog.HeaderFontOrientation.Label" ) );
-    props.setLook( wlHeaderFontOrientation );
-    fdlHeaderFontOrientation = new FormData();
+    props.setLook(wlHeaderFontOrientation);
+    FormData fdlHeaderFontOrientation = new FormData();
     fdlHeaderFontOrientation.left = new FormAttachment( 0, 0 );
     fdlHeaderFontOrientation.top = new FormAttachment( wHeaderFontUnderline, margin );
     fdlHeaderFontOrientation.right = new FormAttachment( middle, -margin );
-    wlHeaderFontOrientation.setLayoutData( fdlHeaderFontOrientation );
-    wHeaderFontOrientation = new CCombo( wFontHeaderGroup, SWT.BORDER | SWT.READ_ONLY );
-    wHeaderFontOrientation.setItems( ExcelOutputMeta.font_orientation_desc );
+    wlHeaderFontOrientation.setLayoutData(fdlHeaderFontOrientation);
+    wHeaderFontOrientation = new CCombo(wFontHeaderGroup, SWT.BORDER | SWT.READ_ONLY );
+    wHeaderFontOrientation.setItems( ExcelOutputMeta.font_orientationDesc );
     props.setLook( wHeaderFontOrientation );
     wHeaderFontOrientation.addModifyListener( lsMod );
-    fdHeaderFontOrientation = new FormData();
+    FormData fdHeaderFontOrientation = new FormData();
     fdHeaderFontOrientation.left = new FormAttachment( middle, 0 );
     fdHeaderFontOrientation.top = new FormAttachment( wHeaderFontUnderline, margin );
     fdHeaderFontOrientation.right = new FormAttachment( 100, 0 );
-    wHeaderFontOrientation.setLayoutData( fdHeaderFontOrientation );
+    wHeaderFontOrientation.setLayoutData(fdHeaderFontOrientation);
 
     // Font header color
-    wlHeaderFontColor = new Label( wFontHeaderGroup, SWT.RIGHT );
+    Label wlHeaderFontColor = new Label(wFontHeaderGroup, SWT.RIGHT);
     wlHeaderFontColor.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.HeaderFontColor.Label" ) );
-    props.setLook( wlHeaderFontColor );
-    fdlHeaderFontColor = new FormData();
+    props.setLook(wlHeaderFontColor);
+    FormData fdlHeaderFontColor = new FormData();
     fdlHeaderFontColor.left = new FormAttachment( 0, 0 );
     fdlHeaderFontColor.top = new FormAttachment( wHeaderFontOrientation, margin );
     fdlHeaderFontColor.right = new FormAttachment( middle, -margin );
-    wlHeaderFontColor.setLayoutData( fdlHeaderFontColor );
+    wlHeaderFontColor.setLayoutData(fdlHeaderFontColor);
 
-    wHeaderFontColor = new CCombo( wFontHeaderGroup, SWT.BORDER | SWT.READ_ONLY );
+    wHeaderFontColor = new CCombo(wFontHeaderGroup, SWT.BORDER | SWT.READ_ONLY );
     props.setLook( wHeaderFontColor );
-    fdHeaderFontColor = new FormData();
+    FormData fdHeaderFontColor = new FormData();
     fdHeaderFontColor.left = new FormAttachment( middle, 0 );
     fdHeaderFontColor.top = new FormAttachment( wHeaderFontOrientation, margin );
     fdHeaderFontColor.right = new FormAttachment( 100, 0 );
-    wHeaderFontColor.setLayoutData( fdHeaderFontColor );
-    wHeaderFontColor.setItems( ExcelOutputMeta.font_color_desc );
+    wHeaderFontColor.setLayoutData(fdHeaderFontColor);
+    wHeaderFontColor.setItems( ExcelOutputMeta.fontColorDesc );
 
     // Font header background color
-    wlHeaderBackGroundColor = new Label( wFontHeaderGroup, SWT.RIGHT );
+    Label wlHeaderBackGroundColor = new Label(wFontHeaderGroup, SWT.RIGHT);
     wlHeaderBackGroundColor
       .setText( BaseMessages.getString( PKG, "ExcelOutputDialog.HeaderBackGroundColor.Label" ) );
-    props.setLook( wlHeaderBackGroundColor );
-    fdlHeaderBackGroundColor = new FormData();
+    props.setLook(wlHeaderBackGroundColor);
+    FormData fdlHeaderBackGroundColor = new FormData();
     fdlHeaderBackGroundColor.left = new FormAttachment( 0, 0 );
     fdlHeaderBackGroundColor.top = new FormAttachment( wHeaderFontColor, margin );
     fdlHeaderBackGroundColor.right = new FormAttachment( middle, -margin );
-    wlHeaderBackGroundColor.setLayoutData( fdlHeaderBackGroundColor );
+    wlHeaderBackGroundColor.setLayoutData(fdlHeaderBackGroundColor);
 
-    wHeaderBackGroundColor = new CCombo( wFontHeaderGroup, SWT.BORDER | SWT.READ_ONLY );
+    wHeaderBackGroundColor = new CCombo(wFontHeaderGroup, SWT.BORDER | SWT.READ_ONLY );
     props.setLook( wHeaderBackGroundColor );
-    fdHeaderBackGroundColor = new FormData();
+    FormData fdHeaderBackGroundColor = new FormData();
     fdHeaderBackGroundColor.left = new FormAttachment( middle, 0 );
     fdHeaderBackGroundColor.top = new FormAttachment( wHeaderFontColor, margin );
     fdHeaderBackGroundColor.right = new FormAttachment( 100, 0 );
-    wHeaderBackGroundColor.setLayoutData( fdHeaderBackGroundColor );
-    wHeaderBackGroundColor.setItems( ExcelOutputMeta.font_color_desc );
+    wHeaderBackGroundColor.setLayoutData(fdHeaderBackGroundColor);
+    wHeaderBackGroundColor.setItems( ExcelOutputMeta.fontColorDesc );
 
     // Header font size
-    wlHeaderRowHeight = new Label( wFontHeaderGroup, SWT.RIGHT );
+    Label wlHeaderRowHeight = new Label(wFontHeaderGroup, SWT.RIGHT);
     wlHeaderRowHeight.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.HeaderRowHeight.Label" ) );
-    props.setLook( wlHeaderRowHeight );
-    fdlHeaderRowHeight = new FormData();
+    props.setLook(wlHeaderRowHeight);
+    FormData fdlHeaderRowHeight = new FormData();
     fdlHeaderRowHeight.left = new FormAttachment( 0, 0 );
     fdlHeaderRowHeight.top = new FormAttachment( wHeaderBackGroundColor, margin );
     fdlHeaderRowHeight.right = new FormAttachment( middle, -margin );
-    wlHeaderRowHeight.setLayoutData( fdlHeaderRowHeight );
+    wlHeaderRowHeight.setLayoutData(fdlHeaderRowHeight);
     wHeaderRowHeight = new TextVar( pipelineMeta, wFontHeaderGroup, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     wHeaderRowHeight.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.HeaderRowHeight.Tooltip" ) );
     props.setLook( wHeaderRowHeight );
     wHeaderRowHeight.addModifyListener( lsMod );
-    fdHeaderRowHeight = new FormData();
+    FormData fdHeaderRowHeight = new FormData();
     fdHeaderRowHeight.left = new FormAttachment( middle, 0 );
     fdHeaderRowHeight.top = new FormAttachment( wHeaderBackGroundColor, margin );
     fdHeaderRowHeight.right = new FormAttachment( 100, 0 );
-    wHeaderRowHeight.setLayoutData( fdHeaderRowHeight );
+    wHeaderRowHeight.setLayoutData(fdHeaderRowHeight);
 
     // Header Alignment
-    wlHeaderAlignment = new Label( wFontHeaderGroup, SWT.RIGHT );
+    Label wlHeaderAlignment = new Label(wFontHeaderGroup, SWT.RIGHT);
     wlHeaderAlignment.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.HeaderAlignment.Label" ) );
-    props.setLook( wlHeaderAlignment );
-    fdlHeaderAlignment = new FormData();
+    props.setLook(wlHeaderAlignment);
+    FormData fdlHeaderAlignment = new FormData();
     fdlHeaderAlignment.left = new FormAttachment( 0, 0 );
     fdlHeaderAlignment.top = new FormAttachment( wHeaderRowHeight, margin );
     fdlHeaderAlignment.right = new FormAttachment( middle, -margin );
-    wlHeaderAlignment.setLayoutData( fdlHeaderAlignment );
-    wHeaderAlignment = new CCombo( wFontHeaderGroup, SWT.BORDER | SWT.READ_ONLY );
-    wHeaderAlignment.setItems( ExcelOutputMeta.font_alignment_desc );
+    wlHeaderAlignment.setLayoutData(fdlHeaderAlignment);
+    wHeaderAlignment = new CCombo(wFontHeaderGroup, SWT.BORDER | SWT.READ_ONLY );
+    wHeaderAlignment.setItems( ExcelOutputMeta.font_alignmentDesc );
     props.setLook( wHeaderAlignment );
     wHeaderAlignment.addModifyListener( lsMod );
-    fdHeaderAlignment = new FormData();
+    FormData fdHeaderAlignment = new FormData();
     fdHeaderAlignment.left = new FormAttachment( middle, 0 );
     fdHeaderAlignment.top = new FormAttachment( wHeaderRowHeight, margin );
     fdHeaderAlignment.right = new FormAttachment( 100, 0 );
-    wHeaderAlignment.setLayoutData( fdHeaderAlignment );
+    wHeaderAlignment.setLayoutData(fdHeaderAlignment);
 
     // Select Image
-    wbImage = new Button( wFontHeaderGroup, SWT.PUSH | SWT.CENTER );
-    props.setLook( wbImage );
+    Button wbImage = new Button(wFontHeaderGroup, SWT.PUSH | SWT.CENTER);
+    props.setLook(wbImage);
     wbImage.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.AddImage" ) );
-    fdbImage = new FormData();
+    FormData fdbImage = new FormData();
     fdbImage.right = new FormAttachment( 100, 0 );
     fdbImage.top = new FormAttachment( wHeaderAlignment, margin );
-    wbImage.setLayoutData( fdbImage );
+    wbImage.setLayoutData(fdbImage);
     wbImage.addListener( SWT.Selection, e-> BaseDialog.presentFileDialog( shell, wImage, pipelineMeta,
       new String[] { "*.png", "*.*" },
       new String[] {
@@ -1253,29 +1163,29 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
 
 
     // Image line
-    wlImage = new Label( wFontHeaderGroup, SWT.RIGHT );
+    Label wlImage = new Label(wFontHeaderGroup, SWT.RIGHT);
     wlImage.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.Image.Label" ) );
-    props.setLook( wlImage );
-    fdlImage = new FormData();
+    props.setLook(wlImage);
+    FormData fdlImage = new FormData();
     fdlImage.left = new FormAttachment( 0, 0 );
     fdlImage.top = new FormAttachment( wHeaderAlignment, margin );
     fdlImage.right = new FormAttachment( middle, -margin );
-    wlImage.setLayoutData( fdlImage );
+    wlImage.setLayoutData(fdlImage);
 
     wImage = new TextVar( pipelineMeta, wFontHeaderGroup, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     props.setLook( wImage );
     wImage.addModifyListener( lsMod );
-    fdImage = new FormData();
+    FormData fdImage = new FormData();
     fdImage.left = new FormAttachment( middle, 0 );
     fdImage.top = new FormAttachment( wHeaderAlignment, margin );
-    fdImage.right = new FormAttachment( wbImage, -margin );
-    wImage.setLayoutData( fdImage );
+    fdImage.right = new FormAttachment(wbImage, -margin );
+    wImage.setLayoutData(fdImage);
 
-    fdFontHeaderGroup = new FormData();
+    FormData fdFontHeaderGroup = new FormData();
     fdFontHeaderGroup.left = new FormAttachment( 0, margin );
     fdFontHeaderGroup.top = new FormAttachment( 0, margin );
     fdFontHeaderGroup.right = new FormAttachment( 100, -margin );
-    wFontHeaderGroup.setLayoutData( fdFontHeaderGroup );
+    wFontHeaderGroup.setLayoutData(fdFontHeaderGroup);
 
     // ///////////////////////////////////////////////////////////
     // / END OF Font Group GROUP
@@ -1285,8 +1195,8 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     // START OF Row Font GROUP //
     // ///////////////////////////////
 
-    wFontRowGroup = new Group( wCustomComp, SWT.SHADOW_NONE );
-    props.setLook( wFontRowGroup );
+    Group wFontRowGroup = new Group(wCustomComp, SWT.SHADOW_NONE);
+    props.setLook(wFontRowGroup);
     wFontRowGroup.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.FontRowGroup.Label" ) );
     FormLayout FontRowGroupLayout = new FormLayout();
     FontRowGroupLayout.marginWidth = 10;
@@ -1294,96 +1204,96 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     wFontRowGroup.setLayout( FontRowGroupLayout );
 
     // Font Row name
-    wlRowFontName = new Label( wFontRowGroup, SWT.RIGHT );
+    Label wlRowFontName = new Label(wFontRowGroup, SWT.RIGHT);
     wlRowFontName.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.RowFontName.Label" ) );
-    props.setLook( wlRowFontName );
-    fdlRowFontName = new FormData();
+    props.setLook(wlRowFontName);
+    FormData fdlRowFontName = new FormData();
     fdlRowFontName.left = new FormAttachment( 0, 0 );
     fdlRowFontName.top = new FormAttachment( 0, margin );
     fdlRowFontName.right = new FormAttachment( middle, -margin );
-    wlRowFontName.setLayoutData( fdlRowFontName );
-    wRowFontName = new CCombo( wFontRowGroup, SWT.BORDER | SWT.READ_ONLY );
-    wRowFontName.setItems( ExcelOutputMeta.font_name_desc );
+    wlRowFontName.setLayoutData(fdlRowFontName);
+    wRowFontName = new CCombo(wFontRowGroup, SWT.BORDER | SWT.READ_ONLY );
+    wRowFontName.setItems( ExcelOutputMeta.fontNameDesc );
     props.setLook( wRowFontName );
     wRowFontName.addModifyListener( lsMod );
-    fdRowFontName = new FormData();
+    FormData fdRowFontName = new FormData();
     fdRowFontName.left = new FormAttachment( middle, 0 );
     fdRowFontName.top = new FormAttachment( 0, margin );
     fdRowFontName.right = new FormAttachment( 100, 0 );
-    wRowFontName.setLayoutData( fdRowFontName );
+    wRowFontName.setLayoutData(fdRowFontName);
 
     // Row font size
-    wlRowFontSize = new Label( wFontRowGroup, SWT.RIGHT );
+    Label wlRowFontSize = new Label(wFontRowGroup, SWT.RIGHT);
     wlRowFontSize.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.RowFontSize.Label" ) );
-    props.setLook( wlRowFontSize );
-    fdlRowFontSize = new FormData();
+    props.setLook(wlRowFontSize);
+    FormData fdlRowFontSize = new FormData();
     fdlRowFontSize.left = new FormAttachment( 0, 0 );
     fdlRowFontSize.top = new FormAttachment( wRowFontName, margin );
     fdlRowFontSize.right = new FormAttachment( middle, -margin );
-    wlRowFontSize.setLayoutData( fdlRowFontSize );
+    wlRowFontSize.setLayoutData(fdlRowFontSize);
     wRowFontSize = new TextVar( pipelineMeta, wFontRowGroup, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     wRowFontSize.setToolTipText( BaseMessages.getString( PKG, "ExcelOutputDialog.RowFontSize.Tooltip" ) );
     props.setLook( wRowFontSize );
     wRowFontSize.addModifyListener( lsMod );
-    fdRowFontSize = new FormData();
+    FormData fdRowFontSize = new FormData();
     fdRowFontSize.left = new FormAttachment( middle, 0 );
     fdRowFontSize.top = new FormAttachment( wRowFontName, margin );
     fdRowFontSize.right = new FormAttachment( 100, 0 );
-    wRowFontSize.setLayoutData( fdRowFontSize );
+    wRowFontSize.setLayoutData(fdRowFontSize);
 
     // Font Row color
-    wlRowFontColor = new Label( wFontRowGroup, SWT.RIGHT );
+    Label wlRowFontColor = new Label(wFontRowGroup, SWT.RIGHT);
     wlRowFontColor.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.RowFontColor.Label" ) );
-    props.setLook( wlRowFontColor );
-    fdlRowFontColor = new FormData();
+    props.setLook(wlRowFontColor);
+    FormData fdlRowFontColor = new FormData();
     fdlRowFontColor.left = new FormAttachment( 0, 0 );
     fdlRowFontColor.top = new FormAttachment( wRowFontSize, margin );
     fdlRowFontColor.right = new FormAttachment( middle, -margin );
-    wlRowFontColor.setLayoutData( fdlRowFontColor );
-    wRowFontColor = new CCombo( wFontRowGroup, SWT.BORDER | SWT.READ_ONLY );
+    wlRowFontColor.setLayoutData(fdlRowFontColor);
+    wRowFontColor = new CCombo(wFontRowGroup, SWT.BORDER | SWT.READ_ONLY );
     props.setLook( wRowFontColor );
-    fdRowFontColor = new FormData();
+    FormData fdRowFontColor = new FormData();
     fdRowFontColor.left = new FormAttachment( middle, 0 );
     fdRowFontColor.top = new FormAttachment( wRowFontSize, margin );
     fdRowFontColor.right = new FormAttachment( 100, 0 );
-    wRowFontColor.setLayoutData( fdRowFontColor );
-    wRowFontColor.setItems( ExcelOutputMeta.font_color_desc );
+    wRowFontColor.setLayoutData(fdRowFontColor);
+    wRowFontColor.setItems( ExcelOutputMeta.fontColorDesc );
 
     // Font Row background color
-    wlRowBackGroundColor = new Label( wFontRowGroup, SWT.RIGHT );
+    Label wlRowBackGroundColor = new Label(wFontRowGroup, SWT.RIGHT);
     wlRowBackGroundColor.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.RowBackGroundColor.Label" ) );
-    props.setLook( wlRowBackGroundColor );
-    fdlRowBackGroundColor = new FormData();
+    props.setLook(wlRowBackGroundColor);
+    FormData fdlRowBackGroundColor = new FormData();
     fdlRowBackGroundColor.left = new FormAttachment( 0, 0 );
     fdlRowBackGroundColor.top = new FormAttachment( wRowFontColor, margin );
     fdlRowBackGroundColor.right = new FormAttachment( middle, -margin );
-    wlRowBackGroundColor.setLayoutData( fdlRowBackGroundColor );
+    wlRowBackGroundColor.setLayoutData(fdlRowBackGroundColor);
 
-    wRowBackGroundColor = new CCombo( wFontRowGroup, SWT.BORDER | SWT.READ_ONLY );
+    wRowBackGroundColor = new CCombo(wFontRowGroup, SWT.BORDER | SWT.READ_ONLY );
     props.setLook( wRowBackGroundColor );
-    fdRowBackGroundColor = new FormData();
+    FormData fdRowBackGroundColor = new FormData();
     fdRowBackGroundColor.left = new FormAttachment( middle, 0 );
     fdRowBackGroundColor.top = new FormAttachment( wRowFontColor, margin );
     fdRowBackGroundColor.right = new FormAttachment( 100, 0 );
-    wRowBackGroundColor.setLayoutData( fdRowBackGroundColor );
-    wRowBackGroundColor.setItems( ExcelOutputMeta.font_color_desc );
+    wRowBackGroundColor.setLayoutData(fdRowBackGroundColor);
+    wRowBackGroundColor.setItems( ExcelOutputMeta.fontColorDesc );
 
-    fdFontRowGroup = new FormData();
+    FormData fdFontRowGroup = new FormData();
     fdFontRowGroup.left = new FormAttachment( 0, margin );
-    fdFontRowGroup.top = new FormAttachment( wFontHeaderGroup, margin );
+    fdFontRowGroup.top = new FormAttachment(wFontHeaderGroup, margin );
     fdFontRowGroup.right = new FormAttachment( 100, -margin );
-    wFontRowGroup.setLayoutData( fdFontRowGroup );
+    wFontRowGroup.setLayoutData(fdFontRowGroup);
 
     // ///////////////////////////////////////////////////////////
     // / END OF Row Font Group
     // ///////////////////////////////////////////////////////////
 
-    fdCustomComp = new FormData();
+    FormData fdCustomComp = new FormData();
     fdCustomComp.left = new FormAttachment( 0, 0 );
     fdCustomComp.top = new FormAttachment( 0, 0 );
     fdCustomComp.right = new FormAttachment( 100, 0 );
     fdCustomComp.bottom = new FormAttachment( 100, 0 );
-    wCustomComp.setLayoutData( fdCustomComp );
+    wCustomComp.setLayoutData(fdCustomComp);
 
     wCustomComp.layout();
     wCustomTab.setControl( wCustomComp );
@@ -1393,14 +1303,14 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
 
     // Fields tab...
     //
-    wFieldsTab = new CTabItem( wTabFolder, SWT.NONE );
+    CTabItem wFieldsTab = new CTabItem(wTabFolder, SWT.NONE);
     wFieldsTab.setText( BaseMessages.getString( PKG, "ExcelOutputDialog.FieldsTab.TabTitle" ) );
 
     FormLayout fieldsLayout = new FormLayout();
     fieldsLayout.marginWidth = Const.FORM_MARGIN;
     fieldsLayout.marginHeight = Const.FORM_MARGIN;
 
-    Composite wFieldsComp = new Composite( wTabFolder, SWT.NONE );
+    Composite wFieldsComp = new Composite(wTabFolder, SWT.NONE );
     wFieldsComp.setLayout( fieldsLayout );
     props.setLook( wFieldsComp );
 
@@ -1448,12 +1358,12 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
       new TableView(
         pipelineMeta, wFieldsComp, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, FieldsRows, lsMod, props );
 
-    fdFields = new FormData();
+    FormData fdFields = new FormData();
     fdFields.left = new FormAttachment( 0, 0 );
     fdFields.top = new FormAttachment( 0, 0 );
     fdFields.right = new FormAttachment( 100, 0 );
     fdFields.bottom = new FormAttachment( wGet, -margin );
-    wFields.setLayoutData( fdFields );
+    wFields.setLayoutData(fdFields);
 
     //
     // Search the fields in the background
@@ -1466,7 +1376,7 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
 
           // Remember these fields...
           for ( int i = 0; i < row.size(); i++ ) {
-            inputFields.put( row.getValueMeta( i ).getName(), Integer.valueOf( i ) );
+            inputFields.put( row.getValueMeta( i ).getName(), i);
           }
           setComboBoxes();
         } catch ( HopException e ) {
@@ -1476,41 +1386,26 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     };
     new Thread( runnable ).start();
 
-    fdFieldsComp = new FormData();
+    FormData fdFieldsComp = new FormData();
     fdFieldsComp.left = new FormAttachment( 0, 0 );
     fdFieldsComp.top = new FormAttachment( 0, 0 );
     fdFieldsComp.right = new FormAttachment( 100, 0 );
     fdFieldsComp.bottom = new FormAttachment( 100, 0 );
-    wFieldsComp.setLayoutData( fdFieldsComp );
+    wFieldsComp.setLayoutData(fdFieldsComp);
 
     wFieldsComp.layout();
     wFieldsTab.setControl( wFieldsComp );
 
-    fdTabFolder = new FormData();
+    FormData fdTabFolder = new FormData();
     fdTabFolder.left = new FormAttachment( 0, 0 );
     fdTabFolder.top = new FormAttachment( wTransformName, margin );
     fdTabFolder.right = new FormAttachment( 100, 0 );
-    fdTabFolder.bottom = new FormAttachment( 100, -50 );
-    wTabFolder.setLayoutData( fdTabFolder );
-
-    wOk = new Button( shell, SWT.PUSH );
-    wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
-
-    wCancel = new Button( shell, SWT.PUSH );
-    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
-
-    setButtonPositions( new Button[] { wOk, wCancel }, margin, wTabFolder );
+    fdTabFolder.bottom = new FormAttachment( wOk, -2*margin );
+    wTabFolder.setLayoutData(fdTabFolder);
 
     // Add listeners
-    lsOk = e -> ok();
-    lsGet = e -> get();
-    lsMinWidth = e -> setMinimalWidth();
-    lsCancel = e -> cancel();
-
-    wOk.addListener( SWT.Selection, lsOk );
-    wGet.addListener( SWT.Selection, lsGet );
-    wMinWidth.addListener( SWT.Selection, lsMinWidth );
-    wCancel.addListener( SWT.Selection, lsCancel );
+    wGet.addListener( SWT.Selection, e -> get() );
+    wMinWidth.addListener( SWT.Selection, e -> setMinimalWidth());
 
     lsDef = new SelectionAdapter() {
       @Override
@@ -1600,7 +1495,7 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
   protected void setComboBoxes() {
     // Something was changed in the row.
     //
-    final Map<String, Integer> fields = new HashMap<String, Integer>();
+    final Map<String, Integer> fields = new HashMap<>();
 
     // Add the currentMeta fields...
     fields.putAll( inputFields );
@@ -1620,10 +1515,9 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
       gotEncodings = true;
 
       wEncoding.removeAll();
-      List<Charset> values = new ArrayList<Charset>( Charset.availableCharsets().values() );
-      for ( int i = 0; i < values.size(); i++ ) {
-        Charset charSet = values.get( i );
-        wEncoding.add( charSet.displayName() );
+      List<Charset> values = new ArrayList<>(Charset.availableCharsets().values());
+      for (Charset charSet : values) {
+        wEncoding.add(charSet.displayName());
       }
 
       // Now select the default!
@@ -1652,7 +1546,7 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     if ( input.getTemplateFileName() != null ) {
       wTemplateFilename.setText( input.getTemplateFileName() );
     }
-    wuseTempFiles.setSelection( input.isUseTempFiles() );
+    wUseTempFiles.setSelection( input.isUseTempFiles() );
     if ( input.getTempDirectory() != null ) {
       wTempDirectory.setText( input.getTempDirectory() );
     }
@@ -1754,7 +1648,7 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
     tfoi.setTransformNrInFilename( wAddTransformNr.getSelection() );
     tfoi.setDateInFilename( wAddDate.getSelection() );
     tfoi.setTimeInFilename( wAddTime.getSelection() );
-    tfoi.setUseTempFiles( wuseTempFiles.getSelection() );
+    tfoi.setUseTempFiles( wUseTempFiles.getSelection() );
     tfoi.setTempDirectory( wTempDirectory.getText() );
     tfoi.setDateTimeFormat( wDateTimeFormat.getText() );
     tfoi.setSpecifyFormat( wSpecifyFormat.getSelection() );
@@ -1912,8 +1806,8 @@ public class ExcelOutputDialog extends BaseTransformDialog implements ITransform
   }
 
   private void useTempFile() {
-    wTempDirectory.setEnabled( wuseTempFiles.getSelection() );
-    wlTempDirectory.setEnabled( wuseTempFiles.getSelection() );
-    wbTempDir.setEnabled( wuseTempFiles.getSelection() );
+    wTempDirectory.setEnabled( wUseTempFiles.getSelection() );
+    wlTempDirectory.setEnabled( wUseTempFiles.getSelection() );
+    wbTempDir.setEnabled( wUseTempFiles.getSelection() );
   }
 }

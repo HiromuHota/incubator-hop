@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -60,80 +60,52 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
 
   private static final int FORM_ATTACHMENT_FACTOR = -15;
 
-  private TeraFastMeta meta;
+  private final TeraFastMeta meta;
 
   private MetaSelectionLine<DatabaseMeta> wConnection;
 
-  private Label wlTable;
-
   private TextVar wTable;
-
-  private Label wlFastLoadPath;
 
   private TextVar wFastLoadPath;
 
   private Button wbFastLoadPath;
 
-  private Label wlControlFile;
-
   private TextVar wControlFile;
 
   private Button wbControlFile;
-
-  private Label wlDataFile;
 
   private TextVar wDataFile;
 
   private Button wbDataFile;
 
-  private Label wlLogFile;
-
   private Button wbLogFile;
 
   private TextVar wLogFile;
 
-  private Label wlErrLimit;
-
   private TextVar wErrLimit;
-
-  private Label wlSessions;
 
   private TextVar wSessions;
 
-  private Label wlUseControlFile;
-
   private Button wUseControlFile;
-
-  private Label wlVariableSubstitution;
 
   private Button wVariableSubstitution;
 
-  private Label wlTruncateTable;
-
   private Button wbTruncateTable;
-
-  private Label wlReturn;
 
   private TableView wReturn;
 
   private Button wGetLU;
 
-  private FormData fdGetLU;
-
-  private Listener lsGetLU;
-
   private Button wDoMapping;
-
-  private FormData fdDoMapping;
 
   private ColumnInfo[] ciReturn;
 
-  private Map<String, Integer> inputFields = new HashMap<>();
+  private final Map<String, Integer> inputFields = new HashMap<>();
 
   /**
    * List of ColumnInfo that should have the field names of the selected database table.
    */
-  private List<ColumnInfo> tableFieldColumns = new ArrayList<>();
+  private final List<ColumnInfo> tableFieldColumns = new ArrayList<>();
 
   /**
    * Constructor.
@@ -209,7 +181,7 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
 
         // Remember these fields...
         for ( int i = 0; i < row.size(); i++ ) {
-          TeraFastDialog.this.inputFields.put( row.getValueMeta( i ).getName(), Integer.valueOf( i ) );
+          TeraFastDialog.this.inputFields.put( row.getValueMeta( i ).getName(), i);
         }
 
         setComboBoxes();
@@ -304,9 +276,9 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
       }
     };
 
-    this.lsGetLU = event -> getUpdate();
+    Listener lsGetLU = event -> getUpdate();
 
-    this.wGetLU.addListener( SWT.Selection, this.lsGetLU );
+    this.wGetLU.addListener( SWT.Selection, lsGetLU);
     this.wTransformName.addSelectionListener( this.lsDef );
     final String allFileTypes = BaseMessages.getString( PKG, "TeraFastDialog.Filetype.All" );
     this.wbControlFile
@@ -487,7 +459,12 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
   protected void buildUi() {
     final PluginWidgetFactory factory = new PluginWidgetFactory( this.shell, this.pipelineMeta );
     factory.setMiddle( this.props.getMiddlePct() );
-    
+
+    // Buttons at the bottom
+    this.wOk = factory.createPushButton( BaseMessages.getString( PKG, "System.Button.OK" ) );
+    this.wCancel = factory.createPushButton( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
+    setButtonPositions( new Button[] { this.wOk, this.wCancel, }, factory.getMargin(), null );
+
     final ModifyListener lsMod = event -> getMeta().setChanged();
       final SelectionAdapter lsSel = new SelectionAdapter() {
         @Override
@@ -513,9 +490,6 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
     this.buildFieldTable( factory );
     this.buildAscLink( factory );
 
-    this.wOk = factory.createPushButton( BaseMessages.getString( PKG, "System.Button.OK" ) );
-    this.wCancel = factory.createPushButton( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
-    setButtonPositions( new Button[] { this.wOk, this.wCancel, }, factory.getMargin(), this.wReturn );
 
     this.wTransformName.addModifyListener( lsMod );
     this.wControlFile.addModifyListener( lsMod );
@@ -538,10 +512,9 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
   protected void buildControlFileLine( final PluginWidgetFactory factory ) {
     final Control topControl = this.wUseControlFile;
 
-    this.wlControlFile =
-      factory.createRightLabel( BaseMessages.getString( PKG, "TeraFastDialog.ControlFile.Label" ) );
-    this.props.setLook( this.wlControlFile );
-    this.wlControlFile.setLayoutData( factory.createLabelLayoutData( topControl ) );
+    Label wlControlFile = factory.createRightLabel(BaseMessages.getString(PKG, "TeraFastDialog.ControlFile.Label"));
+    this.props.setLook(wlControlFile);
+    wlControlFile.setLayoutData( factory.createLabelLayoutData( topControl ) );
 
     this.wbControlFile = factory.createPushButton( BaseMessages.getString( PKG, "TeraFastDialog.Browse.Button" ) );
     this.props.setLook( this.wbControlFile );
@@ -562,10 +535,9 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
   protected void buildFastloadLine( final PluginWidgetFactory factory ) {
     final Control topControl = this.wVariableSubstitution;
 
-    this.wlFastLoadPath =
-      factory.createRightLabel( BaseMessages.getString( PKG, "TeraFastDialog.FastloadPath.Label" ) );
-    this.props.setLook( this.wlFastLoadPath );
-    this.wlFastLoadPath.setLayoutData( factory.createLabelLayoutData( topControl ) );
+    Label wlFastLoadPath = factory.createRightLabel(BaseMessages.getString(PKG, "TeraFastDialog.FastloadPath.Label"));
+    this.props.setLook(wlFastLoadPath);
+    wlFastLoadPath.setLayoutData( factory.createLabelLayoutData( topControl ) );
 
     this.wbFastLoadPath = factory.createPushButton( BaseMessages.getString( PKG, "TeraFastDialog.Browse.Button" ) );
     this.props.setLook( this.wbFastLoadPath );
@@ -586,14 +558,13 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
   protected void buildUseControlFileLine( final PluginWidgetFactory factory ) {
     final Control topControl = this.wTransformName;
 
-    this.wlUseControlFile =
-      factory.createRightLabel( BaseMessages.getString( PKG, "TeraFastDialog.UseControlFile.Label" ) );
-    this.props.setLook( this.wlUseControlFile );
-    this.wlUseControlFile.setLayoutData( factory.createLabelLayoutData( topControl ) );
+    Label wlUseControlFile = factory.createRightLabel(BaseMessages.getString(PKG, "TeraFastDialog.UseControlFile.Label"));
+    this.props.setLook(wlUseControlFile);
+    wlUseControlFile.setLayoutData( factory.createLabelLayoutData( topControl ) );
 
     this.wUseControlFile = new Button( this.shell, SWT.CHECK );
     this.props.setLook( this.wUseControlFile );
-    this.wUseControlFile.setLayoutData( factory.createControlLayoutData( topControl ) );
+    this.wUseControlFile.setLayoutData( factory.createButtonLayoutData( wlUseControlFile ) );
 
     this.wUseControlFile.addSelectionListener( new SelectionAdapter() {
       @Override
@@ -609,14 +580,13 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
   protected void buildVariableSubstitutionLine( final PluginWidgetFactory factory ) {
     final Control topControl = this.wControlFile;
 
-    this.wlVariableSubstitution =
-      factory.createRightLabel( BaseMessages.getString( PKG, "TeraFastDialog.VariableSubstitution.Label" ) );
-    this.props.setLook( this.wlVariableSubstitution );
-    this.wlVariableSubstitution.setLayoutData( factory.createLabelLayoutData( topControl ) );
+    Label wlVariableSubstitution = factory.createRightLabel(BaseMessages.getString(PKG, "TeraFastDialog.VariableSubstitution.Label"));
+    this.props.setLook(wlVariableSubstitution);
+    wlVariableSubstitution.setLayoutData( factory.createLabelLayoutData( topControl ) );
 
     this.wVariableSubstitution = new Button( this.shell, SWT.CHECK );
     this.props.setLook( this.wVariableSubstitution );
-    this.wVariableSubstitution.setLayoutData( factory.createControlLayoutData( topControl ) );
+    this.wVariableSubstitution.setLayoutData( factory.createButtonLayoutData( wlVariableSubstitution ) );
   }
 
   /**
@@ -625,9 +595,9 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
   protected void buildLogFileLine( final PluginWidgetFactory factory ) {
     final Control topControl = this.wFastLoadPath;
 
-    this.wlLogFile = factory.createRightLabel( BaseMessages.getString( PKG, "TeraFastDialog.LogFile.Label" ) );
-    this.props.setLook( this.wlLogFile );
-    this.wlLogFile.setLayoutData( factory.createLabelLayoutData( topControl ) );
+    Label wlLogFile = factory.createRightLabel(BaseMessages.getString(PKG, "TeraFastDialog.LogFile.Label"));
+    this.props.setLook(wlLogFile);
+    wlLogFile.setLayoutData( factory.createLabelLayoutData( topControl ) );
 
     this.wbLogFile = factory.createPushButton( BaseMessages.getString( PKG, "TeraFastDialog.Browse.Button" ) );
     this.props.setLook( this.wbLogFile );
@@ -665,9 +635,9 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
   protected void buildTableLine( final PluginWidgetFactory factory ) {
     final Control topControl = this.wConnection;
 
-    this.wlTable = factory.createRightLabel( BaseMessages.getString( PKG, "TeraFastDialog.TargetTable.Label" ) );
-    this.props.setLook( this.wlTable );
-    this.wlTable.setLayoutData( factory.createLabelLayoutData( topControl ) );
+    Label wlTable = factory.createRightLabel(BaseMessages.getString(PKG, "TeraFastDialog.TargetTable.Label"));
+    this.props.setLook(wlTable);
+    wlTable.setLayoutData( factory.createLabelLayoutData( topControl ) );
 
     this.wTable = factory.createSingleTextVarLeft();
     this.props.setLook( this.wTable );
@@ -687,14 +657,13 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
   protected void buildTruncateTableLine( final PluginWidgetFactory factory ) {
     final Control topControl = this.wTable;
 
-    this.wlTruncateTable =
-      factory.createRightLabel( BaseMessages.getString( PKG, "TeraFastDialog.TruncateTable.Label" ) );
-    this.props.setLook( this.wlTruncateTable );
-    this.wlTruncateTable.setLayoutData( factory.createLabelLayoutData( topControl ) );
+    Label wlTruncateTable = factory.createRightLabel(BaseMessages.getString(PKG, "TeraFastDialog.TruncateTable.Label"));
+    this.props.setLook(wlTruncateTable);
+    wlTruncateTable.setLayoutData( factory.createLabelLayoutData( topControl ) );
 
     this.wbTruncateTable = new Button( this.shell, SWT.CHECK );
     this.props.setLook( this.wbTruncateTable );
-    this.wbTruncateTable.setLayoutData( factory.createControlLayoutData( topControl ) );
+    this.wbTruncateTable.setLayoutData( factory.createButtonLayoutData( wlTruncateTable ) );
   }
 
   /**
@@ -703,9 +672,9 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
   protected void buildDataFileLine( final PluginWidgetFactory factory ) {
     final Control topControl = this.wbTruncateTable;
 
-    this.wlDataFile = factory.createRightLabel( BaseMessages.getString( PKG, "TeraFastDialog.DataFile.Label" ) );
-    this.props.setLook( this.wlDataFile );
-    this.wlDataFile.setLayoutData( factory.createLabelLayoutData( topControl ) );
+    Label wlDataFile = factory.createRightLabel(BaseMessages.getString(PKG, "TeraFastDialog.DataFile.Label"));
+    this.props.setLook(wlDataFile);
+    wlDataFile.setLayoutData( factory.createLabelLayoutData( topControl ) );
 
     this.wbDataFile = factory.createPushButton( BaseMessages.getString( PKG, "TeraFastDialog.Browse.Button" ) );
     this.props.setLook( this.wbDataFile );
@@ -726,9 +695,9 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
   protected void buildSessionsLine( final PluginWidgetFactory factory ) {
     final Control topControl = this.wDataFile;
 
-    this.wlSessions = factory.createRightLabel( BaseMessages.getString( PKG, "TeraFastDialog.Sessions.Label" ) );
-    this.props.setLook( this.wlSessions );
-    this.wlSessions.setLayoutData( factory.createLabelLayoutData( topControl ) );
+    Label wlSessions = factory.createRightLabel(BaseMessages.getString(PKG, "TeraFastDialog.Sessions.Label"));
+    this.props.setLook(wlSessions);
+    wlSessions.setLayoutData( factory.createLabelLayoutData( topControl ) );
 
     this.wSessions = factory.createSingleTextVarLeft();
     this.props.setLook( this.wSessions );
@@ -741,9 +710,9 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
   protected void buildErrorLimitLine( final PluginWidgetFactory factory ) {
     final Control topControl = this.wSessions;
 
-    this.wlErrLimit = factory.createRightLabel( BaseMessages.getString( PKG, "TeraFastDialog.ErrLimit.Label" ) );
-    this.props.setLook( this.wlErrLimit );
-    this.wlErrLimit.setLayoutData( factory.createLabelLayoutData( topControl ) );
+    Label wlErrLimit = factory.createRightLabel(BaseMessages.getString(PKG, "TeraFastDialog.ErrLimit.Label"));
+    this.props.setLook(wlErrLimit);
+    wlErrLimit.setLayoutData( factory.createLabelLayoutData( topControl ) );
 
     this.wErrLimit = factory.createSingleTextVarLeft();
     this.props.setLook( this.wErrLimit );
@@ -766,9 +735,9 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
   protected void buildFieldTable( final PluginWidgetFactory factory ) {
     final Control topControl = this.wErrLimit;
 
-    this.wlReturn = factory.createLabel( SWT.NONE, BaseMessages.getString( PKG, "TeraFastDialog.Fields.Label" ) );
-    this.props.setLook( this.wlReturn );
-    this.wlReturn.setLayoutData( factory.createLabelLayoutData( topControl ) );
+    Label wlReturn = factory.createLabel(SWT.NONE, BaseMessages.getString(PKG, "TeraFastDialog.Fields.Label"));
+    this.props.setLook(wlReturn);
+    wlReturn.setLayoutData( factory.createLabelLayoutData( topControl ) );
 
     final int upInsCols = 2;
     final int upInsRows;
@@ -788,28 +757,27 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
         BaseMessages.getString( PKG, "TeraFastDialog.ColumnInfo.StreamField" ), ColumnInfo.COLUMN_TYPE_CCOMBO,
         new String[] { "" }, false );
     this.tableFieldColumns.add( this.ciReturn[ 0 ] );
-    this.wReturn =
-      new TableView(
+    this.wReturn = new TableView(
         this.pipelineMeta, this.shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL,
         this.ciReturn, upInsRows, null, this.props );
 
     this.wGetLU = factory.createPushButton( BaseMessages.getString( PKG, "TeraFastDialog.GetFields.Label" ) );
-    this.fdGetLU = new FormData();
-    this.fdGetLU.top = new FormAttachment( this.wlReturn, factory.getMargin() );
-    this.fdGetLU.right = new FormAttachment( FORM_ATTACHMENT_OFFSET, 0 );
-    this.wGetLU.setLayoutData( this.fdGetLU );
+    FormData fdGetLU = new FormData();
+    fdGetLU.top = new FormAttachment(wlReturn, factory.getMargin() );
+    fdGetLU.right = new FormAttachment( FORM_ATTACHMENT_OFFSET, 0 );
+    this.wGetLU.setLayoutData(fdGetLU);
 
     this.wDoMapping = factory.createPushButton( BaseMessages.getString( PKG, "TeraFastDialog.EditMapping.Label" ) );
-    this.fdDoMapping = new FormData();
-    this.fdDoMapping.top = new FormAttachment( this.wGetLU, factory.getMargin() );
-    this.fdDoMapping.right = new FormAttachment( FORM_ATTACHMENT_OFFSET, 0 );
-    this.wDoMapping.setLayoutData( this.fdDoMapping );
+    FormData fdDoMapping = new FormData();
+    fdDoMapping.top = new FormAttachment( this.wGetLU, factory.getMargin() );
+    fdDoMapping.right = new FormAttachment( FORM_ATTACHMENT_OFFSET, 0 );
+    this.wDoMapping.setLayoutData(fdDoMapping);
 
     FormData formData = new FormData();
     formData.left = new FormAttachment( 0, 0 );
-    formData.top = new FormAttachment( this.wlReturn, factory.getMargin() );
+    formData.top = new FormAttachment(wlReturn, factory.getMargin() );
     formData.right = new FormAttachment( this.wGetLU, -factory.getMargin() );
-    formData.bottom = new FormAttachment( FORM_ATTACHMENT_OFFSET, FORM_ATTACHMENT_FACTOR * factory.getMargin() );
+    formData.bottom = new FormAttachment( wOk, -2*props.getMargin() );
     this.wReturn.setLayoutData( formData );
   }
 
@@ -846,9 +814,8 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
    * Clear.
    */
   private void clearColInfo() {
-    for ( int i = 0, n = this.tableFieldColumns.size(); i < n; i++ ) {
-      final ColumnInfo colInfo = this.tableFieldColumns.get( i );
-      colInfo.setComboValues( new String[] {} );
+    for (final ColumnInfo colInfo : this.tableFieldColumns) {
+      colInfo.setComboValues(new String[]{});
     }
   }
 
@@ -861,7 +828,7 @@ public class TeraFastDialog extends BaseTransformDialog implements ITransformDia
 
   private static final class FieldLoader extends Thread {
 
-    private TeraFastDialog dialog;
+    private final TeraFastDialog dialog;
 
     /**
      * Constructor.

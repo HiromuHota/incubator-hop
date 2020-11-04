@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -40,8 +40,8 @@ public class ScriptData extends BaseTransformData implements ITransformData {
   public Bindings scope;
   public CompiledScript script;
 
-  public int[] fields_used;
-  public Value[] values_used;
+  public int[] fieldsUsed;
+  public Value[] valuesUsed;
 
   public IRowMeta outputRowMeta;
   public int[] replaceIndex;
@@ -49,7 +49,7 @@ public class ScriptData extends BaseTransformData implements ITransformData {
   public ScriptData() {
     super();
     cx = null;
-    fields_used = null;
+    fieldsUsed = null;
   }
 
   public void check( int i ) {

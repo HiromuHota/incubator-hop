@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -33,26 +33,28 @@ import org.apache.hop.ui.core.widget.TextVar;
 import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
 import org.apache.hop.ui.pipeline.transform.ComponentSelectionListener;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 public class CubeInputDialog extends BaseTransformDialog implements ITransformDialog {
-  private static Class<?> PKG = CubeInputMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = CubeInputMeta.class; // for i18n purposes, needed by Translator!!
 
-  private Label wlFilename;
-  private Button wbFilename;
   private TextVar wFilename;
-  private FormData fdlFilename, fdbFilename, fdFilename, fdlAddResult, fdAddResult;
 
-  private Label wlLimit;
   private Text wLimit;
-  private FormData fdlLimit, fdLimit;
-  private Label wlAddResult;
   private Button wAddResult;
-  private CubeInputMeta input;
+  private final CubeInputMeta input;
 
   public CubeInputDialog( Shell parent, Object in, PipelineMeta tr, String sname ) {
     super( parent, (BaseTransformMeta) in, tr, sname );
@@ -100,35 +102,35 @@ public class CubeInputDialog extends BaseTransformDialog implements ITransformDi
     wTransformName.setLayoutData( fdTransformName );
 
     // Filename line
-    wlFilename = new Label( shell, SWT.RIGHT );
+    Label wlFilename = new Label( shell, SWT.RIGHT );
     wlFilename.setText( BaseMessages.getString( PKG, "CubeInputDialog.Filename.Label" ) );
     props.setLook( wlFilename );
-    fdlFilename = new FormData();
+    FormData fdlFilename = new FormData();
     fdlFilename.left = new FormAttachment( 0, 0 );
     fdlFilename.top = new FormAttachment( wTransformName, margin + 5 );
     fdlFilename.right = new FormAttachment( middle, -margin );
     wlFilename.setLayoutData( fdlFilename );
-    wbFilename = new Button( shell, SWT.PUSH | SWT.CENTER );
+    Button wbFilename = new Button( shell, SWT.PUSH | SWT.CENTER );
     props.setLook( wbFilename );
     wbFilename.setText( BaseMessages.getString( PKG, "CubeInputDialog.FilenameButton.Label" ) );
-    fdbFilename = new FormData();
+    FormData fdbFilename = new FormData();
     fdbFilename.right = new FormAttachment( 100, 0 );
     fdbFilename.top = new FormAttachment( wTransformName, margin + 5 );
     wbFilename.setLayoutData( fdbFilename );
     wFilename = new TextVar( pipelineMeta, shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     props.setLook( wFilename );
     wFilename.addModifyListener( lsMod );
-    fdFilename = new FormData();
+    FormData fdFilename = new FormData();
     fdFilename.left = new FormAttachment( middle, 0 );
     fdFilename.top = new FormAttachment( wTransformName, margin + 5 );
     fdFilename.right = new FormAttachment( wbFilename, -margin );
     wFilename.setLayoutData( fdFilename );
 
     // Limit input ...
-    wlLimit = new Label( shell, SWT.RIGHT );
+    Label wlLimit = new Label( shell, SWT.RIGHT );
     wlLimit.setText( BaseMessages.getString( PKG, "CubeInputDialog.Limit.Label" ) );
     props.setLook( wlLimit );
-    fdlLimit = new FormData();
+    FormData fdlLimit = new FormData();
     fdlLimit.left = new FormAttachment( 0, 0 );
     fdlLimit.right = new FormAttachment( middle, -margin );
     fdlLimit.top = new FormAttachment( wFilename, margin );
@@ -136,17 +138,17 @@ public class CubeInputDialog extends BaseTransformDialog implements ITransformDi
     wLimit = new Text( shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     props.setLook( wLimit );
     wLimit.addModifyListener( lsMod );
-    fdLimit = new FormData();
+    FormData fdLimit = new FormData();
     fdLimit.left = new FormAttachment( middle, 0 );
     fdLimit.top = new FormAttachment( wFilename, margin );
     fdLimit.right = new FormAttachment( 100, 0 );
     wLimit.setLayoutData( fdLimit );
 
     // Add filename to result filenames
-    wlAddResult = new Label( shell, SWT.RIGHT );
+    Label wlAddResult = new Label( shell, SWT.RIGHT );
     wlAddResult.setText( BaseMessages.getString( PKG, "CubeInputDialog.AddResult.Label" ) );
     props.setLook( wlAddResult );
-    fdlAddResult = new FormData();
+    FormData fdlAddResult = new FormData();
     fdlAddResult.left = new FormAttachment( 0, 0 );
     fdlAddResult.top = new FormAttachment( wLimit, 2 * margin );
     fdlAddResult.right = new FormAttachment( middle, -margin );
@@ -154,9 +156,9 @@ public class CubeInputDialog extends BaseTransformDialog implements ITransformDi
     wAddResult = new Button( shell, SWT.CHECK );
     props.setLook( wAddResult );
     wAddResult.setToolTipText( BaseMessages.getString( PKG, "CubeInputDialog.AddResult.Tooltip" ) );
-    fdAddResult = new FormData();
+    FormData fdAddResult = new FormData();
     fdAddResult.left = new FormAttachment( middle, 0 );
-    fdAddResult.top = new FormAttachment( wLimit, 2 * margin );
+    fdAddResult.top = new FormAttachment( wlAddResult, 0, SWT.CENTER );
     wAddResult.setLayoutData( fdAddResult );
     wAddResult.addSelectionListener( new ComponentSelectionListener( input ) );
 
@@ -175,7 +177,7 @@ public class CubeInputDialog extends BaseTransformDialog implements ITransformDi
     wCancel.addListener( SWT.Selection, lsCancel );
     wOk.addListener( SWT.Selection, lsOk );
 
-    wbFilename.addListener( SWT.Selection, e-> BaseDialog.presentFileDialog( shell, wFilename, pipelineMeta,
+    wbFilename.addListener( SWT.Selection, e -> BaseDialog.presentFileDialog( shell, wFilename, pipelineMeta,
       new String[] { "*.cube", "*" },
       new String[] {
         BaseMessages.getString( PKG, "CubeInputDialog.FilterNames.CubeFiles" ),

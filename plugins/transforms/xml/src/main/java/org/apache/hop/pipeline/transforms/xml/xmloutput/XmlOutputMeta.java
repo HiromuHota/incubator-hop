@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -69,7 +70,7 @@ import java.util.Map;
         documentationUrl = "https://www.project-hop.org/manual/latest/plugins/transforms/xmloutput.html" )
 @InjectionSupported( localizationPrefix = "XMLOutput.Injection.", groups = "OUTPUT_FIELDS" )
 public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<XmlOutput, XmlOutputData> {
-  private static Class<?> PKG = XmlOutputMeta.class; // for i18n purposes, needed by Translator2!!
+  private static final Class<?> PKG = XmlOutputMeta.class; // for i18n purposes, needed by Translator2!!
 
   /**
    * The base name of the output file
@@ -98,7 +99,7 @@ public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<X
   /**
    * Flag: add the stepnr in the filename
    */
-  @Injection( name = "INC_STEPNR_IN_FILENAME" )
+  @Injection( name = "INC_TRANSFORMNR_IN_FILENAME" )
   private boolean stepNrInFilename;
 
   /**
@@ -170,13 +171,13 @@ public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<X
   private boolean omitNullValues;
 
   @Injection( name = "SPEFICY_FORMAT" )
-  private boolean SpecifyFormat;
+  private boolean specifyFormat;
 
   @Injection( name = "DATE_FORMAT" )
-  private String date_time_format;
+  private String dateTimeFormat;
 
   public XmlOutputMeta() {
-    super(); // allocate BaseStepMeta
+    super(); // allocate BaseTransformMeta
   }
 
   /**
@@ -252,14 +253,14 @@ public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<X
   /**
    * @return Returns the stepNrInFilename.
    */
-  public boolean isStepNrInFilename() {
+  public boolean isTransformNrInFilename() {
     return stepNrInFilename;
   }
 
   /**
    * @param stepNrInFilename The stepNrInFilename to set.
    */
-  public void setStepNrInFilename( boolean stepNrInFilename ) {
+  public void setTransformNrInFilename( boolean stepNrInFilename ) {
     this.stepNrInFilename = stepNrInFilename;
   }
 
@@ -292,19 +293,19 @@ public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<X
   }
 
   public boolean isSpecifyFormat() {
-    return SpecifyFormat;
+    return specifyFormat;
   }
 
-  public void setSpecifyFormat( boolean SpecifyFormat ) {
-    this.SpecifyFormat = SpecifyFormat;
+  public void setSpecifyFormat( boolean specifyFormat ) {
+    this.specifyFormat = specifyFormat;
   }
 
   public String getDateTimeFormat() {
-    return date_time_format;
+    return dateTimeFormat;
   }
 
-  public void setDateTimeFormat( String date_time_format ) {
-    this.date_time_format = date_time_format;
+  public void setDateTimeFormat( String dateTimeFormat ) {
+    this.dateTimeFormat = dateTimeFormat;
   }
 
   /**
@@ -335,10 +336,6 @@ public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<X
     this.outputFields = outputFields;
   }
 
-  public void loadXML( Node transformNode, IHopMetadataProvider metadataProvider ) throws HopXmlException {
-    readData( transformNode );
-  }
-
   public void allocate( int nrfields ) {
     outputFields = new XmlField[ nrfields ];
   }
@@ -366,7 +363,7 @@ public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<X
     return new XmlOutputData();
   }
 
-  private void readData( Node transformNode ) throws HopXmlException {
+  @Override public void loadXml( Node transformNode, IHopMetadataProvider metadataProvider ) throws HopXmlException {
     try {
       setEncoding( XmlHandler.getTagValue( transformNode, "encoding" ) );
       setNameSpace( XmlHandler.getTagValue( transformNode, "name_space" ) );
@@ -379,7 +376,7 @@ public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<X
 
       setDoNotOpenNewFileInit( "Y".equalsIgnoreCase( XmlHandler.getTagValue( transformNode, "file",
         "do_not_open_newfile_init" ) ) );
-      setStepNrInFilename( "Y".equalsIgnoreCase( XmlHandler.getTagValue( transformNode, "file", "split" ) ) );
+      setTransformNrInFilename( "Y".equalsIgnoreCase( XmlHandler.getTagValue( transformNode, "file", "split" ) ) );
       setDateInFilename( "Y".equalsIgnoreCase( XmlHandler.getTagValue( transformNode, "file", "add_date" ) ) );
       setTimeInFilename( "Y".equalsIgnoreCase( XmlHandler.getTagValue( transformNode, "file", "add_time" ) ) );
       setSpecifyFormat( "Y".equalsIgnoreCase( XmlHandler.getTagValue( transformNode, "file", "SpecifyFormat" ) ) );
@@ -447,8 +444,8 @@ public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<X
     splitEvery = 0;
     encoding = Const.XML_ENCODING;
     nameSpace = "";
-    date_time_format = null;
-    SpecifyFormat = false;
+    dateTimeFormat = null;
+    specifyFormat = false;
     omitNullValues = false;
     mainElement = "Rows";
     repeatElement = "Row";
@@ -501,8 +498,8 @@ public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<X
 
     Date now = new Date();
 
-    if ( SpecifyFormat && !Utils.isEmpty( date_time_format ) ) {
-      daf.applyPattern( date_time_format );
+    if ( specifyFormat && !Utils.isEmpty( dateTimeFormat ) ) {
+      daf.applyPattern( dateTimeFormat );
       String dt = daf.format( now );
       retval += dt;
     } else {
@@ -541,7 +538,7 @@ public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<X
     return retval;
   }
 
-  public void getFields( IRowMeta row, String name, IRowMeta[] info, TransformMeta nextStep,
+  public void getFields( IRowMeta row, String name, IRowMeta[] info, TransformMeta nextTransform,
                          IVariables space, IHopMetadataProvider metadataProvider ) {
 
     // No values are added to the row in this type of step
@@ -584,9 +581,9 @@ public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<X
     retval.append( "      " ).append( XmlHandler.addTagValue( "split", stepNrInFilename ) );
     retval.append( "      " ).append( XmlHandler.addTagValue( "add_date", dateInFilename ) );
     retval.append( "      " ).append( XmlHandler.addTagValue( "add_time", timeInFilename ) );
-    retval.append( "      " ).append( XmlHandler.addTagValue( "SpecifyFormat", SpecifyFormat ) );
+    retval.append( "      " ).append( XmlHandler.addTagValue( "SpecifyFormat", specifyFormat ) );
     retval.append( "      " ).append( XmlHandler.addTagValue( "omit_null_values", omitNullValues ) );
-    retval.append( "      " ).append( XmlHandler.addTagValue( "date_time_format", date_time_format ) );
+    retval.append( "      " ).append( XmlHandler.addTagValue( "date_time_format", dateTimeFormat ) );
     retval.append( "      " ).append( XmlHandler.addTagValue( "add_to_result_filenames", addToResultFilenames ) );
     retval.append( "      " ).append( XmlHandler.addTagValue( "zipped", zipped ) );
     retval.append( "      " ).append( XmlHandler.addTagValue( "splitevery", splitEvery ) );
@@ -627,20 +624,20 @@ public class XmlOutputMeta extends BaseTransformMeta implements ITransformMeta<X
           "XMLOutputMeta.CheckResult.FieldsReceived", "" + prev.size() ), stepinfo );
       remarks.add( cr );
 
-      String error_message = "";
-      boolean error_found = false;
+      String errorMessage = "";
+      boolean errorFound = false;
 
       // Starting from selected fields in ...
       for ( int i = 0; i < outputFields.length; i++ ) {
         int idx = prev.indexOfValue( outputFields[ i ].getFieldName() );
         if ( idx < 0 ) {
-          error_message += "\t\t" + outputFields[ i ].getFieldName() + Const.CR;
-          error_found = true;
+          errorMessage += "\t\t" + outputFields[ i ].getFieldName() + Const.CR;
+          errorFound = true;
         }
       }
-      if ( error_found ) {
-        error_message = BaseMessages.getString( PKG, "XMLOutputMeta.CheckResult.FieldsNotFound", error_message );
-        cr = new CheckResult( ICheckResult.TYPE_RESULT_ERROR, error_message, stepinfo );
+      if ( errorFound ) {
+        errorMessage = BaseMessages.getString( PKG, "XMLOutputMeta.CheckResult.FieldsNotFound", errorMessage );
+        cr = new CheckResult( ICheckResult.TYPE_RESULT_ERROR, errorMessage, stepinfo );
         remarks.add( cr );
       } else {
         cr =

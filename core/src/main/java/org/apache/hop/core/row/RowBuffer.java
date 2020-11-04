@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -90,7 +90,7 @@ public class RowBuffer {
   }
 
   public boolean isEmpty() {
-    return buffer.isEmpty();
+    return  buffer.isEmpty();
   }
 
   public void addRow( Object[] row ) {

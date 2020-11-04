@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -27,7 +28,7 @@ import org.apache.hop.core.logging.HopLogStore;
 import org.apache.hop.core.xml.XmlHandler;
 import org.apache.hop.workflow.Workflow;
 import org.apache.hop.workflow.WorkflowMeta;
-import org.apache.hop.workflow.action.ActionCopy;
+import org.apache.hop.workflow.action.ActionMeta;
 import org.apache.hop.metadata.api.IHopMetadataProvider;
 import org.apache.hop.workflow.engine.IWorkflowEngine;
 import org.apache.hop.workflow.engines.local.LocalWorkflowEngine;
@@ -59,7 +60,7 @@ import static org.mockito.Mockito.mock;
 
 public class WorkflowEntrySetVariablesTest {
   private IWorkflowEngine<WorkflowMeta> workflow;
-  private ActionSetVariables entry;
+  private ActionSetVariables action;
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
@@ -73,9 +74,9 @@ public class WorkflowEntrySetVariablesTest {
   @Before
   public void setUp() throws Exception {
     workflow = new LocalWorkflowEngine( new WorkflowMeta() );
-    entry = new ActionSetVariables();
-    workflow.getWorkflowMeta().addAction( new ActionCopy( entry ) );
-    entry.setParentWorkflow( workflow );
+    action = new ActionSetVariables();
+    workflow.getWorkflowMeta().addAction( new ActionMeta( action ) );
+    action.setParentWorkflow( workflow );
     workflow.setStopped( false );
   }
 
@@ -86,34 +87,34 @@ public class WorkflowEntrySetVariablesTest {
   @Test
   public void testASCIIText() throws Exception {
     // properties file with native2ascii
-    entry.setFilename( "src/test/resources/org/apache/hop/workflow/actions/setvariables/ASCIIText.properties" );
-    entry.setReplaceVars( true );
-    Result result = entry.execute( new Result(), 0 );
+    action.setFilename( "src/test/resources/org/apache/hop/workflow/actions/setvariables/ASCIIText.properties" );
+    action.setReplaceVars( true );
+    Result result = action.execute( new Result(), 0 );
     assertTrue( "Result should be true", result.getResult() );
-    assertEquals( "日本語", entry.getVariable( "Japanese" ) );
-    assertEquals( "English", entry.getVariable( "English" ) );
-    assertEquals( "中文", entry.getVariable( "Chinese" ) );
+    assertEquals( "日本語", action.getVariable( "Japanese" ) );
+    assertEquals( "English", action.getVariable( "English" ) );
+    assertEquals( "中文", action.getVariable( "Chinese" ) );
   }
 
   @Test
   public void testUTF8Text() throws Exception {
     // properties files without native2ascii
-    entry.setFilename( "src/test/resources/org/apache/hop/workflow/actions/setvariables/UTF8Text.properties" );
-    entry.setReplaceVars( true );
-    Result result = entry.execute( new Result(), 0 );
+    action.setFilename( "src/test/resources/org/apache/hop/workflow/actions/setvariables/UTF8Text.properties" );
+    action.setReplaceVars( true );
+    Result result = action.execute( new Result(), 0 );
     assertTrue( "Result should be true", result.getResult() );
-    assertEquals( "日本語", entry.getVariable( "Japanese" ) );
-    assertEquals( "English", entry.getVariable( "English" ) );
-    assertEquals( "中文", entry.getVariable( "Chinese" ) );
+    assertEquals( "日本語", action.getVariable( "Japanese" ) );
+    assertEquals( "English", action.getVariable( "English" ) );
+    assertEquals( "中文", action.getVariable( "Chinese" ) );
   }
 
   @Test
   public void testInputStreamClosed() throws Exception {
     // properties files without native2ascii
     String propertiesFilename = "src/test/resources/org/apache/hop/workflow/actions/setvariables/UTF8Text.properties";
-    entry.setFilename( propertiesFilename );
-    entry.setReplaceVars( true );
-    Result result = entry.execute( new Result(), 0 );
+    action.setFilename( propertiesFilename );
+    action.setReplaceVars( true );
+    Result result = action.execute( new Result(), 0 );
     assertTrue( "Result should be true", result.getResult() );
     RandomAccessFile fos = null;
     try {
@@ -132,25 +133,25 @@ public class WorkflowEntrySetVariablesTest {
 
   @Test
   public void testParentJobVariablesExecutingFilePropertiesThatChangesVariablesAndParameters() throws Exception {
-    entry.setReplaceVars( true );
-    entry.setFileVariableType( 1 );
+    action.setReplaceVars( true );
+    action.setFileVariableType( 1 );
 
-    IWorkflowEngine<WorkflowMeta> parentWorkflow = entry.getParentWorkflow();
+    IWorkflowEngine<WorkflowMeta> parentWorkflow = action.getParentWorkflow();
 
     parentWorkflow.addParameterDefinition( "parentParam", "", "" );
     parentWorkflow.setParameterValue( "parentParam", "parentValue" );
     parentWorkflow.setVariable( "parentParam", "parentValue" );
 
-    entry.setFilename( "src/test/resources/org/apache/hop/workflow/actions/setvariables/configurationA.properties" );
-    Result result = entry.execute( new Result(), 0 );
+    action.setFilename( "src/test/resources/org/apache/hop/workflow/actions/setvariables/configurationA.properties" );
+    Result result = action.execute( new Result(), 0 );
     assertTrue( "Result should be true", result.getResult() );
     assertEquals( "a", parentWorkflow.getVariable( "propertyFile" ) );
     assertEquals( "a", parentWorkflow.getVariable( "dynamicProperty" ) );
     assertEquals( "parentValue", parentWorkflow.getVariable( "parentParam" ) );
 
 
-    entry.setFilename( "src/test/resources/org/apache/hop/workflow/actions/setvariables/configurationB.properties" );
-    result = entry.execute( new Result(), 0 );
+    action.setFilename( "src/test/resources/org/apache/hop/workflow/actions/setvariables/configurationB.properties" );
+    result = action.execute( new Result(), 0 );
     assertTrue( "Result should be true", result.getResult() );
     assertEquals( "b", parentWorkflow.getVariable( "propertyFile" ) );
     assertEquals( "new", parentWorkflow.getVariable( "newProperty" ) );
@@ -158,8 +159,8 @@ public class WorkflowEntrySetVariablesTest {
     assertEquals( "static", parentWorkflow.getVariable( "staticProperty" ) );
     assertEquals( "", parentWorkflow.getVariable( "dynamicProperty" ) );
 
-    entry.setFilename( "src/test/resources/org/apache/hop/workflow/actions/setvariables/configurationA.properties" );
-    result = entry.execute( new Result(), 0 );
+    action.setFilename( "src/test/resources/org/apache/hop/workflow/actions/setvariables/configurationA.properties" );
+    result = action.execute( new Result(), 0 );
     assertTrue( "Result should be true", result.getResult() );
     assertEquals( "a", parentWorkflow.getVariable( "propertyFile" ) );
     assertEquals( "", parentWorkflow.getVariable( "newProperty" ) );
@@ -168,8 +169,8 @@ public class WorkflowEntrySetVariablesTest {
     assertEquals( "a", parentWorkflow.getVariable( "dynamicProperty" ) );
 
 
-    entry.setFilename( "src/test/resources/org/apache/hop/workflow/actions/setvariables/configurationB.properties" );
-    result = entry.execute( new Result(), 0 );
+    action.setFilename( "src/test/resources/org/apache/hop/workflow/actions/setvariables/configurationB.properties" );
+    result = action.execute( new Result(), 0 );
     assertTrue( "Result should be true", result.getResult() );
     assertEquals( "b", parentWorkflow.getVariable( "propertyFile" ) );
     assertEquals( "new", parentWorkflow.getVariable( "newProperty" ) );
@@ -181,8 +182,8 @@ public class WorkflowEntrySetVariablesTest {
   @Test
   public void testJobEntrySetVariablesExecute_VARIABLE_TYPE_JVM_NullVariable() throws Exception {
     IHopMetadataProvider metadataProvider = mock( IHopMetadataProvider.class );
-    entry.loadXml( getEntryNode( "nullVariable", null, "JVM" ), metadataProvider );
-    Result result = entry.execute( new Result(), 0 );
+    action.loadXml( getEntryNode( "nullVariable", null, "JVM" ), metadataProvider );
+    Result result = action.execute( new Result(), 0 );
     assertTrue( "Result should be true", result.getResult() );
     assertNull( System.getProperty( "nullVariable" ) );
   }
@@ -190,18 +191,18 @@ public class WorkflowEntrySetVariablesTest {
   @Test
   public void testJobEntrySetVariablesExecute_VARIABLE_TYPE_CURRENT_WORKFLOW_NullVariable() throws Exception {
     IHopMetadataProvider metadataProvider = mock( IHopMetadataProvider.class );
-    entry.loadXml( getEntryNode( "nullVariable", null, "CURRENT_WORKFLOW" ), metadataProvider );
-    Result result = entry.execute( new Result(), 0 );
+    action.loadXml( getEntryNode( "nullVariable", null, "CURRENT_WORKFLOW" ), metadataProvider );
+    Result result = action.execute( new Result(), 0 );
     assertTrue( "Result should be true", result.getResult() );
-    assertNull( entry.getVariable( "nullVariable" ) );
+    assertNull( action.getVariable( "nullVariable" ) );
   }
 
   @Test
   public void testJobEntrySetVariablesExecute_VARIABLE_TYPE_JVM_VariableNotNull() throws Exception {
     IHopMetadataProvider metadataProvider = mock( IHopMetadataProvider.class );
-    entry.loadXml( getEntryNode( "variableNotNull", "someValue", "JVM" ), metadataProvider );
+    action.loadXml( getEntryNode( "variableNotNull", "someValue", "JVM" ), metadataProvider );
     assertNull( System.getProperty( "variableNotNull" ) );
-    Result result = entry.execute( new Result(), 0 );
+    Result result = action.execute( new Result(), 0 );
     assertTrue( "Result should be true", result.getResult() );
     assertEquals( "someValue", System.getProperty( "variableNotNull" ) );
   }
@@ -209,27 +210,27 @@ public class WorkflowEntrySetVariablesTest {
   @Test
   public void testJobEntrySetVariablesExecute_VARIABLE_TYPE_CURRENT_WORKFLOW_VariableNotNull() throws Exception {
     IHopMetadataProvider metadataProvider = mock( IHopMetadataProvider.class );
-    entry.loadXml( getEntryNode( "variableNotNull", "someValue", "CURRENT_WORKFLOW" ), metadataProvider );
+    action.loadXml( getEntryNode( "variableNotNull", "someValue", "CURRENT_WORKFLOW" ), metadataProvider );
     assertNull( System.getProperty( "variableNotNull" ) );
-    Result result = entry.execute( new Result(), 0 );
+    Result result = action.execute( new Result(), 0 );
     assertTrue( "Result should be true", result.getResult() );
-    assertEquals( "someValue", entry.getVariable( "variableNotNull" ) );
+    assertEquals( "someValue", action.getVariable( "variableNotNull" ) );
   }
 
   //prepare xml for use
-  public Node getEntryNode( String variable_name, String variable_value, String variable_type )
+  public Node getEntryNode( String variableName, String variableValue, String variableType )
     throws ParserConfigurationException, SAXException, IOException {
     StringBuilder sb = new StringBuilder();
     sb.append( XmlHandler.openTag( "workflow" ) );
     sb.append( "      " ).append( XmlHandler.openTag( "fields" ) );
     sb.append( "      " ).append( XmlHandler.openTag( "field" ) );
-    sb.append( "      " ).append( XmlHandler.addTagValue( "variable_name", variable_name ) );
-    if ( variable_value != null ) {
-      sb.append( "      " ).append( XmlHandler.addTagValue( "variable_value", variable_value ) );
+    sb.append( "      " ).append( XmlHandler.addTagValue( "variable_name", variableName ) );
+    if ( variableValue != null ) {
+      sb.append( "      " ).append( XmlHandler.addTagValue( "variable_value", variableValue ) );
     }
-    if ( variable_type != null ) {
+    if ( variableType != null ) {
       sb.append( "          " ).append(
-        XmlHandler.addTagValue( "variable_type", variable_type ) );
+        XmlHandler.addTagValue( "variable_type", variableType ) );
     }
     sb.append( "      " ).append( XmlHandler.closeTag( "field" ) );
     sb.append( "      " ).append( XmlHandler.closeTag( "fields" ) );

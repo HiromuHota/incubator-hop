@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -78,7 +78,7 @@ public class ConstantTest {
   }
 
   @Test
-  public void testProcessRow_success() throws Exception {
+  public void testProcessRowSuccess() throws Exception {
 
     doReturn( new Object[ 1 ] ).when( constantSpy ).getRow();
     doReturn( new RowMeta() ).when( constantSpy ).getInputRowMeta();

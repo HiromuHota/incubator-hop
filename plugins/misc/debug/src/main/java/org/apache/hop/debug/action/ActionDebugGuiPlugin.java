@@ -31,7 +31,7 @@ import org.apache.hop.ui.core.dialog.ErrorDialog;
 import org.apache.hop.ui.hopgui.HopGui;
 import org.apache.hop.ui.hopgui.file.workflow.context.HopGuiWorkflowActionContext;
 import org.apache.hop.workflow.WorkflowMeta;
-import org.apache.hop.workflow.action.ActionCopy;
+import org.apache.hop.workflow.action.ActionMeta;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,11 +45,13 @@ public class ActionDebugGuiPlugin {
     type = GuiActionType.Delete,
     name = "Clear Custom Logging",
     tooltip = "Clear custom log settings ",
-    image = "ui/images/debug.svg"
+    image = "ui/images/debug.svg",
+    category = "Logging",
+    categoryOrder = "7"
   )
   public void clearCustomActionLogging( HopGuiWorkflowActionContext context ) {
     WorkflowMeta workflowMeta = context.getWorkflowMeta();
-    ActionCopy action = context.getActionCopy();
+    ActionMeta action = context.getActionMeta();
 
     Map<String, Map<String, String>> attributesMap = workflowMeta.getAttributesMap();
     Map<String, String> debugGroupAttributesMap = attributesMap.get( Defaults.DEBUG_GROUP );
@@ -64,13 +66,15 @@ public class ActionDebugGuiPlugin {
     type = GuiActionType.Modify,
     name = "Edit Custom Logging",
     tooltip = "Edit the custom log settings for this action",
-    image = "ui/images/debug.svg"
+    image = "ui/images/debug.svg",
+    category = "Logging",
+    categoryOrder = "7"
   )
   public void applyCustomActionLogging( HopGuiWorkflowActionContext context ) {
     HopGui hopGui = HopGui.getInstance();
     try {
       WorkflowMeta workflowMeta = context.getWorkflowMeta();
-      ActionCopy action = context.getActionCopy();
+      ActionMeta action = context.getActionMeta();
 
       Map<String, Map<String, String>> attributesMap = workflowMeta.getAttributesMap();
       Map<String, String> debugGroupAttributesMap = attributesMap.get( Defaults.DEBUG_GROUP );

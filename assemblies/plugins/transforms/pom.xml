@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>hop-assemblies-plugins</artifactId>
-        <groupId>org.hop</groupId>
-        <version>0.40-SNAPSHOT</version>
+        <groupId>org.apache.hop</groupId>
+        <version>0.50-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
@@ -29,6 +29,7 @@
         <module>closure</module>
         <module>columnexists</module>
         <module>combinationlookup</module>
+        <module>concatfields</module>
         <module>constant</module>
         <module>creditcardvalidator</module>
         <module>cubeinput</module>
@@ -50,10 +51,12 @@
         <module>excelwriter</module>
         <module>execprocess</module>
         <module>execsqlrow</module>
+        <module>fake</module>
         <module>fieldschangesequence</module>
         <module>fieldsplitter</module>
         <module>fileexists</module>
         <module>filelocked</module>
+        <module>filemetadata</module>
         <module>filterrows</module>
         <module>flattener</module>
         <module>fuzzymatch</module>
@@ -79,22 +82,29 @@
         <module>mail</module>
         <module>mailinput</module>
         <module>mailvalidator</module>
+        <module>mapping</module>
         <module>memgroupby</module>
         <module>mergejoin</module>
         <module>mergerows</module>
+        <module>metainject</module>
+        <module>multimerge</module>
         <module>normaliser</module>
         <module>nullif</module>
         <module>numberrange</module>
         <module>pgbulkloader</module>
+        <module>pgp</module>
+        <module>processfiles</module>
         <module>propertyinput</module>
         <module>propertyoutput</module>
         <module>randomvalue</module>
+        <module>regexeval</module>
         <module>replacestring</module>
         <module>reservoirsampling</module>
         <module>rest</module>
         <module>rowgenerator</module>
         <module>rowsfromresult</module>
         <module>rowstoresult</module>
+        <module>samplerows</module>
         <module>selectvalues</module>
         <module>setvalueconstant</module>
         <module>setvaluefield</module>
@@ -103,12 +113,16 @@
         <module>sortedmerge</module>
         <module>splitfieldtorows</module>
         <module>sql</module>
+        <module>sqlfileoutput</module>
+        <module>ssh</module>
         <module>streamlookup</module>
+        <module>streamschemamerge</module>
         <module>stringcut</module>
         <module>stringoperations</module>
         <module>syslog</module>
         <module>systemdata</module>
         <module>switchcase</module>
+        <module>synchronizeaftermerge</module>
         <module>tablecompare</module>
         <module>tableexists</module>
         <module>tableoutput</module>
@@ -117,11 +131,14 @@
         <module>uniquerows</module>
         <module>uniquerowsbyhashset</module>
         <module>update</module>
+<!--        <module>userdefinedjavaclass</module>-->
         <module>valuemapper</module>
         <module>webserviceavailable</module>
         <module>webservices</module>
         <module>writetolog</module>
         <module>xml</module>
+        <module>yamlinput</module>
+        <module>zipfile</module>
     </modules>
 
 </project>

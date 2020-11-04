@@ -3,7 +3,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -118,7 +118,7 @@ public class PipelineMeta extends AbstractMeta
   /**
    * The package name, used for internationalization of messages.
    */
-  private static Class<?> PKG = Pipeline.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = Pipeline.class; // for i18n purposes, needed by Translator!!
 
   /**
    * A constant specifying the tag value for the XML node of the pipeline.
@@ -306,7 +306,7 @@ public class PipelineMeta extends AbstractMeta
   /**
    * A list of localized strings corresponding to string descriptions of the undo/redo actions.
    */
-  public static final String[] desc_type_undo = {
+  public static final String[] descTypeUndo = {
     "",
     BaseMessages.getString( PKG, "PipelineMeta.UndoTypeDesc.UndoChange" ),
     BaseMessages.getString( PKG, "PipelineMeta.UndoTypeDesc.UndoNew" ),
@@ -516,8 +516,8 @@ public class PipelineMeta extends AbstractMeta
     pipelineVersion = null;
 
     undo = new ArrayList<>();
-    max_undo = Const.MAX_UNDO;
-    undo_position = -1;
+    maxUndo = Const.MAX_UNDO;
+    undoPosition = -1;
 
     super.clear();
 
@@ -1582,7 +1582,7 @@ public class PipelineMeta extends AbstractMeta
   public IRowMeta getPrevTransformFields(
     TransformMeta transformMeta, final String transformName, IProgressMonitor monitor )
     throws HopTransformException {
-    clearTransformFieldsCachce();
+    clearTransformFieldsCache();
     IRowMeta row = new RowMeta();
 
     if ( transformMeta == null ) {
@@ -1963,7 +1963,7 @@ public class PipelineMeta extends AbstractMeta
     }
 
     if ( metadataProvider == null ) {
-      throw new HopXmlException( "MetaStore references can't be null. When loading a pipeline Hop needs to be able to reference external metadata objects" );
+      throw new HopXmlException( "API error: metadata provider can't be null. When loading a pipeline Hop needs to be able to reference external metadata objects" );
     }
 
     this.metadataProvider = metadataProvider;
@@ -3785,15 +3785,15 @@ public class PipelineMeta extends AbstractMeta
    * Clears the transform fields and loop caches.
    */
   public void clearCaches() {
-    clearTransformFieldsCachce();
+    clearTransformFieldsCache();
     clearLoopCache();
     clearPreviousTransformCache();
   }
 
   /**
-   * Clears the transform fields cachce.
+   * Clears the transform fields cache.
    */
-  private void clearTransformFieldsCachce() {
+  private void clearTransformFieldsCache() {
     transformFieldsCache.clear();
   }
 

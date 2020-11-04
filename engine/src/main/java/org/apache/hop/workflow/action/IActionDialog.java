@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -55,14 +56,14 @@ import org.apache.hop.metadata.api.IHopMetadataProvider;
 public interface IActionDialog {
 
   /**
-   * Opens a JobEntryDialog and waits for the dialog to be confirmed or cancelled.
+   * Opens a ActionDialog and waits for the dialog to be confirmed or cancelled.
    *
    * @return the action interface if the dialog is confirmed, null otherwise
    */
   IAction open();
 
   /**
-   * The MetaStore to pass
+   * The Metadata provider to pass
    *
    * @param metadataProvider
    */

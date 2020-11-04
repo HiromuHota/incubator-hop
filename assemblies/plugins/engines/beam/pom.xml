@@ -5,13 +5,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.hop</groupId>
+    <groupId>org.apache.hop</groupId>
     <artifactId>hop-assemblies-plugins-engines</artifactId>
-    <version>0.40-SNAPSHOT</version>
+    <version>0.50-SNAPSHOT</version>
   </parent>
 
   <artifactId>hop-assemblies-plugins-engines-beam</artifactId>
-  <version>0.40-SNAPSHOT</version>
+  <version>0.50-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Hop Assemblies Plugins Engines Beam</name>
   <description></description>
@@ -33,19 +33,17 @@
   </repositories>
 
   <properties>
-    <apache-beam-version>2.22.0</apache-beam-version>
-    <spark-version>2.4.5</spark-version>
-    <flink-version>1.9.1</flink-version>
-
-    <junit.version>4.4</junit.version>
+    <apache-beam-version>2.24.0</apache-beam-version>
+    <spark-version>2.4.6</spark-version>
+    <flink-version>1.9.3</flink-version>
     <json-simple.version>1.1.1</json-simple.version>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-plugins-engines-beam</artifactId>
-      <version>0.40-SNAPSHOT</version>
+      <version>0.50-SNAPSHOT</version>
     </dependency>
 
     <!-- The Apache Beam dependencies -->
@@ -147,6 +145,16 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-io-kafka</artifactId>
+      <version>${apache-beam-version}</version>
+      <exclusions>
+        <exclusion><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-core</artifactId></exclusion>
+        <exclusion><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId></exclusion>
+        <exclusion><groupId>com.fasterxml.jackson.module</groupId><artifactId>jackson-module-scala_2.11</artifactId></exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
       <version>1.53.0</version>
@@ -218,44 +226,49 @@
     </dependency>
 
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-transform-sort</artifactId>
-      <version>0.40-SNAPSHOT</version>
+      <version>0.50-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-transform-uniquerows</artifactId>
-      <version>0.40-SNAPSHOT</version>
+      <version>0.50-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-transform-memgroupby</artifactId>
-      <version>0.40-SNAPSHOT</version>
+      <version>0.50-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-transform-constant</artifactId>
-      <version>0.40-SNAPSHOT</version>
+      <version>0.50-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-transform-filterrows</artifactId>
-      <version>0.40-SNAPSHOT</version>
+      <version>0.50-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-transform-streamlookup</artifactId>
-      <version>0.40-SNAPSHOT</version>
+      <version>0.50-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-transform-mergejoin</artifactId>
-      <version>0.40-SNAPSHOT</version>
+      <version>0.50-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
+      <artifactId>hop-transform-rowgenerator</artifactId>
+      <version>0.50-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-transform-switchcase</artifactId>
-      <version>0.40-SNAPSHOT</version>
+      <version>0.50-SNAPSHOT</version>
     </dependency>
 
   </dependencies>

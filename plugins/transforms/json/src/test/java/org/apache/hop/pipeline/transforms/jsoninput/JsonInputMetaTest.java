@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -64,7 +65,7 @@ public class JsonInputMetaTest {
   IRowMeta rowMetaInterfaceItem;
 
   @Mock
-  TransformMeta nextStep;
+  TransformMeta nextTransform;
 
   @Mock
   IVariables space;
@@ -96,7 +97,7 @@ public class JsonInputMetaTest {
 
     when( rowMeta.indexOfValue( DATA ) ).thenReturn( 0 );
 
-    jsonInputMeta.getFields( rowMeta, NAME, info, nextStep, space, metadataProvider );
+    jsonInputMeta.getFields( rowMeta, NAME, info, nextTransform, space, metadataProvider );
 
     verify( rowMeta ).removeValueMeta( 0 );
   }

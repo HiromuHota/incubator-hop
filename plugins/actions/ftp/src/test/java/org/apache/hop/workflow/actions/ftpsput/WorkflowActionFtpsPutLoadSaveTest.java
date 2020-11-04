@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -103,7 +104,7 @@ public class WorkflowActionFtpsPutLoadSaveTest extends WorkflowActionLoadSaveTes
   public class FtpsConnectionLoadSaveValidator implements IFieldLoadSaveValidator<Integer> {
     @Override
     public Integer getTestObject() {
-      return new Random().nextInt( FtpsConnection.connection_type_Code.length );
+      return new Random().nextInt( FtpsConnection.connectionTypeCode.length );
     }
 
     @Override

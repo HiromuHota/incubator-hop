@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -36,7 +36,7 @@ import static org.apache.hop.core.util.serialization.MetaXmlSerializer.serialize
 import static org.apache.hop.core.util.serialization.TransformMetaProps.from;
 
 /**
- * Handles serialization of meta by implementing getXML/loadXML, readRep/saveRep.
+ * Handles serialization of meta by implementing getXml/loadXml
  * <p>
  * Uses {@link MetaXmlSerializer} for generically
  * handling child classes meta.

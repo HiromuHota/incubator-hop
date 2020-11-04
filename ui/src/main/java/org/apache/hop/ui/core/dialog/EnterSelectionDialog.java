@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -66,7 +66,7 @@ import java.util.regex.Pattern;
  * @since 19-06-2003
  */
 public class EnterSelectionDialog extends Dialog {
-  private static Class<?> PKG = EnterSelectionDialog.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = EnterSelectionDialog.class; // for i18n purposes, needed by Translator!!
 
   private Label wlSelection;
   private List wSelection;
@@ -431,11 +431,11 @@ public class EnterSelectionDialog extends Dialog {
     int width = ( Const.isOSX() ? 75 : 70 );
 
     Label separator = new Label( shell, SWT.SEPARATOR | SWT.HORIZONTAL );
-    FormData fd_separator = new FormData();
-    fd_separator.top = new FormAttachment( wSelection, 35 );
-    fd_separator.right = new FormAttachment( 100, -10 );
-    fd_separator.left = new FormAttachment( 0, 10 );
-    separator.setLayoutData( fd_separator );
+    FormData fdSeparator = new FormData();
+    fdSeparator.top = new FormAttachment( wSelection, 35 );
+    fdSeparator.right = new FormAttachment( 100, -10 );
+    fdSeparator.left = new FormAttachment( 0, 10 );
+    separator.setLayoutData( fdSeparator );
 
     Button btnHelp = new Button( shell, SWT.PUSH );
     btnHelp.setImage( GuiResource.getInstance().getImageHelpWeb() );

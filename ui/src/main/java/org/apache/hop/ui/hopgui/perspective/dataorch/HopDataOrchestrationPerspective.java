@@ -22,13 +22,18 @@
 
 package org.apache.hop.ui.hopgui.perspective.dataorch;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.apache.hop.core.Const;
 import org.apache.hop.core.Props;
 import org.apache.hop.core.exception.HopException;
 import org.apache.hop.core.extension.ExtensionPointHandler;
 import org.apache.hop.core.extension.HopExtensionPoint;
 import org.apache.hop.core.gui.plugin.GuiPlugin;
-import org.apache.hop.core.gui.plugin.toolbar.GuiToolbarElement;
 import org.apache.hop.core.search.ISearchable;
 import org.apache.hop.core.search.ISearchableCallback;
 import org.apache.hop.pipeline.PipelineMeta;
@@ -40,6 +45,7 @@ import org.apache.hop.ui.hopgui.HopGuiKeyHandler;
 import org.apache.hop.ui.hopgui.context.IGuiContextHandler;
 import org.apache.hop.ui.hopgui.file.IHopFileType;
 import org.apache.hop.ui.hopgui.file.IHopFileTypeHandler;
+import org.apache.hop.ui.hopgui.file.empty.EmptyFileType;
 import org.apache.hop.ui.hopgui.file.empty.EmptyHopFileTypeHandler;
 import org.apache.hop.ui.hopgui.file.pipeline.HopGuiPipelineGraph;
 import org.apache.hop.ui.hopgui.file.pipeline.HopPipelineFileType;
@@ -59,15 +65,13 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
 @HopPerspectivePlugin(
   id = "HopDataOrchestrationPerspective",
   name = "Data Orchestration",
+  image = "ui/images/pipeline.svg",
   description = "The Hop Data Orchestration Perspective for pipelines and workflows"
 )
 @GuiPlugin
@@ -93,7 +97,8 @@ public class HopDataOrchestrationPerspective implements IHopPerspective {
   private int tabSelectionIndex;
 
   public HopDataOrchestrationPerspective() {
-    items = new ArrayList<>();
+    items = new CopyOnWriteArrayList<>();
+     
     activeItem = null;
     tabSelectionHistory = new Stack<>();
     tabSelectionIndex = 0;
@@ -106,28 +111,15 @@ public class HopDataOrchestrationPerspective implements IHopPerspective {
     return "data-orch";
   }
 
-  @GuiToolbarElement(
-    root = HopGui.GUI_PLUGIN_PERSPECTIVES_PARENT_ID,
-    id = ID_PERSPECTIVE_TOOLBAR_ITEM,
-    image = "ui/images/pipeline.svg",
-    toolTip = "Data Orchestration"
-  )
-  public void activate() {
-    hopGui.getPerspectiveManager().showPerspective( this.getClass() );
+  @Override public void activate() {
+	  hopGui.setActivePerspective(this);
   }
 
-  @Override public void show() {
-    composite.setVisible( true );
-    hopGui.getPerspectivesToolbarWidgets().findToolItem( ID_PERSPECTIVE_TOOLBAR_ITEM ).setImage( GuiResource.getInstance().getImageToolbarDataOrchestration() );
+  @Override public void perspectiveActivated() {
   }
-
-  @Override public void hide() {
-    composite.setVisible( false );
-    hopGui.getPerspectivesToolbarWidgets().findToolItem( ID_PERSPECTIVE_TOOLBAR_ITEM ).setImage( GuiResource.getInstance().getImageToolbarDataOrchestrationInactive() );
-  }
-
+	
   @Override public boolean isActive() {
-    return composite != null && !composite.isDisposed() && composite.isVisible();
+    return hopGui.isActivePerspective(this); // composite != null && !composite.isDisposed() && composite.isVisible();;
   }
 
   @Override public void initialize( HopGui hopGui, Composite parent ) {
@@ -168,14 +160,60 @@ public class HopDataOrchestrationPerspective implements IHopPerspective {
         handleTabCloseEvent( event );
       }
     } );
-    tabFolder.addListener( SWT.Selection, event -> handTabSelectionEvent( event ) );
+    tabFolder.addListener( SWT.Selection, event -> handleTabSelectionEvent( event ) );  
+    
+    
+    // Create tab item context menu
+    Menu menu = new Menu(tabFolder);
+    tabFolder.setMenu(menu);
+    tabFolder.addListener( SWT.MenuDetect, event -> handleTabMenuDetectEvent( event ) );
 
+    // Create menu item
+    MenuItem miClose = new MenuItem(menu, SWT.NONE);
+    miClose.setText("Close");
+    miClose.addListener( SWT.Selection, (event) -> {    	
+      if ( activeItem!=null ) {    	  
+    	  activeItem.getTypeHandler().close();
+      }
+    });
+            
+    MenuItem miCloseOthers = new MenuItem(menu, SWT.NONE);
+    miCloseOthers.setText("Close Others");
+    miCloseOthers.addListener( SWT.Selection, (event) -> {
+    	TabItemHandler currentItem = activeItem; 
+     	items.forEach((item) -> {
+    		if ( !item.equals(currentItem) ) {
+    			// FIXME: Works only if you activate the item
+   				activeItem = item;
+   				item.getTypeHandler().close();
+        	}
+    	});        
+    });
+        
+    MenuItem miCloseAll = new MenuItem(menu, SWT.NONE);
+    miCloseAll.setText("Close All");
+    miCloseAll.addListener( SWT.Selection, (event) -> {    	   
+    	items.forEach((item) -> {
+			// FIXME: Works only if you activate the item
+			activeItem = item;
+       		item.getTypeHandler().close();
+    	});
+    });  
+        
     // Support reorder tab item
     new TabFolderReorder( tabFolder );
 
   }
 
-  private void handTabSelectionEvent( Event event ) {
+  private void handleTabMenuDetectEvent( Event event ) {  
+	  CTabItem tabItem = tabFolder.getSelection();	  
+	  if ( tabItem==null ) {
+		  event.doit=false;
+		  return;
+	  }
+  }
+  
+  private void handleTabSelectionEvent( Event event ) {
     CTabItem tabItem = (CTabItem) event.item;
     activeItem = findTabItemHandler( tabItem );
     if ( activeItem != null ) {
@@ -204,9 +242,15 @@ public class HopDataOrchestrationPerspective implements IHopPerspective {
       hopGui.getLog().logError( "Tab item handler not found for tab item " + tabItem.toString() );
       return;
     }
-    IHopFileTypeHandler typeHandler = tabItemHandler.getTypeHandler();
-    remove( typeHandler );
-
+    IHopFileTypeHandler typeHandler = tabItemHandler.getTypeHandler();   
+    boolean isRemoved = remove( typeHandler );
+    
+    // Ignore event if canceled
+    if ( ! isRemoved ) {    
+    	event.doit = false;
+    	return;
+    }
+    
     // Also switch to the last used tab
     // But first remove all from the selection history
     //
@@ -264,6 +308,12 @@ public class HopDataOrchestrationPerspective implements IHopPerspective {
           tabFolder.setSelection( activeIndex );
           activeItem.getTypeHandler().updateGui();
         }
+      }
+      
+      // If all tab are closed
+      //
+      if ( tabFolder.getItemCount()==0 ) {    	  
+    	HopGui.getInstance().handleFileCapabilities( new EmptyFileType(), false, false );
       }
     }
   }
@@ -514,7 +564,7 @@ public class HopDataOrchestrationPerspective implements IHopPerspective {
       return null;
     }
     for ( TabItemHandler item : items ) {
-      if ( item.getTypeHandler().getFilename().equals( filename ) ) {
+      if ( filename.equals(item.getTypeHandler().getFilename()) ) {
         return item;
       }
     }
@@ -550,7 +600,7 @@ public class HopDataOrchestrationPerspective implements IHopPerspective {
 
         @Override public ISearchableCallback getSearchCallback() {
           return ( searchable, searchResult ) -> {
-            show();
+            activate();
             switchToTab( item );
           };
         }
@@ -637,22 +687,6 @@ public class HopDataOrchestrationPerspective implements IHopPerspective {
    */
   public void setComposite( Composite composite ) {
     this.composite = composite;
-  }
-
-  /**
-   * Gets formData
-   *
-   * @return value of formData
-   */
-  @Override public FormData getFormData() {
-    return formData;
-  }
-
-  /**
-   * @param formData The formData to set
-   */
-  public void setFormData( FormData formData ) {
-    this.formData = formData;
   }
 
   /**

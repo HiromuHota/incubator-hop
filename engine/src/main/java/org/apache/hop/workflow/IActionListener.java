@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -23,12 +24,12 @@
 package org.apache.hop.workflow;
 
 import org.apache.hop.core.Result;
-import org.apache.hop.workflow.action.ActionCopy;
+import org.apache.hop.workflow.action.ActionMeta;
 import org.apache.hop.workflow.action.IAction;
 import org.apache.hop.workflow.engine.IWorkflowEngine;
 
 public interface IActionListener<T extends WorkflowMeta> {
-  void beforeExecution( IWorkflowEngine<T> workflow, ActionCopy actionCopy, IAction action );
+  void beforeExecution( IWorkflowEngine<T> workflow, ActionMeta actionMeta, IAction action );
 
-  void afterExecution( IWorkflowEngine<T> workflow, ActionCopy actionCopy, IAction action, Result result );
+  void afterExecution( IWorkflowEngine<T> workflow, ActionMeta actionMeta, IAction action, Result result );
 }

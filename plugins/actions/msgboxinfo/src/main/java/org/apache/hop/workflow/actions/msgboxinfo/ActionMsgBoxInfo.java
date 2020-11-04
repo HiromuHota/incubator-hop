@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -129,9 +130,9 @@ public class ActionMsgBoxInfo extends ActionBase implements Cloneable, IAction {
    * @param prev_result The result of the previous execution
    * @return The Result of the execution.
    */
-  public Result execute( Result prev_result, int nr ) {
-    prev_result.setResult( evaluate( prev_result ) );
-    return prev_result;
+  public Result execute( Result prevResult, int nr ) {
+    prevResult.setResult( evaluate( prevResult ) );
+    return prevResult;
   }
 
   public boolean resetErrorsBeforeExecution() {

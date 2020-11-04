@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2018-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -38,7 +38,7 @@ import org.apache.hop.i18n.BaseMessages;
 @GuiPlugin( id = "GUI-GoogleBigQueryDatabaseMeta" )
 public class GoogleBigQueryDatabaseMeta extends BaseDatabaseMeta implements IDatabase {
 
-  private static Class<?> PKG = GoogleBigQueryDatabaseMeta.class; // for i18n purposes
+  private static final Class<?> PKG = GoogleBigQueryDatabaseMeta.class; // for i18n purposes
 
   @Override public int[] getAccessTypeList() {
     return new int[] { DatabaseMeta.TYPE_ACCESS_NATIVE };
@@ -118,7 +118,7 @@ public class GoogleBigQueryDatabaseMeta extends BaseDatabaseMeta implements IDat
   }
 
   @Override public String getAddColumnStatement(
-    String tablename, IValueMeta v, String tk,
+    String tableName, IValueMeta v, String tk,
     boolean useAutoinc, String pk, boolean semicolon ) {
     // BigQuery does not support DDL through JDBC.
     // https://cloud.google.com/bigquery/partners/simba-drivers/#do_the_drivers_provide_the_ability_to_manage_tables_create_table
@@ -126,7 +126,7 @@ public class GoogleBigQueryDatabaseMeta extends BaseDatabaseMeta implements IDat
   }
 
   @Override public String getModifyColumnStatement(
-    String tablename, IValueMeta v, String tk, boolean useAutoinc,
+    String tableName, IValueMeta v, String tk, boolean useAutoinc,
     String pk, boolean semicolon ) {
     // BigQuery does not support DDL through JDBC.
     // https://cloud.google.com/bigquery/partners/simba-drivers/#do_the_drivers_provide_the_ability_to_manage_tables_create_table
@@ -141,12 +141,12 @@ public class GoogleBigQueryDatabaseMeta extends BaseDatabaseMeta implements IDat
     return "SELECT * FROM " + tableName + " LIMIT 0";
   }
 
-  @Override public String getSqlTableExists( String tablename ) {
-    return getSqlQueryFields( tablename );
+  @Override public String getSqlTableExists( String tableName ) {
+    return getSqlQueryFields( tableName );
   }
 
-  @Override public String getSqlColumnExists( String columnname, String tablename ) {
-    return getSqlQueryColumnFields( columnname, tablename );
+  @Override public String getSqlColumnExists( String columnname, String tableName ) {
+    return getSqlQueryColumnFields( columnname, tableName );
   }
 
   public String getSqlQueryColumnFields( String columnname, String tableName ) {

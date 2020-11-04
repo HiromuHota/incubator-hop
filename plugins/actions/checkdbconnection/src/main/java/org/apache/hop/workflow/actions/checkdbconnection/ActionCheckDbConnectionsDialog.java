@@ -65,23 +65,18 @@ import java.util.List;
 public class ActionCheckDbConnectionsDialog extends ActionDialog implements IActionDialog {
   private static final Class<?> PKG = ActionCheckDbConnectionsDialog.class; // for i18n purposes, needed by Translator!!
 
-
+  private Shell shell;
+  
   private Text wName;
 
   private ActionCheckDbConnections action;
-
-  private SelectionAdapter lsDef;
 
   private boolean changed;
 
   private TableView wFields;
 
-  private FormData fdbdSourceFileFolder;
-
-  private FormData fdbgetConnections;
-
   public ActionCheckDbConnectionsDialog( Shell parent, IAction action, WorkflowMeta workflowMeta ) {
-    super( parent, action, workflowMeta );
+    super( parent, workflowMeta );
     this.action = (ActionCheckDbConnections) action;
     if ( this.action.getName() == null ) {
       this.action.setName( BaseMessages.getString( PKG, "ActionCheckDbConnections.Name.Default" ) );
@@ -143,10 +138,10 @@ public class ActionCheckDbConnectionsDialog extends ActionDialog implements IAct
     wbdSourceFileFolder.setText( BaseMessages.getString( PKG, "ActionCheckDbConnections.DeleteEntry" ) );
     wbdSourceFileFolder.setToolTipText( BaseMessages.getString(
       PKG, "ActionCheckDbConnections.DeleteSourceFileButton.Label" ) );
-    fdbdSourceFileFolder = new FormData();
+    FormData fdbdSourceFileFolder = new FormData();
     fdbdSourceFileFolder.right = new FormAttachment( 100, -margin );
     fdbdSourceFileFolder.top = new FormAttachment( wlFields, 50 );
-    wbdSourceFileFolder.setLayoutData( fdbdSourceFileFolder );
+    wbdSourceFileFolder.setLayoutData(fdbdSourceFileFolder);
 
     // Buttons to the right of the screen...
     Button wbgetConnections = new Button( shell, SWT.PUSH | SWT.CENTER );
@@ -154,10 +149,10 @@ public class ActionCheckDbConnectionsDialog extends ActionDialog implements IAct
     wbgetConnections.setText( BaseMessages.getString( PKG, "ActionCheckDbConnections.GetConnections" ) );
     wbgetConnections
       .setToolTipText( BaseMessages.getString( PKG, "ActionCheckDbConnections.GetConnections.Tooltip" ) );
-    fdbgetConnections = new FormData();
+    FormData fdbgetConnections = new FormData();
     fdbgetConnections.right = new FormAttachment( 100, -margin );
     fdbgetConnections.top = new FormAttachment( wlFields, 20 );
-    wbgetConnections.setLayoutData( fdbgetConnections );
+    wbgetConnections.setLayoutData(fdbgetConnections);
 
     int rows = action.getConnections() == null ? 1
       : ( action.getConnections().length == 0 ? 0 : action.getConnections().length );
@@ -168,7 +163,7 @@ public class ActionCheckDbConnectionsDialog extends ActionDialog implements IAct
       new ColumnInfo[] {
         new ColumnInfo(
           BaseMessages.getString( PKG, "ActionCheckDbConnections.Fields.Argument.Label" ),
-          ColumnInfo.COLUMN_TYPE_CCOMBO, workflowMeta.getDatabaseNames(), false ),
+          ColumnInfo.COLUMN_TYPE_CCOMBO, this.getWorkflowMeta().getDatabaseNames(), false ),
         new ColumnInfo(
           BaseMessages.getString( PKG, "ActionCheckDbConnections.Fields.WaitFor.Label" ),
           ColumnInfo.COLUMN_TYPE_TEXT, false ),
@@ -182,7 +177,7 @@ public class ActionCheckDbConnectionsDialog extends ActionDialog implements IAct
 
     wFields =
       new TableView(
-        workflowMeta, shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, FieldsRows, lsMod, props );
+    		  this.getWorkflowMeta(), shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, FieldsRows, lsMod, props );
 
     FormData fdFields = new FormData();
     fdFields.left = new FormAttachment( 0, 0 );
@@ -198,9 +193,7 @@ public class ActionCheckDbConnectionsDialog extends ActionDialog implements IAct
     fd.bottom = new FormAttachment( 100, 0 );
     fd.width = 100;
     wOk.setLayoutData( fd );
-    wOk.addListener( SWT.Selection, ( Event e ) -> {
-      ok();
-    } );
+    wOk.addListener( SWT.Selection, ( Event e ) -> ok());
 
     Button wCancel = new Button( shell, SWT.PUSH );
     wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
@@ -209,9 +202,7 @@ public class ActionCheckDbConnectionsDialog extends ActionDialog implements IAct
     fd.bottom = new FormAttachment( 100, 0 );
     fd.width = 100;
     wCancel.setLayoutData( fd );
-    wCancel.addListener( SWT.Selection, ( Event e ) -> {
-      cancel();
-    } );
+    wCancel.addListener( SWT.Selection, ( Event e ) -> cancel());
 
     BaseTransformDialog.positionBottomButtons( shell, new Button[] { wOk, wCancel }, margin, wFields );
 
@@ -233,13 +224,13 @@ public class ActionCheckDbConnectionsDialog extends ActionDialog implements IAct
     } );
 
 
-    lsDef = new SelectionAdapter() {
-      public void widgetDefaultSelected( SelectionEvent e ) {
+    SelectionAdapter lsDef = new SelectionAdapter() {
+      public void widgetDefaultSelected(SelectionEvent e) {
         ok();
       }
     };
 
-    wName.addSelectionListener( lsDef );
+    wName.addSelectionListener(lsDef);
 
     // Detect X or ALT-F4 or something that kills this window...
     shell.addShellListener( new ShellAdapter() {
@@ -268,11 +259,10 @@ public class ActionCheckDbConnectionsDialog extends ActionDialog implements IAct
 
   public void getDatabases() {
     wFields.removeAll();
-    List<DatabaseMeta> databases = workflowMeta.getDatabases();
-    for ( int i = 0; i < databases.size(); i++ ) {
-      DatabaseMeta ci = databases.get( i );
-      if ( ci != null ) {
-        wFields.add( new String[] { ci.getName(), "0", ActionCheckDbConnections.unitTimeDesc[ 0 ] } );
+    List<DatabaseMeta> databases = this.getWorkflowMeta().getDatabases();
+    for (DatabaseMeta ci : databases) {
+      if (ci != null) {
+        wFields.add(new String[]{ci.getName(), "0", ActionCheckDbConnections.unitTimeDesc[0]});
       }
     }
     wFields.removeEmptyRows();
@@ -327,15 +317,15 @@ public class ActionCheckDbConnectionsDialog extends ActionDialog implements IAct
     }
     action.setName( wName.getText() );
 
-    int nritems = wFields.nrNonEmpty();
+    int nrItems = wFields.nrNonEmpty();
 
-    DatabaseMeta[] connections = new DatabaseMeta[ nritems ];
-    String[] waitfors = new String[ nritems ];
-    int[] waittimes = new int[ nritems ];
+    DatabaseMeta[] connections = new DatabaseMeta[ nrItems ];
+    String[] waitfors = new String[ nrItems ];
+    int[] waittimes = new int[ nrItems ];
 
-    for ( int i = 0; i < nritems; i++ ) {
+    for ( int i = 0; i < nrItems; i++ ) {
       String arg = wFields.getNonEmpty( i ).getText( 1 );
-      DatabaseMeta dbMeta = workflowMeta.findDatabase( arg );
+      DatabaseMeta dbMeta = this.getWorkflowMeta().findDatabase( arg );
       if ( dbMeta != null ) {
         connections[ i ] = dbMeta;
         waitfors[ i ] = "" + Const.toInt( wFields.getNonEmpty( i ).getText( 2 ), 0 );

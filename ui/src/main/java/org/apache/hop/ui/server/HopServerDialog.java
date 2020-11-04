@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -33,7 +34,7 @@ import org.apache.hop.ui.core.dialog.EnterTextDialog;
 import org.apache.hop.ui.core.dialog.ErrorDialog;
 import org.apache.hop.ui.core.gui.GuiResource;
 import org.apache.hop.ui.core.gui.WindowProperty;
-import org.apache.hop.ui.core.metastore.IMetadataDialog;
+import org.apache.hop.ui.core.metadata.IMetadataDialog;
 import org.apache.hop.ui.core.widget.PasswordTextVar;
 import org.apache.hop.ui.core.widget.TextVar;
 import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
@@ -70,7 +71,7 @@ import org.eclipse.swt.widgets.Text;
  */
 
 public class HopServerDialog extends Dialog implements IMetadataDialog {
-  private static Class<?> PKG = HopServerDialog.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = HopServerDialog.class; // for i18n purposes, needed by Translator!!
   private final IHopMetadataProvider metadataProvider;
 
   private HopServer hopServer;

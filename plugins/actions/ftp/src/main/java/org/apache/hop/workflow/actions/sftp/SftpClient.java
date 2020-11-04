@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -359,10 +360,10 @@ public class SftpClient {
     }
   }
 
-  public boolean folderExists( String foldername ) {
+  public boolean folderExists( String folderName ) {
     boolean retval = false;
     try {
-      SftpATTRS attrs = c.stat( foldername );
+      SftpATTRS attrs = c.stat( folderName );
       if ( attrs == null ) {
         return false;
       }

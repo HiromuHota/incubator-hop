@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -95,7 +96,7 @@ public class XMLOutputTest {
     xmlOutputData.fieldnrs = initFieldNmrs( rowWithData.length );
     xmlOutputData.OpenedNewFile = true;
 
-    TransformMeta stepMeta = new TransformMeta( "StepMetaId", "StepMetaName", xmlOutputMeta );
+    TransformMeta stepMeta = new TransformMeta( "TransformMetaId", "TransformMetaName", xmlOutputMeta );
     xmlOutput = spy( new XmlOutput( stepMeta, xmlOutputMeta, xmlOutputData, 0, stepMockHelper.pipelineMeta, stepMockHelper.pipeline ) );
   }
 

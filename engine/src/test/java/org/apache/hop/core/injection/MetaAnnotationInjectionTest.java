@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -152,7 +152,7 @@ public class MetaAnnotationInjectionTest {
   }
 
   @Test
-  public void testInjectionForArrayPropertyWithoutDefaultConstructor_interface_parameter() throws HopException {
+  public void testInjectionForArrayPropertyWithoutDefaultConstructorInterface_parameter() throws HopException {
     BeanInjector beanInjector = buildBeanInjectorFor( MetadataBeanImplementsInterface.class );
     MetadataBeanImplementsInterface targetBean = new MetadataBeanImplementsInterface();
     beanInjector.setProperty( targetBean, COMPLEX_NAME, createRowMetaAndData(), FIELD_ONE );

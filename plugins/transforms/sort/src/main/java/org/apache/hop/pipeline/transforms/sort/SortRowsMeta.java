@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -65,7 +66,7 @@ import java.util.Locale;
 )
 public class SortRowsMeta extends BaseTransformMeta implements ITransformMeta<SortRows, SortRowsData>, Serializable {
   private static final long serialVersionUID = -9075883720765645655L;
-  private static Class<?> PKG = SortRowsMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = SortRowsMeta.class; // for i18n purposes, needed by Translator!!
 
   /**
    * order by which fields?
@@ -279,7 +280,7 @@ public class SortRowsMeta extends BaseTransformMeta implements ITransformMeta<So
 
   @Override
   public void setDefault() {
-    directory = "%%java.io.tmpdir%%";
+    directory = "${java.io.tmpdir}";
     prefix = "out";
     sortSize = "1000000";
     freeMemoryLimit = null;
@@ -395,21 +396,21 @@ public class SortRowsMeta extends BaseTransformMeta implements ITransformMeta<So
           "SortRowsMeta.CheckResult.FieldsReceived", "" + prev.size() ), transformMeta );
       remarks.add( cr );
 
-      String error_message = "";
-      boolean error_found = false;
+      String errorMessage = "";
+      boolean errorFound = false;
 
       // Starting from selected fields in ...
       for ( int i = 0; i < fieldName.length; i++ ) {
         int idx = prev.indexOfValue( fieldName[ i ] );
         if ( idx < 0 ) {
-          error_message += "\t\t" + fieldName[ i ] + Const.CR;
-          error_found = true;
+          errorMessage += "\t\t" + fieldName[ i ] + Const.CR;
+          errorFound = true;
         }
       }
-      if ( error_found ) {
-        error_message = BaseMessages.getString( PKG, "SortRowsMeta.CheckResult.SortKeysNotFound", error_message );
+      if ( errorFound ) {
+        errorMessage = BaseMessages.getString( PKG, "SortRowsMeta.CheckResult.SortKeysNotFound", errorMessage );
 
-        cr = new CheckResult( ICheckResult.TYPE_RESULT_ERROR, error_message, transformMeta );
+        cr = new CheckResult( ICheckResult.TYPE_RESULT_ERROR, errorMessage, transformMeta );
         remarks.add( cr );
       } else {
         if ( fieldName.length > 0 ) {

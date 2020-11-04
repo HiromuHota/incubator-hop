@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -41,8 +41,8 @@ public class DimensionLookupData extends BaseTransformData implements ITransform
 
   public Database db;
 
-  public Date min_date;
-  public Date max_date;
+  public Date minDate;
+  public Date maxDate;
 
   public int[] keynrs; // nrs in row of the keys
   public int[] fieldnrs; // nrs in row of the fields

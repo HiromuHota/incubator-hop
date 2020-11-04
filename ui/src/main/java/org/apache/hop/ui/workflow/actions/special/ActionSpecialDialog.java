@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -25,17 +26,16 @@ package org.apache.hop.ui.workflow.actions.special;
 import org.apache.hop.core.Const;
 import org.apache.hop.i18n.BaseMessages;
 import org.apache.hop.ui.core.gui.GuiResource;
+import org.apache.hop.ui.core.gui.WindowProperty;
+import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
+import org.apache.hop.ui.workflow.action.ActionDialog;
 import org.apache.hop.ui.workflow.dialog.WorkflowDialog;
 import org.apache.hop.workflow.WorkflowMeta;
-import org.apache.hop.workflow.actions.special.ActionSpecial;
 import org.apache.hop.workflow.action.IAction;
 import org.apache.hop.workflow.action.IActionDialog;
-import org.apache.hop.ui.core.gui.WindowProperty;
-import org.apache.hop.ui.workflow.action.ActionDialog;
-import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
+import org.apache.hop.workflow.actions.special.ActionSpecial;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -49,7 +49,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
@@ -57,7 +56,7 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
 public class ActionSpecialDialog extends ActionDialog implements IActionDialog {
-  private static Class<?> PKG = ActionSpecial.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = ActionSpecial.class; // for i18n purposes, needed by Translator!!
 
   private static final String NOSCHEDULING = BaseMessages.getString( PKG, "JobSpecial.Type.NoScheduling" );
 
@@ -104,7 +103,7 @@ public class ActionSpecialDialog extends ActionDialog implements IActionDialog {
   private FormData fdlName, fdName;
 
   public ActionSpecialDialog( Shell parent, IAction action, WorkflowMeta workflowMeta ) {
-    super( parent, action, workflowMeta );
+    super( parent, workflowMeta );
     this.action = (ActionSpecial) action;
   }
 

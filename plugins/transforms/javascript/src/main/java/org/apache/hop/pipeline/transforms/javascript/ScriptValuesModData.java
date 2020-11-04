@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -39,7 +40,7 @@ public class ScriptValuesModData extends BaseTransformData implements ITransform
   public Scriptable scope;
   public Script script;
 
-  public int[] fields_used;
+  public int[] fieldsUsed;
 //  public Value[] values_used;
 
   public IRowMeta outputRowMeta;
@@ -48,7 +49,7 @@ public class ScriptValuesModData extends BaseTransformData implements ITransform
   public ScriptValuesModData() {
     super();
     cx = null;
-    fields_used = null;
+    fieldsUsed = null;
   }
 
   public void check( int i ) {

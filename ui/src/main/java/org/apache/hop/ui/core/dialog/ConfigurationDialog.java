@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -215,8 +215,12 @@ public abstract class ConfigurationDialog extends Dialog {
     shell = new Shell( parent, SWT.DIALOG_TRIM | SWT.RESIZE | SWT.MAX );
     props.setLook( shell );
     shell.setImage( img );
-    shell.setLayout( new FormLayout() );
     shell.setText( shellTitle );
+    
+    FormLayout formLayout = new FormLayout();
+    formLayout.marginWidth = Const.FORM_MARGIN*2;
+    formLayout.marginHeight = Const.FORM_MARGIN*2;
+    shell.setLayout( formLayout );
   }
 
   protected void optionsSectionLayout( Class<?> PKG, String prefix ) {
@@ -225,11 +229,14 @@ public abstract class ConfigurationDialog extends Dialog {
     props.setLook( gDetails );
 
     // The layout
-    gDetails.setLayout( new FormLayout() );
+    FormLayout formLayout = new FormLayout();
+    formLayout.marginWidth = Const.FORM_MARGIN*2;
+    formLayout.marginHeight = Const.FORM_MARGIN*2;    
+    gDetails.setLayout( formLayout );
     fdDetails = new FormData();
     fdDetails.top = new FormAttachment( wRunConfigurationControl, 15 );
-    fdDetails.right = new FormAttachment( 100, -15 );
-    fdDetails.left = new FormAttachment( 0, 15 );
+    fdDetails.right = new FormAttachment( 100, 0 );
+    fdDetails.left = new FormAttachment( 0, 0 );
     gDetails.setBackground( shell.getBackground() ); // the default looks ugly
     gDetails.setLayoutData( fdDetails );
 
@@ -241,8 +248,8 @@ public abstract class ConfigurationDialog extends Dialog {
     tabFolder = new CTabFolder( shell, SWT.BORDER );
     props.setLook( tabFolder, Props.WIDGET_STYLE_TAB );
     fdTabFolder = new FormData();
-    fdTabFolder.right = new FormAttachment( 100, -15 );
-    fdTabFolder.left = new FormAttachment( 0, 15 );
+    fdTabFolder.right = new FormAttachment( 100, 0 );
+    fdTabFolder.left = new FormAttachment( 0, 0 );
     fdTabFolder.top = new FormAttachment( gDetails, 15 );
     fdTabFolder.bottom = new FormAttachment( alwaysShowOption, -15 );
     tabFolder.setLayoutData( fdTabFolder );
@@ -269,13 +276,13 @@ public abstract class ConfigurationDialog extends Dialog {
 
     String[] namedParams = abstractMeta.listParameters();
     int nrParams = namedParams.length;
-    wParams = new TableView( abstractMeta, parametersComposite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, cParams,
+    wParams = new TableView( abstractMeta, parametersComposite, SWT.FULL_SELECTION | SWT.MULTI, cParams,
         nrParams, false, null, props, false );
     FormData fdParams = new FormData();
-    fdParams.top = new FormAttachment( 0, 10 );
-    fdParams.right = new FormAttachment( 100, -10 );
-    fdParams.bottom = new FormAttachment( 100, -45 );
-    fdParams.left = new FormAttachment( 0, 10 );
+    fdParams.top = new FormAttachment( 0, 0 );
+    fdParams.right = new FormAttachment( 100, 0 );
+    fdParams.bottom = new FormAttachment( 100, 0 );
+    fdParams.left = new FormAttachment( 0, 0 );
     wParams.setLayoutData( fdParams );
 
     tabFolder.setSelection( 0 );
@@ -297,14 +304,14 @@ public abstract class ConfigurationDialog extends Dialog {
     };
 
     int nrVariables = configuration.getVariablesMap() != null ? configuration.getVariablesMap().size() : 0;
-    wVariables = new TableView( abstractMeta, variablesComposite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, cVariables,
+    wVariables = new TableView( abstractMeta, variablesComposite, SWT.FULL_SELECTION | SWT.MULTI, cVariables,
         nrVariables, false, null, props, false );
 
     FormData fdVariables = new FormData();
-    fdVariables.top = new FormAttachment( 0, 10 );
-    fdVariables.right = new FormAttachment( 100, -10 );
-    fdVariables.bottom = new FormAttachment( 100, -10 );
-    fdVariables.left = new FormAttachment( 0, 10 );
+    fdVariables.top = new FormAttachment( 0, 0 );
+    fdVariables.right = new FormAttachment( 100, 0 );
+    fdVariables.bottom = new FormAttachment( 100, 0 );
+    fdVariables.left = new FormAttachment( 0, 0 );
 
     wVariables.setLayoutData( fdVariables );
   }
@@ -315,37 +322,24 @@ public abstract class ConfigurationDialog extends Dialog {
     // Bottom buttons and separator
 
     wCancel = new Button( shell, SWT.PUSH );
-    FormData fd_wCancel = new FormData();
-    fd_wCancel.bottom = new FormAttachment( 100, -15 );
-    wCancel.setLayoutData( fd_wCancel );
     wCancel.setText( BaseMessages.getString( "System.Button.Cancel" ) );
-    wCancel.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
-        cancel();
-      }
-    } );
+    wCancel.addListener( SWT.Selection, e-> cancel() );
 
     wOk = new Button( shell, SWT.PUSH );
-    FormData fd_wOk = new FormData();
-    fd_wOk.right = new FormAttachment( wCancel, -5 );
-    fd_wOk.bottom = new FormAttachment( 100, -15 );
-    wOk.setLayoutData( fd_wOk );
     wOk.setText( BaseMessages.getString( "System.Button.Launch" ) );
-    wOk.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
-        ok();
-      }
-    } );
+    wOk.addListener( SWT.Selection, e-> ok() );
 
-    Button btnHelp = new Button( shell, SWT.NONE );
-    btnHelp.setImage( GuiResource.getInstance().getImageHelpWeb() );
-    btnHelp.setText( BaseMessages.getString( "System.Button.Help" ) );
-    btnHelp.setToolTipText( BaseMessages.getString( "System.Tooltip.Help" ) );
-    FormData fd_btnHelp = new FormData();
-    fd_btnHelp.bottom = new FormAttachment( 100, -15 );
-    fd_btnHelp.left = new FormAttachment( 0, 15 );
-    btnHelp.setLayoutData( fd_btnHelp );
-    btnHelp.addSelectionListener( new SelectionAdapter() {
+    BaseTransformDialog.positionBottomButtons( shell, new Button[] { wOk, wCancel }, margin, null );
+
+    Button wbHelp = new Button( shell, SWT.NONE );
+    wbHelp.setImage( GuiResource.getInstance().getImageHelpWeb() );
+    wbHelp.setText( BaseMessages.getString( "System.Button.Help" ) );
+    wbHelp.setToolTipText( BaseMessages.getString( "System.Tooltip.Help" ) );
+    FormData fdbHelp = new FormData();
+    fdbHelp.bottom = new FormAttachment( 100, 0 );
+    fdbHelp.left = new FormAttachment( 0, 0 );
+    wbHelp.setLayoutData( fdbHelp );
+    wbHelp.addSelectionListener( new SelectionAdapter() {
       @Override
       public void widgetSelected( SelectionEvent evt ) {
         HelpUtils.openHelpDialog( parent.getShell(), docTitle, docUrl, docHeader );
@@ -353,12 +347,11 @@ public abstract class ConfigurationDialog extends Dialog {
     } );
 
     Label separator = new Label( shell, SWT.SEPARATOR | SWT.HORIZONTAL );
-    fd_wCancel.right = new FormAttachment( 100, -15 );
-    FormData fd_separator = new FormData();
-    fd_separator.right = new FormAttachment( 100, -15 );
-    fd_separator.left = new FormAttachment( 0, 15 );
-    fd_separator.bottom = new FormAttachment( wOk, -15 );
-    separator.setLayoutData( fd_separator );
+    FormData fdSeparator = new FormData();
+    fdSeparator.right = new FormAttachment( 100, 0 );
+    fdSeparator.left = new FormAttachment( 0, 0 );
+    fdSeparator.bottom = new FormAttachment( wOk, -2*margin );
+    separator.setLayoutData( fdSeparator );
 
     alwaysShowOption = new Button( shell, SWT.CHECK );
     alwaysShowOption.setText( alwaysShowOptionLabel );
@@ -366,11 +359,10 @@ public abstract class ConfigurationDialog extends Dialog {
     props.setLook( alwaysShowOption );
     alwaysShowOption.setSelection( abstractMeta.isAlwaysShowRunOptions() );
 
-    FormData fd_alwaysShowOption = new FormData();
-    fd_alwaysShowOption.left = new FormAttachment( 0, 15 );
-    fd_alwaysShowOption.bottom = new FormAttachment( separator, -15 );
-    alwaysShowOption.setLayoutData( fd_alwaysShowOption );
-
+    FormData fdAlwaysShowOption = new FormData();
+    fdAlwaysShowOption.left = new FormAttachment( 0, 0 );
+    fdAlwaysShowOption.bottom = new FormAttachment( separator, -15 );
+    alwaysShowOption.setLayoutData( fdAlwaysShowOption );
   }
 
   protected void openDialog() {
@@ -378,7 +370,7 @@ public abstract class ConfigurationDialog extends Dialog {
     BaseTransformDialog.setSize( shell );
 
     // Set the focus on the OK button
-    wOk.setFocus();
+    shell.setDefaultButton( wOk );
 
     shell.open();
     while ( !shell.isDisposed() ) {

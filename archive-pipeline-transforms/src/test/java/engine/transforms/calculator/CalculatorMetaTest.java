@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -106,7 +106,7 @@ public class CalculatorMetaTest implements InitializerInterface<CalculatorMeta> 
     @Override
     public CalculatorMetaFunction getTestObject() {
       CalculatorMetaFunction rtn = new CalculatorMetaFunction();
-      rtn.setCalcType( rand.nextInt( CalculatorMetaFunction.calc_desc.length ) );
+      rtn.setCalcType( rand.nextInt( CalculatorMetaFunction.calcDesc.length ) );
       rtn.setConversionMask( UUID.randomUUID().toString() );
       rtn.setCurrencySymbol( UUID.randomUUID().toString() );
       rtn.setDecimalSymbol( UUID.randomUUID().toString() );

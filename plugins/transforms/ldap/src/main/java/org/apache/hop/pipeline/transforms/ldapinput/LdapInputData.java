@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -19,15 +20,13 @@
  * limitations under the License.
  *
  ******************************************************************************/
-
 package org.apache.hop.pipeline.transforms.ldapinput;
 
+import java.util.HashSet;
+import javax.naming.directory.Attributes;
 import org.apache.hop.core.row.IRowMeta;
 import org.apache.hop.pipeline.transform.BaseTransformData;
 import org.apache.hop.pipeline.transform.ITransformData;
-
-import javax.naming.directory.Attributes;
-import java.util.HashSet;
 
 /**
  * @author Samatar Hassan
@@ -70,5 +69,4 @@ public class LdapInputData extends BaseTransformData implements ITransformData {
     nrIncomingFields = 0;
     dynamic = false;
   }
-
 }

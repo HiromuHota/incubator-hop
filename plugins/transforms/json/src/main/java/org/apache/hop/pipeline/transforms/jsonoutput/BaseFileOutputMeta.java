@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -40,7 +41,7 @@ public abstract class BaseFileOutputMeta extends BaseTransformMeta {
   /**
    * Flag: add the stepnr in the filename
    */
-  @Injection( name = "INC_STEPNR_IN_FILENAME" )
+  @Injection( name = "INC_TRANSFORMNR_IN_FILENAME" )
   protected boolean stepNrInFilename;
 
   /**
@@ -157,7 +158,7 @@ public abstract class BaseFileOutputMeta extends BaseTransformMeta {
     return partNrInFilename;
   }
 
-  public boolean isStepNrInFilename() {
+  public boolean isTransformNrInFilename() {
     return stepNrInFilename;
   }
 
@@ -190,7 +191,7 @@ public abstract class BaseFileOutputMeta extends BaseTransformMeta {
       int splits = 1;
       int parts = 1;
 
-      if ( isStepNrInFilename() ) {
+      if ( isTransformNrInFilename() ) {
         copies = 3;
       }
 
@@ -306,7 +307,7 @@ public abstract class BaseFileOutputMeta extends BaseTransformMeta {
         }
       }
     }
-    if ( meta.isStepNrInFilename() ) {
+    if ( meta.isTransformNrInFilename() ) {
       retval += "_" + stepnr;
     }
     if ( meta.isPartNrInFilename() ) {
@@ -336,9 +337,9 @@ public abstract class BaseFileOutputMeta extends BaseTransformMeta {
   }
 
   public String[] getFilePaths( final boolean showSamples ) {
-    final TransformMeta parentStepMeta = getParentTransformMeta();
-    if ( parentStepMeta != null ) {
-      final PipelineMeta parentPipelineMeta = parentStepMeta.getParentPipelineMeta();
+    final TransformMeta parentTransformMeta = getParentTransformMeta();
+    if ( parentTransformMeta != null ) {
+      final PipelineMeta parentPipelineMeta = parentTransformMeta.getParentPipelineMeta();
       if ( parentPipelineMeta != null ) {
         return getFiles( parentPipelineMeta, showSamples );
       }

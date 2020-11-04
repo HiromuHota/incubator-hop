@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2016-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -73,14 +74,14 @@ import java.util.Map;
         categoryDescription = "JsonInput.category"
 )
 @InjectionSupported( localizationPrefix = "JsonInput.Injection.", groups = { "FILENAME_LINES", "FIELDS" }, hide = {
-  "ACCEPT_FILE_NAMES", "ACCEPT_FILE_STEP", "PASS_THROUGH_FIELDS", "ACCEPT_FILE_FIELD", "ADD_FILES_TO_RESULT",
+  "ACCEPT_FILE_NAMES", "ACCEPT_FILE_TRANSFORM", "PASS_THROUGH_FIELDS", "ACCEPT_FILE_FIELD", "ADD_FILES_TO_RESULT",
   "IGNORE_ERRORS", "FILE_ERROR_FIELD", "FILE_ERROR_MESSAGE_FIELD", "SKIP_BAD_FILES", "WARNING_FILES_TARGET_DIR",
   "WARNING_FILES_EXTENTION", "ERROR_FILES_TARGET_DIR", "ERROR_FILES_EXTENTION", "LINE_NR_FILES_TARGET_DIR",
   "LINE_NR_FILES_EXTENTION", "FIELD_NULL_STRING", "FIELD_POSITION", "FIELD_IGNORE", "FIELD_IF_NULL" } )
 public class JsonInputMeta
   extends BaseFileInputMeta<JsonInputMeta.AdditionalFileOutputFields, JsonInputMeta.InputFiles, JsonInputField, JsonInput, JsonInputData>
   implements ITransformMeta<JsonInput, JsonInputData> {
-  private static Class<?> PKG = JsonInputMeta.class; // for i18n purposes, needed by Translator2!!
+  private static final Class<?> PKG = JsonInputMeta.class; // for i18n purposes, needed by Translator2!!
 
   public static final String[] RequiredFilesDesc = new String[] {
     BaseMessages.getString( PKG, "System.Combo.No" ), BaseMessages.getString( PKG, "System.Combo.Yes" ) };

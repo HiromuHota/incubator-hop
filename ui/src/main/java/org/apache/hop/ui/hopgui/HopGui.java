@@ -35,7 +35,6 @@ import org.apache.hop.core.extension.ExtensionPointHandler;
 import org.apache.hop.core.extension.HopExtensionPoint;
 import org.apache.hop.core.gui.IUndo;
 import org.apache.hop.core.gui.plugin.GuiPlugin;
-import org.apache.hop.core.gui.plugin.GuiRegistry;
 import org.apache.hop.core.gui.plugin.key.GuiKeyboardShortcut;
 import org.apache.hop.core.gui.plugin.key.GuiOsxKeyboardShortcut;
 import org.apache.hop.core.gui.plugin.key.KeyboardShortcut;
@@ -62,6 +61,7 @@ import org.apache.hop.metadata.api.IHopMetadataProvider;
 import org.apache.hop.metadata.util.HopMetadataUtil;
 import org.apache.hop.partition.PartitionSchema;
 import org.apache.hop.server.HopServer;
+import org.apache.hop.ui.core.ConstUi;
 import org.apache.hop.ui.core.PropsUi;
 import org.apache.hop.ui.core.dialog.EnterOptionsDialog;
 import org.apache.hop.ui.core.dialog.ErrorDialog;
@@ -72,7 +72,7 @@ import org.apache.hop.ui.core.gui.GuiResource;
 import org.apache.hop.ui.core.gui.GuiToolbarWidgets;
 import org.apache.hop.ui.core.gui.HopNamespace;
 import org.apache.hop.ui.core.gui.WindowProperty;
-import org.apache.hop.ui.core.metastore.MetadataManager;
+import org.apache.hop.ui.core.metadata.MetadataManager;
 import org.apache.hop.ui.core.widget.OsHelper;
 import org.apache.hop.ui.hopgui.context.IActionContextHandlersProvider;
 import org.apache.hop.ui.hopgui.context.IGuiContextHandler;
@@ -89,7 +89,7 @@ import org.apache.hop.ui.hopgui.file.empty.EmptyFileType;
 import org.apache.hop.ui.hopgui.file.pipeline.HopGuiPipelineGraph;
 import org.apache.hop.ui.hopgui.file.workflow.HopGuiWorkflowGraph;
 import org.apache.hop.ui.hopgui.perspective.EmptyHopPerspective;
-import org.apache.hop.ui.hopgui.perspective.HopGuiPerspectiveManager;
+import org.apache.hop.ui.hopgui.perspective.HopPerspectiveManager;
 import org.apache.hop.ui.hopgui.perspective.HopPerspectivePluginType;
 import org.apache.hop.ui.hopgui.perspective.IHopPerspective;
 import org.apache.hop.ui.hopgui.perspective.dataorch.HopDataOrchestrationPerspective;
@@ -97,6 +97,9 @@ import org.apache.hop.ui.hopgui.perspective.search.HopSearchPerspective;
 import org.apache.hop.ui.hopgui.search.HopGuiSearchLocation;
 import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.graphics.DeviceData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -104,10 +107,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
@@ -127,7 +132,7 @@ import java.util.Locale;
   description = "The main hop graphical user interface"
 )
 public class HopGui implements IActionContextHandlersProvider, ISearchableProvider, IHasHopMetadataProvider {
-  private static Class<?> PKG = HopGui.class;
+  private static final Class<?> PKG = HopGui.class;
 
   // The main Menu IDs
   public static final String ID_MAIN_MENU = "HopGui-Menu";
@@ -209,9 +214,8 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
   private GuiToolbarWidgets mainToolbarWidgets;
 
   private ToolBar perspectivesToolbar;
-  private GuiToolbarWidgets perspectivesToolbarWidgets;
   private Composite mainPerspectivesComposite;
-  private HopGuiPerspectiveManager perspectiveManager;
+  private HopPerspectiveManager perspectiveManager;
   private IHopPerspective activePerspective;
 
   private static PrintStream originalSystemOut = System.out;
@@ -327,7 +331,9 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
     addMainToolbar();
     addPerspectivesToolbar();
     addMainPerspectivesComposite();
-
+    
+    handleFileCapabilities( new EmptyFileType(), false, false );
+    
     loadPerspectives();
 
     replaceKeyboardShortcutListeners( this );
@@ -378,36 +384,42 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
     try {
       // Pre-load the perspectives and store them in the manager as well as the GuiRegistry
       //
-      perspectiveManager = new HopGuiPerspectiveManager( this, mainPerspectivesComposite );
+      perspectiveManager = new HopPerspectiveManager( this );
       PluginRegistry pluginRegistry = PluginRegistry.getInstance();
       boolean first = true;
-      List<Plugin> perspectivePlugins = PluginRegistry.getInstance().getPlugins( HopPerspectivePluginType.class );
+      List<Plugin> perspectivePlugins = pluginRegistry.getPlugins( HopPerspectivePluginType.class );
 
       // Sort by ID
       //
-      Collections.sort( perspectivePlugins, Comparator.comparing( p -> p.getIds()[ 0 ] ) );
-
+      Collections.sort( perspectivePlugins, Comparator.comparing( p -> p.getIds()[ 0 ] ) );  
+                  
       for ( Plugin perspectivePlugin : perspectivePlugins ) {
         Class<IHopPerspective> perspectiveClass = pluginRegistry.getClass( perspectivePlugin, IHopPerspective.class );
+        
         // Create a new instance & initialize.
         //
         IHopPerspective perspective = perspectiveClass.newInstance();
         perspective.initialize( this, mainPerspectivesComposite );
         perspectiveManager.addPerspective( perspective );
 
-        // Save in registry
+        // Create a toolbar item
         //
-        GuiRegistry.getInstance().registerGuiPluginObject( getId(), perspectiveClass.getName(), perspectivesToolbarWidgets.getInstanceId(), perspective );
-
+        ToolItem item = new ToolItem(this.perspectivesToolbar,SWT.RADIO);
+    	item.setToolTipText(Const.NVL(perspectivePlugin.getName(),perspective.getId()));
+        item.setData(perspective);
+        item.addListener(SWT.Selection, (event) -> setActivePerspective((IHopPerspective) event.widget.getData()));
+        
+        ClassLoader classLoader = pluginRegistry.getClassLoader(perspectivePlugin);
+        Image image = GuiResource.getInstance().getImage(perspectivePlugin.getImageFile(), classLoader,  ConstUi.SMALL_ICON_SIZE, ConstUi.SMALL_ICON_SIZE);
+        if (image!=null) {
+        	item.setImage(image);
+        }   
+        
         if ( first ) {
           first = false;
-          perspective.show();
-          activePerspective = perspective;
-        } else {
-          perspective.hide();
+          item.setSelection(true);
         }
       }
-      mainPerspectivesComposite.layout( true, true );
     } catch ( Exception e ) {
       new ErrorDialog( shell, "Error", "Error loading perspectives", e );
     }
@@ -449,7 +461,7 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
 
     shell.setMenuBar( mainMenu );
     setUndoMenu( null );
-    handleFileCapabilities( new EmptyFileType(), false, false );
+
   }
 
   @GuiMenuElement( root = ID_MAIN_MENU, id = ID_MAIN_MENU_FILE, label = "&File", parentId = ID_MAIN_MENU )
@@ -492,17 +504,17 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
     fileDelegate.fileSaveAs();
   }
 
-  @GuiMenuElement( root = ID_MAIN_MENU, id = ID_MAIN_MENU_FILE_EDIT_METASTORE, label = "Edit MetaStore element", parentId = ID_MAIN_MENU_FILE, separator = true )
+  @GuiMenuElement( root = ID_MAIN_MENU, id = ID_MAIN_MENU_FILE_EDIT_METASTORE, label = "Edit Hop metadata object", parentId = ID_MAIN_MENU_FILE, separator = true )
   public void menuFileEditMetadata() {
     contextDelegate.fileMetadataEdit();
   }
 
-  @GuiMenuElement( root = ID_MAIN_MENU, id = ID_MAIN_MENU_FILE_DELETE_METASTORE, label = "Delete MetaStore element", parentId = ID_MAIN_MENU_FILE )
+  @GuiMenuElement( root = ID_MAIN_MENU, id = ID_MAIN_MENU_FILE_DELETE_METASTORE, label = "Delete Hop metadata object", parentId = ID_MAIN_MENU_FILE )
   public void menuFileDeleteMetadata() {
     contextDelegate.fileMetadataDelete();
   }
 
-  @GuiMenuElement( root = ID_MAIN_MENU, id = ID_MAIN_MENU_FILE_EXPLORE_METASTORE, label = "Explore the MetaStore", parentId = ID_MAIN_MENU_FILE )
+  @GuiMenuElement( root = ID_MAIN_MENU, id = ID_MAIN_MENU_FILE_EXPLORE_METASTORE, label = "Explore Hop metadata", parentId = ID_MAIN_MENU_FILE )
   @GuiToolbarElement( root = ID_MAIN_TOOLBAR, id = ID_MAIN_TOOLBAR_METADATA, image = "ui/images/metadata.svg", toolTip = "Explore metadata", separator = true )
   @GuiKeyboardShortcut( control = true, shift = true, key = SWT.F5 )
   @GuiOsxKeyboardShortcut( command = true, shift = true, key = SWT.F5 )
@@ -730,10 +742,6 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
     fdToolBar.bottom = new FormAttachment( 100, 0 );
     perspectivesToolbar.setLayoutData( fdToolBar );
 
-    perspectivesToolbarWidgets = new GuiToolbarWidgets();
-    perspectivesToolbarWidgets.registerGuiPluginObject( this );
-    perspectivesToolbarWidgets.createToolbarWidgets( perspectivesToolbar, GUI_PLUGIN_PERSPECTIVES_PARENT_ID );
-    perspectivesToolbar.pack();
   }
 
   /**
@@ -742,7 +750,7 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
    */
   private void addMainPerspectivesComposite() {
     mainPerspectivesComposite = new Composite( mainHopGuiComposite, SWT.NO_BACKGROUND );
-    mainPerspectivesComposite.setLayout( new FormLayout() );
+    mainPerspectivesComposite.setLayout( new StackLayout() );
     FormData fdMain = new FormData();
     fdMain.top = new FormAttachment( 0, 0 );
     fdMain.left = new FormAttachment( perspectivesToolbar, 0 );
@@ -756,7 +764,7 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
     //
     MenuItem undoItem = mainMenuWidgets.findMenuItem( ID_MAIN_MENU_EDIT_UNDO );
     MenuItem redoItem = mainMenuWidgets.findMenuItem( ID_MAIN_MENU_EDIT_REDO );
-    if ( undoItem == null || redoItem == null ) {
+    if ( undoItem == null || redoItem == null  || undoItem.isDisposed() || redoItem.isDisposed() ) {
       return;
     }
 
@@ -815,13 +823,16 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
 
     mainMenuWidgets.enableMenuItem( fileType, ID_MAIN_MENU_RUN_START, IHopFileType.CAPABILITY_START, !running );
     mainMenuWidgets.enableMenuItem( fileType, ID_MAIN_MENU_RUN_STOP, IHopFileType.CAPABILITY_STOP, running );
-    mainMenuWidgets.enableMenuItem( fileType, ID_MAIN_MENU_RUN_PAUSE, IHopFileType.CAPABILITY_PAUSE, !paused );
+    mainMenuWidgets.enableMenuItem( fileType, ID_MAIN_MENU_RUN_PAUSE, IHopFileType.CAPABILITY_PAUSE, running && !paused );
     mainMenuWidgets.enableMenuItem( fileType, ID_MAIN_MENU_RUN_RESUME, IHopFileType.CAPABILITY_PAUSE, paused );
     mainMenuWidgets.enableMenuItem( fileType, ID_MAIN_MENU_RUN_PREVIEW, IHopFileType.CAPABILITY_PREVIEW );
     mainMenuWidgets.enableMenuItem( fileType, ID_MAIN_MENU_RUN_DEBUG, IHopFileType.CAPABILITY_DEBUG );
 
     mainMenuWidgets.enableMenuItem( fileType, ID_MAIN_MENU_EDIT_NAV_PREV, IHopFileType.CAPABILITY_FILE_HISTORY, getActivePerspective().hasNavigationPreviousFile() );
     mainMenuWidgets.enableMenuItem( fileType, ID_MAIN_MENU_EDIT_NAV_NEXT, IHopFileType.CAPABILITY_FILE_HISTORY, getActivePerspective().hasNavigationNextFile() );
+        
+	mainToolbarWidgets.enableToolbarItem(fileType, ID_MAIN_TOOLBAR_SAVE,  IHopFileType.CAPABILITY_SAVE );
+	mainToolbarWidgets.enableToolbarItem(fileType, ID_MAIN_TOOLBAR_SAVE_AS,  IHopFileType.CAPABILITY_SAVE );
   }
 
   public IHopFileTypeHandler getActiveFileTypeHandler() {
@@ -928,14 +939,14 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
    *
    * @return value of perspectiveManager
    */
-  public HopGuiPerspectiveManager getPerspectiveManager() {
+  public HopPerspectiveManager getPerspectiveManager() {
     return perspectiveManager;
   }
 
   /**
    * @param perspectiveManager The perspectiveManager to set
    */
-  public void setPerspectiveManager( HopGuiPerspectiveManager perspectiveManager ) {
+  public void setPerspectiveManager( HopPerspectiveManager perspectiveManager ) {
     this.perspectiveManager = perspectiveManager;
   }
 
@@ -1045,13 +1056,46 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
   }
 
   /**
-   * @param activePerspective The activePerspective to set
+   * @param perspective The perspective to active
    */
-  public void setActivePerspective( IHopPerspective activePerspective ) {
-    this.activePerspective = activePerspective;
-    if ( activePerspective == null ) {
-      this.activePerspective = getActivePerspective();
+  public void setActivePerspective( IHopPerspective perspective ) {
+    
+	if ( perspective == null ) {
+    	perspective = getDataOrchestrationPerspective();
     }
+			
+    activePerspective = perspective;
+    
+    // Move perspective composite on top 
+    //
+    StackLayout layout = (StackLayout) mainPerspectivesComposite.getLayout();
+    layout.topControl = perspective.getComposite();
+    mainPerspectivesComposite.layout();
+    
+    // Select toolbar item 
+    //
+    if ( perspectivesToolbar!=null &&  !perspectivesToolbar.isDisposed() ) {
+    	for ( ToolItem item: perspectivesToolbar.getItems() ) {
+            item.setSelection( perspective.equals( item.getData() ) );
+    	}
+    }
+
+    // Notify the perspective that it has been activated.
+    //
+    perspective.perspectiveActivated();    
+    
+    perspectiveManager.notifyPerspectiveActiviated(perspective);
+  }
+   
+  public boolean isActivePerspective( IHopPerspective perspective ) {
+	 if ( perspective!=null ) {
+		 for ( ToolItem item: perspectivesToolbar.getItems() ) {
+			 if (perspective.equals( item.getData() ) ) {         	 
+				 return item.getSelection();
+			 }
+		 }
+	 }
+	 return false;
   }
 
   /**
@@ -1269,22 +1313,6 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
    */
   public void setMainToolbarWidgets( GuiToolbarWidgets mainToolbarWidgets ) {
     this.mainToolbarWidgets = mainToolbarWidgets;
-  }
-
-  /**
-   * Gets perspectivesToolbarWidgets
-   *
-   * @return value of perspectivesToolbarWidgets
-   */
-  public GuiToolbarWidgets getPerspectivesToolbarWidgets() {
-    return perspectivesToolbarWidgets;
-  }
-
-  /**
-   * @param perspectivesToolbarWidgets The perspectivesToolbarWidgets to set
-   */
-  public void setPerspectivesToolbarWidgets( GuiToolbarWidgets perspectivesToolbarWidgets ) {
-    this.perspectivesToolbarWidgets = perspectivesToolbarWidgets;
   }
 
   /**

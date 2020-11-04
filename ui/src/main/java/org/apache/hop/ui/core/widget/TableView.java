@@ -3,7 +3,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -122,7 +122,7 @@ public class TableView extends Composite {
     void delete( int[] items );
   }
 
-  private static Class<?> PKG = TableView.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = TableView.class; // for i18n purposes, needed by Translator!!
 
   // define CANCEL_KEYS here so that RWT needs not to be imported.
   private static final String CANCEL_KEYS = "org.eclipse.rap.rwt.cancelKeys";

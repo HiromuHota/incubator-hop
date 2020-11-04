@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -162,6 +162,23 @@ public class PluginWidgetFactory {
 
     return formData;
   }
+
+  /**
+   * Convenience method to create FormData for Buttons beside a label.
+   *
+   * @param labelControl the label which is to the left.
+   * @return layoutData.
+   */
+  public FormData createButtonLayoutData( final Control labelControl ) {
+    FormData formData = new FormData();
+
+    formData.left = new FormAttachment( this.middle, 0 );
+    formData.top = new FormAttachment( labelControl, 0, SWT.CENTER );
+    formData.right = new FormAttachment( this.rightOffset, 0 );
+
+    return formData;
+  }
+
 
   /**
    * @param text text to set.

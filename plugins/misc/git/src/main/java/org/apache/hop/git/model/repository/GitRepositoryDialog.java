@@ -25,7 +25,7 @@ import org.apache.hop.metadata.api.IHopMetadataProvider;
 import org.apache.hop.ui.core.PropsUi;
 import org.apache.hop.ui.core.dialog.BaseDialog;
 import org.apache.hop.ui.core.gui.WindowProperty;
-import org.apache.hop.ui.core.metastore.IMetadataDialog;
+import org.apache.hop.ui.core.metadata.IMetadataDialog;
 import org.apache.hop.ui.core.widget.TextVar;
 import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
 import org.eclipse.swt.SWT;
@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Text;
 
 public class GitRepositoryDialog implements IMetadataDialog {
 
-  private static Class<?> PKG = GitRepositoryDialog.class; // for i18n purposes, needed by Translator2!!
+  private static final Class<?> PKG = GitRepositoryDialog.class; // for i18n purposes, needed by Translator2!!
 
   private final Shell parentShell;
   private Text nameText;
@@ -108,7 +108,7 @@ public class GitRepositoryDialog implements IMetadataDialog {
   protected Control addStandardWidgets() {
     shell = new Shell(parentShell, SWT.DIALOG_TRIM | SWT.RESIZE );
     shell.setText( APPLICATION_NAME );
-    shell.setImage( HopGitPerspective.getInstance().getGitActiveImage() );
+    shell.setImage( HopGitPerspective.getInstance().getGitImage() );
     shell.addListener( SWT.Close, e->cancel() );
     shell.setLayout( new FormLayout() );
 

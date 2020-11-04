@@ -41,7 +41,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.*;
 
 public class BeamBQOutputDialog extends BaseTransformDialog implements ITransformDialog {
-  private static Class<?> PKG = BeamBQOutputDialog.class; // for i18n purposes, needed by Translator2!!
+  private static final Class<?> PKG = BeamBQOutputDialog.class; // for i18n purposes, needed by Translator2!!
   private final BeamBQOutputMeta input;
 
   int middle;
@@ -79,7 +79,7 @@ public class BeamBQOutputDialog extends BaseTransformDialog implements ITransfor
     middle = props.getMiddlePct();
     margin = Const.MARGIN;
 
-    // Stepname line
+    // TransformName line
     wlTransformName = new Label( shell, SWT.RIGHT );
     wlTransformName.setText( BaseMessages.getString( PKG, "System.Label.TransformName" ) );
     props.setLook( wlTransformName );

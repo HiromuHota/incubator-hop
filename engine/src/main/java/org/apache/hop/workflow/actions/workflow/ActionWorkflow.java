@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -29,6 +30,7 @@ import org.apache.hop.core.Result;
 import org.apache.hop.core.ResultFile;
 import org.apache.hop.core.RowMetaAndData;
 import org.apache.hop.core.SqlStatement;
+import org.apache.hop.core.annotations.Action;
 import org.apache.hop.core.exception.HopException;
 import org.apache.hop.core.exception.HopXmlException;
 import org.apache.hop.core.file.IHasFilename;
@@ -72,8 +74,17 @@ import java.util.UUID;
  * @author Matt
  * @since 01-10-2003, Rewritten on 18-06-2004
  */
+@Action(
+        id = "PIPELINE",
+        image = "PPL.svg",
+        i18nPackageName = "i18n:org.apache.hop.workflow.action",
+        name = "Action.Workflow.TypeDesc",
+        description = "Action.Workflow.Tooltip",
+        categoryDescription = "i18n:org.apache.hop.workflow:ActionCategory.Category.General",
+        documentationUrl = "https://www.project-hop.org/manual/latest/plugins/actions/workflow.html"
+)
 public class ActionWorkflow extends ActionBase implements Cloneable, IAction {
-  private static Class<?> PKG = ActionWorkflow.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = ActionWorkflow.class; // for i18n purposes, needed by Translator!!
 
   private String filename;
 

@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -136,7 +137,7 @@ public interface IAction {
    * @return the Result object from execution of this action
    * @throws HopException if any Hop exceptions occur
    */
-  Result execute( Result prev_result, int nr ) throws HopException;
+  Result execute( Result prevResult, int nr ) throws HopException;
 
   /**
    * Sets the parent workflow.

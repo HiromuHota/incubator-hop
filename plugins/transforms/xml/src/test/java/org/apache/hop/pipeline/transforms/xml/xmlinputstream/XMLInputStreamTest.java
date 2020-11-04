@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -278,7 +279,7 @@ public class XMLInputStreamTest {
 
   @Test
   @Ignore
-  public void testFromPreviousStep() throws Exception {
+  public void testFromPreviousTransform() throws Exception {
     xmlInputStreamMeta.sourceFromInput = true;
     xmlInputStreamMeta.sourceFieldName = "inf";
     xmlInputStreamData.outputRowMeta = new RowMeta();

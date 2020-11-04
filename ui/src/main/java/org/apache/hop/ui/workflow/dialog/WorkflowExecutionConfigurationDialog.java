@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -40,7 +41,7 @@ import org.apache.hop.ui.hopgui.HopGui;
 import org.apache.hop.ui.hopgui.shared.AuditManagerGuiUtil;
 import org.apache.hop.workflow.WorkflowExecutionConfiguration;
 import org.apache.hop.workflow.WorkflowMeta;
-import org.apache.hop.workflow.action.ActionCopy;
+import org.apache.hop.workflow.action.ActionMeta;
 import org.apache.hop.workflow.config.WorkflowRunConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -56,7 +57,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class WorkflowExecutionConfigurationDialog extends ConfigurationDialog {
-  private static Class<?> PKG = WorkflowExecutionConfigurationDialog.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = WorkflowExecutionConfigurationDialog.class; // for i18n purposes, needed by Translator!!
 
   public static final String AUDIT_LIST_TYPE_LAST_USED_RUN_CONFIGURATIONS = "last-workflow-run-configurations";
 
@@ -74,8 +75,8 @@ public class WorkflowExecutionConfigurationDialog extends ConfigurationDialog {
     wlLogLevel.setToolTipText( BaseMessages.getString( PKG, "WorkflowExecutionConfigurationDialog.LogLevel.Tooltip" ) );
     props.setLook( wlLogLevel );
     FormData fdlLogLevel = new FormData();
-    fdlLogLevel.top = new FormAttachment( 0, 10 );
-    fdlLogLevel.left = new FormAttachment( 0, 10 );
+    fdlLogLevel.top = new FormAttachment( 0, 0 );
+    fdlLogLevel.left = new FormAttachment( 0, 0 );
     wlLogLevel.setLayoutData( fdlLogLevel );
 
     wLogLevel = new CCombo( gDetails, SWT.READ_ONLY | SWT.BORDER );
@@ -83,7 +84,7 @@ public class WorkflowExecutionConfigurationDialog extends ConfigurationDialog {
     props.setLook( wLogLevel );
     FormData fdLogLevel = new FormData();
     fdLogLevel.top = new FormAttachment( wlLogLevel, -2, SWT.TOP );
-    fdLogLevel.width = 350;
+    fdLogLevel.right = new FormAttachment( 100, 0 );
     fdLogLevel.left = new FormAttachment( wlLogLevel, 6 );
     wLogLevel.setLayoutData( fdLogLevel );
     wLogLevel.setItems( LogLevel.getLogLevelDescriptions() );
@@ -94,7 +95,7 @@ public class WorkflowExecutionConfigurationDialog extends ConfigurationDialog {
     props.setLook( wClearLog );
     FormData fdClearLog = new FormData();
     fdClearLog.top = new FormAttachment( wLogLevel, 10 );
-    fdClearLog.left = new FormAttachment( 0, 10 );
+    fdClearLog.left = new FormAttachment( 0, 0 );
     wClearLog.setLayoutData( fdClearLog );
 
     Label wlStartAction = new Label( gDetails, SWT.RIGHT );
@@ -102,8 +103,8 @@ public class WorkflowExecutionConfigurationDialog extends ConfigurationDialog {
     wlStartAction.setToolTipText( BaseMessages.getString( PKG, "WorkflowExecutionConfigurationDialog.StartCopy.Tooltip" ) );
     props.setLook( wlStartAction );
     FormData fdlStartAction = new FormData();
-    fdlStartAction.top = new FormAttachment( wClearLog, props.getMargin() );
-    fdlStartAction.left = new FormAttachment( 0, 10 );
+    fdlStartAction.top = new FormAttachment( wClearLog, 10 );
+    fdlStartAction.left = new FormAttachment( 0, 0 );
     wlStartAction.setLayoutData( fdlStartAction );
 
     wStartAction = new CCombo( gDetails, SWT.READ_ONLY | SWT.BORDER );
@@ -117,10 +118,10 @@ public class WorkflowExecutionConfigurationDialog extends ConfigurationDialog {
 
     WorkflowMeta workflowMeta = (WorkflowMeta) super.abstractMeta;
 
-    String[] names = new String[ workflowMeta.getActionCopies().size() ];
+    String[] names = new String[ workflowMeta.getActions().size() ];
     for ( int i = 0; i < names.length; i++ ) {
-      ActionCopy copy = workflowMeta.getActionCopies().get( i );
-      names[ i ] = getActionCopyName( copy );
+      ActionMeta actionMeta = workflowMeta.getActions().get( i );
+      names[ i ] = getActionName( actionMeta );
     }
     wStartAction.setItems( names );
   }
@@ -162,8 +163,8 @@ public class WorkflowExecutionConfigurationDialog extends ConfigurationDialog {
     wRunConfiguration.setLayoutData( fdRunConfiguration );
   }
 
-  private String getActionCopyName( ActionCopy copy ) {
-    return copy.getName() + ( copy.getNr() > 0 ? copy.getNr() : "" );
+  private String getActionName( ActionMeta meta ) {
+    return meta.getName() + ( meta.getNr() > 0 ? meta.getNr() : "" );
   }
 
   private void getVariablesData() {
@@ -223,15 +224,15 @@ public class WorkflowExecutionConfigurationDialog extends ConfigurationDialog {
       }
     }
 
-    String startCopy = "";
-    if ( !Utils.isEmpty( getConfiguration().getStartCopyName() ) ) {
-      ActionCopy copy =
-        ( (WorkflowMeta) abstractMeta ).findAction( getConfiguration().getStartCopyName(), getConfiguration().getStartCopyNr() );
-      if ( copy != null ) {
-        startCopy = getActionCopyName( copy );
+    String startAction = "";
+    if ( !Utils.isEmpty( getConfiguration().getStartActionName() ) ) {
+      ActionMeta action =
+        ( (WorkflowMeta) abstractMeta ).findAction( getConfiguration().getStartActionName(), getConfiguration().getStartActionNr() );
+      if ( action != null ) {
+        startAction = getActionName( action );
       }
     }
-    wStartAction.setText( startCopy );
+    wStartAction.setText( startAction );
 
     getParamsData();
     getVariablesData();
@@ -248,17 +249,17 @@ public class WorkflowExecutionConfigurationDialog extends ConfigurationDialog {
       configuration.setClearingLog( wClearLog.getSelection() );
       configuration.setLogLevel( LogLevel.values()[ wLogLevel.getSelectionIndex() ] );
 
-      String startCopyName = null;
-      int startCopyNr = 0;
+      String startActionName = null;
+      int startActionNr = 0;
       if ( !Utils.isEmpty( wStartAction.getText() ) ) {
         if ( wStartAction.getSelectionIndex() >= 0 ) {
-          ActionCopy copy = ( (WorkflowMeta) abstractMeta ).getActionCopies().get( wStartAction.getSelectionIndex() );
-          startCopyName = copy.getName();
-          startCopyNr = copy.getNr();
+          ActionMeta action = ( (WorkflowMeta) abstractMeta ).getActions().get( wStartAction.getSelectionIndex() );
+          startActionName = action.getName();
+          startActionNr = action.getNr();
         }
       }
-      getConfiguration().setStartCopyName( startCopyName );
-      getConfiguration().setStartCopyNr( startCopyNr );
+      getConfiguration().setStartActionName( startActionName );
+      getConfiguration().setStartActionNr( startActionNr );
 
       // The lower part of the dialog...
       getInfoParameters();

@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2016 - 2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -24,7 +24,7 @@ package org.apache.hop.base;
 import org.apache.hop.core.gui.Point;
 
 /**
- * Common methods of TransformMeta and ActionCopy.
+ * Common methods of TransformMeta and ActionMeta.
  *
  * @author Alexander Buloichik
  */

@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -42,10 +42,6 @@ public class HopGuiPipelinePainterFlyoutTooltipExtension {
     this.areaOwner = areaOwner;
     this.pipelineGraph = pipelineGraph;
     this.point = point;
-  }
-
-  public String getExtensionAreaType() {
-    return (String) this.areaOwner.getExtensionAreaType();
   }
 
   public TransformMeta getTransformMeta() {

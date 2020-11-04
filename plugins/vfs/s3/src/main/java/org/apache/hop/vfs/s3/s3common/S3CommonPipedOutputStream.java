@@ -1,6 +1,7 @@
 /*!
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright 2019 Hitachi Vantara.  All rights reserved.
  * http://www.project-hop.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -142,7 +143,7 @@ public class S3CommonPipedOutputStream extends PipedOutputStream {
       boolean returnVal = true;
       List<PartETag> partETags = new ArrayList<>();
 
-      // Step 1: Initialize
+      // Transform 1: Initialize
       InitiateMultipartUploadRequest initRequest;
       initRequest = new InitiateMultipartUploadRequest( bucketId, key );
 
@@ -152,7 +153,7 @@ public class S3CommonPipedOutputStream extends PipedOutputStream {
       try ( ByteArrayOutputStream baos = new ByteArrayOutputStream( partSize );
             BufferedInputStream bis = new BufferedInputStream( pipedInputStream, partSize ) ) {
         initResponse = fileSystem.getS3Client().initiateMultipartUpload( initRequest );
-        // Step 2: Upload parts.
+        // Transform 2: Upload parts.
         byte[] tmpBuffer = new byte[ partSize ];
         int read = 0;
         long offset = 0;
@@ -189,7 +190,7 @@ public class S3CommonPipedOutputStream extends PipedOutputStream {
           }
         }
 
-        // Step 2.1 upload last part
+        // Transform 2.1 upload last part
         s3is = new S3CommonWindowedSubstream( baos.toByteArray() );
 
         UploadPartRequest uploadRequest = new UploadPartRequest()
@@ -203,7 +204,7 @@ public class S3CommonPipedOutputStream extends PipedOutputStream {
         logger.info( BaseMessages.getString( PKG, "INFO.S3MultiPart.Upload", partNum - 1, offset, totalRead ) );
         partETags.add( fileSystem.getS3Client().uploadPart( uploadRequest ).getPartETag() );
 
-        // Step 3: Complete.
+        // Transform 3: Complete.
         logger.info( BaseMessages.getString( PKG, "INFO.S3MultiPart.Complete" ) );
         CompleteMultipartUploadRequest compRequest =
           new CompleteMultipartUploadRequest( bucketId, key, initResponse.getUploadId(), partETags );

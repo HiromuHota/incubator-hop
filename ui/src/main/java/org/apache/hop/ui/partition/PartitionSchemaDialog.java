@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -32,7 +32,7 @@ import org.apache.hop.ui.core.PropsUi;
 import org.apache.hop.ui.core.dialog.ErrorDialog;
 import org.apache.hop.ui.core.gui.GuiResource;
 import org.apache.hop.ui.core.gui.WindowProperty;
-import org.apache.hop.ui.core.metastore.IMetadataDialog;
+import org.apache.hop.ui.core.metadata.IMetadataDialog;
 import org.apache.hop.ui.core.widget.ColumnInfo;
 import org.apache.hop.ui.core.widget.TableView;
 import org.apache.hop.ui.core.widget.TextVar;
@@ -69,7 +69,7 @@ import java.util.List;
  */
 
 public class PartitionSchemaDialog extends Dialog implements IMetadataDialog {
-  private static Class<?> PKG = PartitionSchemaDialog.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = PartitionSchemaDialog.class; // for i18n purposes, needed by Translator!!
 
   private final IHopMetadataProvider metadataProvider;
   private PartitionSchema partitionSchema;

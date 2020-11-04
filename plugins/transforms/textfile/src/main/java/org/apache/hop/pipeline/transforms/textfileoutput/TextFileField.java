@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -176,8 +176,8 @@ public class TextFileField implements Cloneable {
     return nullString;
   }
 
-  public void setNullString( String null_string ) {
-    this.nullString = null_string;
+  public void setNullString( String nullString ) {
+    this.nullString = nullString;
   }
 
   @Override

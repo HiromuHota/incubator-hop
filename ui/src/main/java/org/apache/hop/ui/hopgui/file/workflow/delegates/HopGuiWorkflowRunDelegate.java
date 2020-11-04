@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -45,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 public class HopGuiWorkflowRunDelegate {
-  private static Class<?> PKG = HopGui.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = HopGui.class; // for i18n purposes, needed by Translator!!
 
   private HopGuiWorkflowGraph workflowGraph;
   private HopGui hopGui;
@@ -71,7 +72,7 @@ public class HopGuiWorkflowRunDelegate {
     jobMap = new ArrayList<>();
   }
 
-  public void executeWorkflow( WorkflowMeta workflowMeta, boolean local, boolean remote, boolean safe, String startCopyName, int startCopyNr ) throws HopException {
+  public void executeWorkflow( WorkflowMeta workflowMeta, boolean local, boolean remote, boolean safe, String startActionName, int startActionNr ) throws HopException {
 
     if ( workflowMeta == null ) {
       return;
@@ -85,8 +86,8 @@ public class HopGuiWorkflowRunDelegate {
     variableMap.putAll( executionConfiguration.getVariablesMap() ); // the default
     executionConfiguration.setVariablesMap( variableMap );
     executionConfiguration.getUsedVariables( workflowMeta );
-    executionConfiguration.setStartCopyName( startCopyName );
-    executionConfiguration.setStartCopyNr( startCopyNr );
+    executionConfiguration.setStartActionName( startActionName );
+    executionConfiguration.setStartActionNr( startActionNr );
     executionConfiguration.setLogLevel( DefaultLogLevel.getLogLevel() );
 
     WorkflowExecutionConfigurationDialog dialog = newWorkflowExecutionConfigurationDialog( executionConfiguration, workflowMeta );
@@ -118,8 +119,8 @@ public class HopGuiWorkflowRunDelegate {
 
       // Set the start transform name
       //
-      if ( executionConfiguration.getStartCopyName() != null ) {
-        workflowMeta.setStartCopyName( executionConfiguration.getStartCopyName() );
+      if ( executionConfiguration.getStartActionName() != null ) {
+        workflowMeta.setStartActionName( executionConfiguration.getStartActionName() );
       }
 
       // Set the run options
@@ -137,11 +138,7 @@ public class HopGuiWorkflowRunDelegate {
         return;
       }
 
-      if ( workflowMeta.hasChanged() ) {
-        workflowGraph.showSaveFileMessage();
-      }
-
-      workflowGraph.startJob( executionConfiguration );
+      workflowGraph.start( executionConfiguration );
     }
   }
 

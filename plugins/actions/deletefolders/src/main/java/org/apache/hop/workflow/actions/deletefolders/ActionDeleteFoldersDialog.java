@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -66,16 +67,15 @@ import org.eclipse.swt.widgets.Text;
 public class ActionDeleteFoldersDialog extends ActionDialog implements IActionDialog {
   private static final Class<?> PKG = ActionDeleteFolders.class; // for i18n purposes, needed by Translator!!
 
+  private Shell shell;
+  
   private Text wName;
-  private FormData fdlName, fdName;
 
   private Label wlFilename;
   private Button wbDirectory;
   private TextVar wFilename;
   
   private ActionDeleteFolders action;
-
-  private SelectionAdapter lsDef;
 
   private boolean changed;
 
@@ -88,14 +88,13 @@ public class ActionDeleteFoldersDialog extends ActionDialog implements IActionDi
   private Label wlFields;
   private TableView wFields;
 
-  private Label wlSuccessCondition;
   private CCombo wSuccessCondition;
 
   private Label wlNrErrorsLessThan;
   private TextVar wLimitFolders;
 
   public ActionDeleteFoldersDialog( Shell parent, IAction action, WorkflowMeta workflowMeta ) {
-    super( parent, action, workflowMeta );
+    super( parent, workflowMeta );
     this.action = (ActionDeleteFolders) action;
 
     if ( this.action.getName() == null ) {
@@ -128,19 +127,19 @@ public class ActionDeleteFoldersDialog extends ActionDialog implements IActionDi
     Label wlName = new Label( shell, SWT.RIGHT );
     wlName.setText( BaseMessages.getString( PKG, "JobDeleteFolders.Name.Label" ) );
     props.setLook( wlName );
-    fdlName = new FormData();
+    FormData fdlName = new FormData();
     fdlName.left = new FormAttachment( 0, 0 );
     fdlName.right = new FormAttachment( middle, -margin );
     fdlName.top = new FormAttachment( 0, margin );
-    wlName.setLayoutData( fdlName );
+    wlName.setLayoutData(fdlName);
     wName = new Text( shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     props.setLook( wName );
     wName.addModifyListener( lsMod );
-    fdName = new FormData();
+    FormData fdName = new FormData();
     fdName.left = new FormAttachment( middle, 0 );
     fdName.top = new FormAttachment( 0, margin );
     fdName.right = new FormAttachment( 100, 0 );
-    wName.setLayoutData( fdName );
+    wName.setLayoutData(fdName);
 
     // SETTINGS grouping?
     // ////////////////////////
@@ -204,9 +203,9 @@ public class ActionDeleteFoldersDialog extends ActionDialog implements IActionDi
     wSuccessOn.setLayout( successongroupLayout );
 
     // Success Condition
-    wlSuccessCondition = new Label( wSuccessOn, SWT.RIGHT );
+    Label wlSuccessCondition = new Label(wSuccessOn, SWT.RIGHT);
     wlSuccessCondition.setText( BaseMessages.getString( PKG, "JobDeleteFolders.SuccessCondition.Label" ) );
-    props.setLook( wlSuccessCondition );
+    props.setLook(wlSuccessCondition);
     FormData fdlSuccessCondition = new FormData();
     fdlSuccessCondition.left = new FormAttachment( 0, 0 );
     fdlSuccessCondition.right = new FormAttachment( middle, -margin );
@@ -243,7 +242,7 @@ public class ActionDeleteFoldersDialog extends ActionDialog implements IActionDi
     wlNrErrorsLessThan.setLayoutData( fdlNrErrorsLessThan );
 
     wLimitFolders =
-      new TextVar( workflowMeta, wSuccessOn, SWT.SINGLE | SWT.LEFT | SWT.BORDER, BaseMessages.getString(
+      new TextVar( getWorkflowMeta(), wSuccessOn, SWT.SINGLE | SWT.LEFT | SWT.BORDER, BaseMessages.getString(
         PKG, "JobDeleteFolders.LimitFolders.Tooltip" ) );
     props.setLook( wLimitFolders );
     wLimitFolders.addModifyListener( lsMod );
@@ -281,7 +280,7 @@ public class ActionDeleteFoldersDialog extends ActionDialog implements IActionDi
     fdbDirectory.top = new FormAttachment( wSuccessOn, margin );
     wbDirectory.setLayoutData( fdbDirectory );
 
-    wbDirectory.addListener( SWT.Selection, e->BaseDialog.presentDirectoryDialog( shell, wFilename, workflowMeta ));
+    wbDirectory.addListener( SWT.Selection, e->BaseDialog.presentDirectoryDialog( shell, wFilename, getWorkflowMeta() ));
     
     // Button Add or change
     wbaFilename = new Button( shell, SWT.PUSH | SWT.CENTER );
@@ -292,7 +291,7 @@ public class ActionDeleteFoldersDialog extends ActionDialog implements IActionDi
     fdbaFilename.top = new FormAttachment( wSuccessOn, margin );
     wbaFilename.setLayoutData( fdbaFilename );
 
-    wFilename = new TextVar( workflowMeta, shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
+    wFilename = new TextVar( getWorkflowMeta(), shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     props.setLook( wFilename );
     wFilename.addModifyListener( lsMod );
     FormData fdFilename = new FormData();
@@ -302,7 +301,7 @@ public class ActionDeleteFoldersDialog extends ActionDialog implements IActionDi
     wFilename.setLayoutData( fdFilename );
 
     // Whenever something changes, set the tooltip to the expanded version:
-    wFilename.addModifyListener( e -> wFilename.setToolTipText( workflowMeta.environmentSubstitute( wFilename.getText() ) ) );
+    wFilename.addModifyListener( e -> wFilename.setToolTipText( getWorkflowMeta().environmentSubstitute( wFilename.getText() ) ) );
 
     // Button Delete
     wbdFilename = new Button( shell, SWT.PUSH | SWT.CENTER );
@@ -347,7 +346,7 @@ public class ActionDeleteFoldersDialog extends ActionDialog implements IActionDi
 
     wFields =
       new TableView(
-        workflowMeta, shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, FieldsRows, lsMod, props );
+    		  getWorkflowMeta(), shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, FieldsRows, lsMod, props );
 
     FormData fdFields = new FormData();
     fdFields.left = new FormAttachment( 0, 0 );
@@ -398,21 +397,21 @@ public class ActionDeleteFoldersDialog extends ActionDialog implements IActionDi
 
     Button wOk = new Button( shell, SWT.PUSH );
     wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
-    wOk.addListener( SWT.Selection, (Event e) -> { ok();  } );
+    wOk.addListener( SWT.Selection, (Event e) -> ok());
     Button wCancel = new Button( shell, SWT.PUSH );
     wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
-    wCancel.addListener( SWT.Selection, (Event e) -> { cancel(); } );
+    wCancel.addListener( SWT.Selection, (Event e) -> cancel());
     
     BaseTransformDialog.positionBottomButtons( shell, new Button[] { wOk, wCancel }, margin, wFields );
 
-    lsDef = new SelectionAdapter() {
-      public void widgetDefaultSelected( SelectionEvent e ) {
+    SelectionAdapter lsDef = new SelectionAdapter() {
+      public void widgetDefaultSelected(SelectionEvent e) {
         ok();
       }
     };
 
-    wName.addSelectionListener( lsDef );
-    wFilename.addSelectionListener( lsDef );
+    wName.addSelectionListener(lsDef);
+    wFilename.addSelectionListener(lsDef);
 
     // Detect X or ALT-F4 or something that kills this window...
     shell.addShellListener( new ShellAdapter() {
@@ -529,9 +528,9 @@ public class ActionDeleteFoldersDialog extends ActionDialog implements IActionDi
       action.setSuccessCondition( ActionDeleteFolders.SUCCESS_IF_NO_ERRORS );
     }
 
-    int nritems = wFields.nrNonEmpty();
+    int nrItems = wFields.nrNonEmpty();
     int nr = 0;
-    for ( int i = 0; i < nritems; i++ ) {
+    for ( int i = 0; i < nrItems; i++ ) {
       String arg = wFields.getNonEmpty( i ).getText( 1 );
       if ( arg != null && arg.length() != 0 ) {
         nr++;
@@ -539,7 +538,7 @@ public class ActionDeleteFoldersDialog extends ActionDialog implements IActionDi
     }
     action.arguments = new String[ nr ];
     nr = 0;
-    for ( int i = 0; i < nritems; i++ ) {
+    for ( int i = 0; i < nrItems; i++ ) {
       String arg = wFields.getNonEmpty( i ).getText( 1 );
       if ( arg != null && arg.length() != 0 ) {
         action.arguments[ nr ] = arg;

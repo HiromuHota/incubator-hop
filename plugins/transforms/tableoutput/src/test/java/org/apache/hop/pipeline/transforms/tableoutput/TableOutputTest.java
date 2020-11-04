@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -107,7 +107,7 @@ public class TableOutputTest {
   }
 
   @Test
-  public void testTruncateTable_off() throws Exception {
+  public void testTruncateTableOff() throws Exception {
     tableOutputSpy.truncateTable();
     verify( db, never() ).truncateTable( anyString(), anyString() );
   }

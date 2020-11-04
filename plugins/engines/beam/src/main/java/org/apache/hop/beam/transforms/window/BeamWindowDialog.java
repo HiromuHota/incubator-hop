@@ -40,7 +40,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.*;
 
 public class BeamWindowDialog extends BaseTransformDialog implements ITransformDialog {
-  private static Class<?> PKG = BeamWindowDialog.class; // for i18n purposes, needed by Translator2!!
+  private static final Class<?> PKG = BeamWindowDialog.class; // for i18n purposes, needed by Translator2!!
   private final BeamWindowMeta input;
 
   int middle;
@@ -78,7 +78,7 @@ public class BeamWindowDialog extends BaseTransformDialog implements ITransformD
     middle = props.getMiddlePct();
     margin = Const.MARGIN;
 
-    // Stepname line
+    // TransformName line
     wlTransformName = new Label( shell, SWT.RIGHT );
     wlTransformName.setText( BaseMessages.getString( PKG, "System.Label.TransformName" ) );
     props.setLook( wlTransformName );

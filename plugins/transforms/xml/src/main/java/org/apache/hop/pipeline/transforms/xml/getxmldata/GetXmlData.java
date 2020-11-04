@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org*
  *******************************************************************************
  *
@@ -71,7 +72,7 @@ import java.util.zip.GZIPInputStream;
  * @since 20-06-2007
  */
 public class GetXmlData extends BaseTransform<GetXmlDataMeta, GetXmlDataData> implements ITransform<GetXmlDataMeta, GetXmlDataData> {
-  private static Class<?> PKG = GetXmlDataMeta.class; // for i18n purposes, needed by Translator2!!
+  private static final Class<?> PKG = GetXmlDataMeta.class; // for i18n purposes, needed by Translator2!!
 
   private Object[] prevRow = null; // A pre-allocated spot for the previous row
 
@@ -245,7 +246,7 @@ public class GetXmlData extends BaseTransform<GetXmlDataMeta, GetXmlDataData> im
       }
     }
     // main loop through the data until limit is reached or transformation is stopped
-    // similar functionality like in BaseStep.runStepThread
+    // similar functionality like in BaseTransform.runTransformThread
     if ( log.isDebug() ) {
       logDebug( BaseMessages.getString( PKG, "GetXMLData.Log.StreamingMode.ProcessingRows" ) );
     }

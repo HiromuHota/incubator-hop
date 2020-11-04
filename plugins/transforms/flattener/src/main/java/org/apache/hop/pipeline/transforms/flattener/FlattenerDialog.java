@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -44,15 +44,11 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.*;
 
 public class FlattenerDialog extends BaseTransformDialog implements ITransformDialog {
-  private static Class<?> PKG = FlattenerMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = FlattenerMeta.class; // for i18n purposes, needed by Translator!!
 
-  private Label wlFields;
   private TableView wFields;
-  private FormData fdlFields, fdFields;
 
-  private Label wlField;
   private CCombo wField;
-  private FormData fdlField, fdField;
 
   private boolean gotPreviousFields = false;
 
@@ -84,6 +80,16 @@ public class FlattenerDialog extends BaseTransformDialog implements ITransformDi
     int middle = props.getMiddlePct();
     int margin = props.getMargin();
 
+    // THE BUTTONS
+    wOk = new Button( shell, SWT.PUSH );
+    wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
+    wOk.addListener( SWT.Selection, e -> ok() );
+    wCancel = new Button( shell, SWT.PUSH );
+    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
+    wCancel.addListener( SWT.Selection,  e -> cancel() );
+    setButtonPositions( new Button[] { wOk, wCancel }, margin, null );
+
+
     // TransformName line
     wlTransformName = new Label( shell, SWT.RIGHT );
     wlTransformName.setText( BaseMessages.getString( PKG, "FlattenerDialog.TransformName.Label" ) );
@@ -104,22 +110,22 @@ public class FlattenerDialog extends BaseTransformDialog implements ITransformDi
     wTransformName.setLayoutData( fdTransformName );
 
     // Key field...
-    wlField = new Label( shell, SWT.RIGHT );
+    Label wlField = new Label(shell, SWT.RIGHT);
     wlField.setText( BaseMessages.getString( PKG, "FlattenerDialog.FlattenField.Label" ) );
-    props.setLook( wlField );
-    fdlField = new FormData();
+    props.setLook(wlField);
+    FormData fdlField = new FormData();
     fdlField.left = new FormAttachment( 0, 0 );
     fdlField.right = new FormAttachment( middle, -margin );
     fdlField.top = new FormAttachment( wTransformName, margin );
-    wlField.setLayoutData( fdlField );
+    wlField.setLayoutData(fdlField);
     wField = new CCombo( shell, SWT.BORDER | SWT.READ_ONLY );
     props.setLook( wField );
     wField.addModifyListener( lsMod );
-    fdField = new FormData();
+    FormData fdField = new FormData();
     fdField.left = new FormAttachment( middle, 0 );
     fdField.top = new FormAttachment( wTransformName, margin );
     fdField.right = new FormAttachment( 100, 0 );
-    wField.setLayoutData( fdField );
+    wField.setLayoutData(fdField);
     wField.addFocusListener( new FocusListener() {
       public void focusLost( org.eclipse.swt.events.FocusEvent e ) {
       }
@@ -133,50 +139,29 @@ public class FlattenerDialog extends BaseTransformDialog implements ITransformDi
       }
     } );
 
-    wlFields = new Label( shell, SWT.NONE );
+    Label wlFields = new Label(shell, SWT.NONE);
     wlFields.setText( BaseMessages.getString( PKG, "FlattenerDialog.TargetField.Label" ) );
-    props.setLook( wlFields );
-    fdlFields = new FormData();
+    props.setLook(wlFields);
+    FormData fdlFields = new FormData();
     fdlFields.left = new FormAttachment( 0, 0 );
     fdlFields.top = new FormAttachment( wField, margin );
-    wlFields.setLayoutData( fdlFields );
+    wlFields.setLayoutData(fdlFields);
 
     int nrKeyCols = 1;
     int nrKeyRows = ( input.getTargetField() != null ? input.getTargetField().length : 1 );
 
     ColumnInfo[] ciKey = new ColumnInfo[ nrKeyCols ];
-    ciKey[ 0 ] =
-      new ColumnInfo(
-        BaseMessages.getString( PKG, "FlattenerDialog.ColumnInfo.TargetField" ), ColumnInfo.COLUMN_TYPE_TEXT,
-        false );
+    ciKey[ 0 ] = new ColumnInfo( BaseMessages.getString( PKG, "FlattenerDialog.ColumnInfo.TargetField" ), ColumnInfo.COLUMN_TYPE_TEXT, false );
 
-    wFields =
-      new TableView(
-        pipelineMeta, shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL, ciKey,
-        nrKeyRows, lsMod, props );
-
-    fdFields = new FormData();
+    wFields = new TableView( pipelineMeta, shell, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL, ciKey, nrKeyRows, lsMod, props );
+    FormData fdFields = new FormData();
     fdFields.left = new FormAttachment( 0, 0 );
-    fdFields.top = new FormAttachment( wlFields, margin );
+    fdFields.top = new FormAttachment(wlFields, margin );
     fdFields.right = new FormAttachment( 100, -margin );
-    fdFields.bottom = new FormAttachment( 100, -50 );
-    wFields.setLayoutData( fdFields );
-
-    // THE BUTTONS
-    wOk = new Button( shell, SWT.PUSH );
-    wOk.setText( BaseMessages.getString( PKG, "System.Button.OK" ) );
-    wCancel = new Button( shell, SWT.PUSH );
-    wCancel.setText( BaseMessages.getString( PKG, "System.Button.Cancel" ) );
-
-    setButtonPositions( new Button[] { wOk, wCancel }, margin, null );
+    fdFields.bottom = new FormAttachment( wOk, -2*margin );
+    wFields.setLayoutData(fdFields);
 
     // Add listeners
-    lsOk = e -> ok();
-    lsCancel = e -> cancel();
-
-    wOk.addListener( SWT.Selection, lsOk );
-    wCancel.addListener( SWT.Selection, lsCancel );
-
     lsDef = new SelectionAdapter() {
       public void widgetDefaultSelected( SelectionEvent e ) {
         ok();

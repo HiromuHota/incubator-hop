@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -35,7 +35,7 @@ public class ColumnExistsData extends BaseTransformData implements ITransformDat
   public Database db;
   public int indexOfTablename;
   public int indexOfColumnname;
-  public String tablename;
+  public String tableName;
   public String schemaname;
   public IRowMeta outputRowMeta;
 
@@ -43,7 +43,7 @@ public class ColumnExistsData extends BaseTransformData implements ITransformDat
     super();
     indexOfTablename = -1;
     indexOfColumnname = -1;
-    tablename = null;
+    tableName = null;
     schemaname = null;
     db = null;
   }

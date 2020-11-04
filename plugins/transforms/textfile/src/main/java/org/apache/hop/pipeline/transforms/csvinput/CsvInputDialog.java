@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -83,25 +83,21 @@ import java.util.stream.Collectors;
 
 public class CsvInputDialog extends BaseTransformDialog implements ITransformDialog,
   IGetFieldsCapableTransformDialog<CsvInputMeta>, ICsvInputAwareTransformDialog {
-  private static Class<?> PKG = CsvInput.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = CsvInput.class; // for i18n purposes, needed by Translator!!
 
-  private CsvInputMeta inputMeta;
+  private final CsvInputMeta inputMeta;
 
   private TextVar wFilename;
   private CCombo wFilenameField;
   private Button wbbFilename; // Browse for a file
   private Button wIncludeFilename;
   private TextVar wRowNumField;
-  private Button wbDelimiter;
   private TextVar wDelimiter;
   private TextVar wEnclosure;
   private TextVar wBufferSize;
   private Button wLazyConversion;
   private Button wHeaderPresent;
-  private FormData fdAddResult;
-  private FormData fdlAddResult;
   private TableView wFields;
-  private Label wlAddResult;
   private Button wAddResult;
   private boolean isReceivingInput;
   private Button wRunningInParallel;
@@ -219,7 +215,7 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
       props.setLook( wIncludeFilename );
       wFilenameField.addModifyListener( lsMod );
       FormData fdIncludeFilename = new FormData();
-      fdIncludeFilename.top = new FormAttachment( lastControl, margin );
+      fdIncludeFilename.top = new FormAttachment( wlIncludeFilename, 0, SWT.CENTER );
       fdIncludeFilename.left = new FormAttachment( middle, 0 );
       fdIncludeFilename.right = new FormAttachment( 100, 0 );
       wIncludeFilename.setLayoutData( fdIncludeFilename );
@@ -274,8 +270,8 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
     fdlDelimiter.left = new FormAttachment( 0, 0 );
     fdlDelimiter.right = new FormAttachment( middle, -margin );
     wlDelimiter.setLayoutData( fdlDelimiter );
-    wbDelimiter = new Button( shell, SWT.PUSH | SWT.CENTER );
-    props.setLook( wbDelimiter );
+    Button wbDelimiter = new Button(shell, SWT.PUSH | SWT.CENTER);
+    props.setLook(wbDelimiter);
     wbDelimiter.setText( BaseMessages.getString( PKG, "CsvInputDialog.Delimiter.Button" ) );
     FormData fdbDelimiter = new FormData();
     fdbDelimiter.top = new FormAttachment( lastControl, margin );
@@ -287,7 +283,7 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
     FormData fdDelimiter = new FormData();
     fdDelimiter.top = new FormAttachment( lastControl, margin );
     fdDelimiter.left = new FormAttachment( middle, 0 );
-    fdDelimiter.right = new FormAttachment( wbDelimiter, -margin );
+    fdDelimiter.right = new FormAttachment(wbDelimiter, -margin );
     wDelimiter.setLayoutData( fdDelimiter );
     wDelimiter.addModifyListener( lsContent );
     lastControl = wDelimiter;
@@ -345,11 +341,11 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
     wLazyConversion = new Button( shell, SWT.CHECK );
     props.setLook( wLazyConversion );
     FormData fdLazyConversion = new FormData();
-    fdLazyConversion.top = new FormAttachment( lastControl, margin );
+    fdLazyConversion.top = new FormAttachment( wlLazyConversion, 0, SWT.CENTER );
     fdLazyConversion.left = new FormAttachment( middle, 0 );
     fdLazyConversion.right = new FormAttachment( 100, 0 );
     wLazyConversion.setLayoutData( fdLazyConversion );
-    lastControl = wLazyConversion;
+    lastControl = wlLazyConversion;
 
     // header row?
     //
@@ -364,7 +360,7 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
     wHeaderPresent = new Button( shell, SWT.CHECK );
     props.setLook( wHeaderPresent );
     FormData fdHeaderPresent = new FormData();
-    fdHeaderPresent.top = new FormAttachment( lastControl, margin );
+    fdHeaderPresent.top = new FormAttachment( wlHeaderPresent, 0, SWT.CENTER );
     fdHeaderPresent.left = new FormAttachment( middle, 0 );
     fdHeaderPresent.right = new FormAttachment( 100, 0 );
     wHeaderPresent.setLayoutData( fdHeaderPresent );
@@ -373,24 +369,24 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
      *
      * @Override public void widgetSelected(SelectionEvent arg0) { asyncUpdatePreview(); } });
      */
-    lastControl = wHeaderPresent;
+    lastControl = wlHeaderPresent;
 
-    wlAddResult = new Label( shell, SWT.RIGHT );
+    Label wlAddResult = new Label(shell, SWT.RIGHT);
     wlAddResult.setText( BaseMessages.getString( PKG, "CsvInputDialog.AddResult.Label" ) );
-    props.setLook( wlAddResult );
-    fdlAddResult = new FormData();
+    props.setLook(wlAddResult);
+    FormData fdlAddResult = new FormData();
     fdlAddResult.left = new FormAttachment( 0, 0 );
-    fdlAddResult.top = new FormAttachment( wHeaderPresent, margin );
+    fdlAddResult.top = new FormAttachment( lastControl, margin );
     fdlAddResult.right = new FormAttachment( middle, -margin );
-    wlAddResult.setLayoutData( fdlAddResult );
+    wlAddResult.setLayoutData(fdlAddResult);
     wAddResult = new Button( shell, SWT.CHECK );
     props.setLook( wAddResult );
     wAddResult.setToolTipText( BaseMessages.getString( PKG, "CsvInputDialog.AddResult.Tooltip" ) );
-    fdAddResult = new FormData();
+    FormData fdAddResult = new FormData();
     fdAddResult.left = new FormAttachment( middle, 0 );
-    fdAddResult.top = new FormAttachment( wHeaderPresent, margin );
-    wAddResult.setLayoutData( fdAddResult );
-    lastControl = wAddResult;
+    fdAddResult.top = new FormAttachment(wlAddResult, 0, SWT.CENTER );
+    wAddResult.setLayoutData(fdAddResult);
+    lastControl = wlAddResult;
 
     // The field itself...
     //
@@ -406,11 +402,11 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
     props.setLook( wRowNumField );
     wRowNumField.addModifyListener( lsMod );
     FormData fdRowNumField = new FormData();
-    fdRowNumField.top = new FormAttachment( lastControl, margin );
+    fdRowNumField.top = new FormAttachment( wlRowNumField, 0, SWT.CENTER );
     fdRowNumField.left = new FormAttachment( middle, 0 );
     fdRowNumField.right = new FormAttachment( 100, 0 );
     wRowNumField.setLayoutData( fdRowNumField );
-    lastControl = wRowNumField;
+    lastControl = wlRowNumField;
 
     // running in parallel?
     //
@@ -425,10 +421,10 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
     wRunningInParallel = new Button( shell, SWT.CHECK );
     props.setLook( wRunningInParallel );
     FormData fdRunningInParallel = new FormData();
-    fdRunningInParallel.top = new FormAttachment( lastControl, margin );
+    fdRunningInParallel.top = new FormAttachment( wlRunningInParallel, 0, SWT.CENTER );
     fdRunningInParallel.left = new FormAttachment( middle, 0 );
     wRunningInParallel.setLayoutData( fdRunningInParallel );
-    lastControl = wRunningInParallel;
+    lastControl = wlRunningInParallel;
 
     // Is a new line possible in a field?
     //
@@ -443,7 +439,7 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
     wNewlinePossible = new Button( shell, SWT.CHECK );
     props.setLook( wNewlinePossible );
     FormData fdNewlinePossible = new FormData();
-    fdNewlinePossible.top = new FormAttachment( lastControl, margin );
+    fdNewlinePossible.top = new FormAttachment( wlNewlinePossible, 0, SWT.CENTER );
     fdNewlinePossible.left = new FormAttachment( middle, 0 );
     wNewlinePossible.setLayoutData( fdNewlinePossible );
     wNewlinePossible.addSelectionListener( new SelectionAdapter() {
@@ -457,7 +453,7 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
         asyncUpdatePreview();
       }
     } );
-    lastControl = wNewlinePossible;
+    lastControl = wlNewlinePossible;
 
     // Encoding
     Label wlEncoding = new Label( shell, SWT.RIGHT );
@@ -472,7 +468,7 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
     props.setLook( wEncoding );
     wEncoding.addModifyListener( lsMod );
     FormData fdEncoding = new FormData();
-    fdEncoding.top = new FormAttachment( lastControl, margin );
+    fdEncoding.top = new FormAttachment( wlEncoding, 0, SWT.CENTER );
     fdEncoding.left = new FormAttachment( middle, 0 );
     fdEncoding.right = new FormAttachment( 100, 0 );
     wEncoding.setLayoutData( fdEncoding );
@@ -549,16 +545,11 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
     wFields.setLayoutData( fdFields );
     wFields.setContentListener( lsContent );
 
-    // Add listeners
-    lsCancel = e -> cancel();
-    lsOk = e -> ok();
-    lsPreview = e -> preview();
-    lsGet = e -> getFields();
 
-    wCancel.addListener( SWT.Selection, lsCancel );
-    wOk.addListener( SWT.Selection, lsOk );
-    wPreview.addListener( SWT.Selection, lsPreview );
-    wGet.addListener( SWT.Selection, lsGet );
+    wCancel.addListener( SWT.Selection, e -> cancel() );
+    wOk.addListener( SWT.Selection, e -> ok() );
+    wPreview.addListener( SWT.Selection, e -> preview() );
+    wGet.addListener( SWT.Selection, e -> getFields() );
 
     lsDef = new SelectionAdapter() {
       public void widgetDefaultSelected( SelectionEvent e ) {
@@ -579,7 +570,7 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
     wRowNumField.addSelectionListener( lsDef );
 
     // Allow the insertion of tabs as separator...
-    wbDelimiter.addSelectionListener( new SelectionAdapter() {
+    wbDelimiter.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected( SelectionEvent se ) {
         Text t = wDelimiter.getTextWidget();
         if ( t != null ) {
@@ -648,10 +639,9 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
       gotEncodings = true;
 
       wEncoding.removeAll();
-      List<Charset> values = new ArrayList<Charset>( Charset.availableCharsets().values() );
-      for ( int i = 0; i < values.size(); i++ ) {
-        Charset charSet = values.get( i );
-        wEncoding.add( charSet.displayName() );
+      List<Charset> values = new ArrayList<>(Charset.availableCharsets().values());
+      for (Charset charSet : values) {
+        wEncoding.add(charSet.displayName());
       }
 
       // Now select the default!
@@ -942,7 +932,7 @@ public class CsvInputDialog extends BaseTransformDialog implements ITransformDia
 
       // TransformMeta transformMeta = new TransformMeta(transformName, meta);
       StringBuffer buffer = new StringBuffer();
-      final List<Object[]> rowsData = new ArrayList<Object[]>();
+      final List<Object[]> rowsData = new ArrayList<>();
       final IRowMeta rowMeta = new RowMeta();
 
       try {

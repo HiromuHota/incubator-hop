@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
 *
  *******************************************************************************
@@ -22,19 +23,6 @@
 
 package org.apache.hop.pipeline.transforms.xml.xmljoin;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
 import org.apache.hop.core.exception.HopException;
 import org.apache.hop.core.exception.HopXmlException;
 import org.apache.hop.core.row.IRowMeta;
@@ -51,6 +39,18 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+import java.io.StringReader;
+import java.io.StringWriter;
+
 /**
  * Converts input rows to one or more XML files.
  *
@@ -58,7 +58,7 @@ import org.xml.sax.InputSource;
  * @since 14-jan-2006
  */
 public class XmlJoin extends BaseTransform<XmlJoinMeta, XmlJoinData> implements ITransform<XmlJoinMeta, XmlJoinData> {
-  private static Class<?> PKG = XmlJoinMeta.class; // for i18n purposes, needed by Translator2!!
+  private static final Class<?> PKG = XmlJoinMeta.class; // for i18n purposes, needed by Translator2!!
 
   private Transformer transformer;
 
@@ -71,14 +71,14 @@ public class XmlJoin extends BaseTransform<XmlJoinMeta, XmlJoinData> implements 
 
     XPath xpath = XPathFactory.newInstance().newXPath();
 
-    // if first row we do some initializing and process the first row of the target XML Step
+    // if first row we do some initializing and process the first row of the target XML Transform
     if ( first ) {
       first = false;
-      int target_field_id = -1;
+      int targetField_id = -1;
 
       // Get the two input row sets
-      data.TargetRowSet = findInputRowSet( meta.getTargetXmlStep() );
-      data.SourceRowSet = findInputRowSet( meta.getSourceXmlStep() );
+      data.TargetRowSet = findInputRowSet( meta.getTargetXmlTransform() );
+      data.SourceRowSet = findInputRowSet( meta.getSourceXmlTransform() );
 
       // get the first line from the target row set
       Object[] rTarget = getRowFrom( data.TargetRowSet );
@@ -90,14 +90,14 @@ public class XmlJoin extends BaseTransform<XmlJoinMeta, XmlJoinData> implements 
       }
 
       // get target xml
-      String[] target_field_names = data.TargetRowSet.getRowMeta().getFieldNames();
-      for ( int i = 0; i < target_field_names.length; i++ ) {
-        if ( meta.getTargetXmlField().equals( target_field_names[i] ) ) {
-          target_field_id = i;
+      String[] targetFieldNames = data.TargetRowSet.getRowMeta().getFieldNames();
+      for ( int i = 0; i < targetFieldNames.length; i++ ) {
+        if ( meta.getTargetXmlField().equals( targetFieldNames[i] ) ) {
+          targetField_id = i;
         }
       }
       // Throw exception if target field has not been found
-      if ( target_field_id == -1 ) {
+      if ( targetField_id == -1 ) {
         throw new HopException( BaseMessages.getString( PKG, "XMLJoin.Exception.FieldNotFound", meta
             .getTargetXmlField() ) );
       }
@@ -108,7 +108,7 @@ public class XmlJoin extends BaseTransform<XmlJoinMeta, XmlJoinData> implements 
       data.outputRowData = rTarget.clone();
 
       // get the target xml structure and create a DOM
-      String strTarget = (String) rTarget[target_field_id];
+      String strTarget = (String) rTarget[targetField_id];
       // parse the XML as a W3C Document
 
       InputSource inputSource = new InputSource( new StringReader( strTarget ) );
@@ -158,9 +158,9 @@ public class XmlJoin extends BaseTransform<XmlJoinMeta, XmlJoinData> implements 
         // assume failure
         // get the column of the join xml set
         // get target xml
-        String[] source_field_names = data.SourceRowSet.getRowMeta().getFieldNames();
-        for ( int i = 0; i < source_field_names.length; i++ ) {
-          if ( meta.getSourceXmlField().equals( source_field_names[i] ) ) {
+        String[] sourceFieldNames = data.SourceRowSet.getRowMeta().getFieldNames();
+        for ( int i = 0; i < sourceFieldNames.length; i++ ) {
+          if ( meta.getSourceXmlField().equals( sourceFieldNames[i] ) ) {
             data.iSourceXMLField = i;
           }
         }
@@ -173,9 +173,9 @@ public class XmlJoin extends BaseTransform<XmlJoinMeta, XmlJoinData> implements 
 
       if ( meta.isComplexJoin() && data.iCompareFieldID == -1 ) {
         // get the column of the compare value
-        String[] source_field_names = data.SourceRowSet.getRowMeta().getFieldNames();
-        for ( int i = 0; i < source_field_names.length; i++ ) {
-          if ( meta.getJoinCompareField().equals( source_field_names[i] ) ) {
+        String[] sourceFieldNames = data.SourceRowSet.getRowMeta().getFieldNames();
+        for ( int i = 0; i < sourceFieldNames.length; i++ ) {
+          if ( meta.getJoinCompareField().equals( sourceFieldNames[i] ) ) {
             data.iCompareFieldID = i;
           }
         }
@@ -236,7 +236,7 @@ public class XmlJoin extends BaseTransform<XmlJoinMeta, XmlJoinData> implements 
 
       // See if a main step is supplied: in that case move the corresponding rowset to position 0
       //
-      swapFirstInputRowSetIfExists( meta.getTargetXmlStep() );
+      swapFirstInputRowSetIfExists( meta.getTargetXmlTransform() );
     } catch ( Exception e ) {
       log.logError( BaseMessages.getString( PKG, "XMLJoin.Error.Init" ), e );
       return false;

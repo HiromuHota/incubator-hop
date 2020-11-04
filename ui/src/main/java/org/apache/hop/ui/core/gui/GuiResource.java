@@ -3,6 +3,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -798,6 +799,7 @@ public class GuiResource {
   }
 
   // load image from svg
+  //
   public Image loadAsResource( Display display, String location, int size ) {
     SwtUniversalImage img = SwtSvgImageUtil.getImageAsResource( display, location );
     Image image;
@@ -1077,7 +1079,7 @@ public class GuiResource {
 
     imagePartitionSchema = SwtSvgImageUtil.getUniversalImage( display, getClass().getClassLoader(), BasePropertyHandler.getProperty( "Image_Partition_Schema" ) );
 
-    imageWorkflowGraph = SwtSvgImageUtil.getUniversalImage( display, getClass().getClassLoader(), BasePropertyHandler.getProperty( "ChefIcon_image" ) );
+    imageWorkflowGraph = SwtSvgImageUtil.getUniversalImage( display, getClass().getClassLoader(), BasePropertyHandler.getProperty( "WorkflowGraph_image" ) );
 
     imagePipelineTree = SwtSvgImageUtil.getUniversalImage( display, getClass().getClassLoader(), BasePropertyHandler.getProperty( "Pipeline_tree_image" ) );
     imageWorkflowTree = SwtSvgImageUtil.getUniversalImage( display, getClass().getClassLoader(), BasePropertyHandler.getProperty( "Workflow_tree_image" ) );

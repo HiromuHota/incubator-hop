@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -51,9 +51,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 
@@ -67,7 +65,7 @@ import java.util.List;
  * @since 19-06-2003
  */
 public class PreviewRowsDialog {
-  private static Class<?> PKG = PreviewRowsDialog.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = PreviewRowsDialog.class; // for i18n purposes, needed by Translator!!
 
   public static final int MAX_BINARY_STRING_PREVIEW_SIZE = 1000000;
 
@@ -180,7 +178,10 @@ public class PreviewRowsDialog {
 
     Button wClose = new Button( shell, SWT.PUSH );
     wClose.setText( BaseMessages.getString( PKG, "System.Button.Close" ) );
-    wClose.addListener( SWT.Selection, e -> close() );
+    wClose.addListener( SWT.Selection, e -> {
+      askingToStop = true;
+      close();
+    } );
     buttons.add( wClose );
 
     if ( !Utils.isEmpty( loggingText ) ) {
@@ -225,6 +226,7 @@ public class PreviewRowsDialog {
     shell.addShellListener( new ShellAdapter() {
       @Override
       public void shellClosed( ShellEvent e ) {
+        askingToStop = true;
         close();
       }
     } );
@@ -232,6 +234,7 @@ public class PreviewRowsDialog {
     KeyListener escapeListener = new KeyAdapter() {
       @Override public void keyPressed( KeyEvent e ) {
         if (e.keyCode==SWT.ESC) {
+          askingToStop = true;
           close();
         }
       }
@@ -328,24 +331,26 @@ public class PreviewRowsDialog {
    * Copy information from the meta-data input to the dialog fields.
    */
   private void getData() {
-    shell.getDisplay().asyncExec( () -> {
-      lineNr = 0;
-      for ( int i = 0; i < buffer.size(); i++ ) {
-        TableItem item;
-        if ( i == 0 ) {
-          item = wFields.table.getItem( i );
-        } else {
-          item = new TableItem( wFields.table, SWT.NONE );
+    synchronized ( buffer ) {
+      shell.getDisplay().asyncExec( () -> {
+        lineNr = 0;
+        for ( int i = 0; i < buffer.size(); i++ ) {
+          TableItem item;
+          if ( i == 0 ) {
+            item = wFields.table.getItem( i );
+          } else {
+            item = new TableItem( wFields.table, SWT.NONE );
+          }
+
+          Object[] row = buffer.get( i );
+
+          getDataForRow( item, row );
         }
-
-        Object[] row = buffer.get( i );
-
-        getDataForRow( item, row );
-      }
-      if ( !wFields.isDisposed() ) {
-        wFields.optWidth( true, 200 );
-      }
-    } );
+        if ( !wFields.isDisposed() ) {
+          wFields.optWidth( true, 200 );
+        }
+      } );
+    }
   }
 
   protected int getDataForRow( TableItem item, Object[] row ) {

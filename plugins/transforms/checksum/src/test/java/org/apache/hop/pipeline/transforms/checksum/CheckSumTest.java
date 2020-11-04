@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -321,7 +321,7 @@ public class CheckSumTest {
 
 
   @Test
-  public void testHexOutput_crc32() throws Exception {
+  public void testHexOutputCrc32() throws Exception {
     MockRowListener results = executeHexTest( 0, "xyz", new ValueMetaString( "test" ) );
     assertEquals( 1, results.getWritten().size() );
     assertEquals( Long.valueOf( "3951999591" ), results.getWritten().get( 0 )[ 1 ] );

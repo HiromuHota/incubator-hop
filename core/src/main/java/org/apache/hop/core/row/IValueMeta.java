@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -1027,7 +1027,7 @@ public interface IValueMeta extends Cloneable {
    * @throws HopValueException in case there is a data conversion error
    */
   Object convertDataFromString( String pol, IValueMeta convertMeta, String nullif, String ifNull,
-                                int trim_type ) throws HopValueException;
+                                int trimType ) throws HopValueException;
 
   /**
    * Converts the specified data object to the normal storage type.
@@ -1259,7 +1259,7 @@ public interface IValueMeta extends Cloneable {
    * @return The field type definition
    */
   String getDatabaseColumnTypeDefinition( IDatabase iDatabase, String tk, String pk,
-                                          boolean use_autoinc, boolean add_fieldname, boolean add_cr );
+                                          boolean useAutoInc, boolean addFieldname, boolean addCr );
 
   /**
    * Is Ignore Whitespace

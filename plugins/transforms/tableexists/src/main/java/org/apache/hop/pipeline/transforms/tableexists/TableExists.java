@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -44,7 +45,7 @@ import org.apache.hop.pipeline.transform.ITransform;
  */
 
 public class TableExists extends BaseTransform<TableExistsMeta, TableExistsData> implements ITransform<TableExistsMeta, TableExistsData> {
-  private static Class<?> PKG = TableExistsMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = TableExistsMeta.class; // for i18n purposes, needed by Translator!!
 
   public TableExists( TransformMeta transformMeta, TableExistsMeta meta, TableExistsData data, int copyNr, PipelineMeta pipelineMeta,
                       Pipeline pipeline ) {
@@ -90,10 +91,10 @@ public class TableExists extends BaseTransform<TableExistsMeta, TableExistsData>
       } // End If first
 
       // get tablename
-      String tablename = getInputRowMeta().getString( r, data.indexOfTablename );
+      String tableName = getInputRowMeta().getString( r, data.indexOfTablename );
 
       // Check if table exists on the specified connection
-      tablexists = data.db.checkTableExists( data.realSchemaname, tablename );
+      tablexists = data.db.checkTableExists( data.realSchemaname, tableName );
 
       Object[] outputRowData = RowDataUtil.addValueData( r, getInputRowMeta().size(), tablexists );
 

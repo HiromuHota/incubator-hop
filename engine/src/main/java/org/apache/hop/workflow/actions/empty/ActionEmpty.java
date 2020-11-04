@@ -2,6 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  * http://www.project-hop.org
  *
  *******************************************************************************
@@ -36,7 +37,7 @@ import org.w3c.dom.Node;
 import java.util.List;
 
 public class ActionEmpty extends ActionBase implements IAction {
-  public Result execute( Result prev_result, int nr ) throws HopException {
+  public Result execute( Result prevResult, int nr ) throws HopException {
     return null;
   }
 

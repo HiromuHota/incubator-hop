@@ -2,7 +2,7 @@
  *
  * Hop : The Hop Orchestration Platform
  *
- * http://www.project-hop.org
+ * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -37,7 +37,7 @@ public class TextFileInputData extends BaseFileInputTransformData {
 
   public List<TextFileLine> lineBuffer;
 
-  public Object[] previous_row;
+  public Object[] previousRow;
 
   public int nrLinesOnPage;
 
@@ -77,7 +77,7 @@ public class TextFileInputData extends BaseFileInputTransformData {
     lineBuffer = new LinkedList<TextFileLine>();
 
     nr_repeats = 0;
-    previous_row = null;
+    previousRow = null;
 
     nrLinesOnPage = 0;
 
