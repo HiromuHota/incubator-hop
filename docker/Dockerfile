@@ -1,5 +1,5 @@
 FROM tomcat:jdk8
-MAINTAINER Hiromu Hota <hiromu.hota@hal.hitachi.com>
+MAINTAINER Hiromu Hota <hiromu.hota@gmail.com>
 
 ADD hop.war webapps/
 ADD hop-assemblies-plugins-dist.zip /tmp/
