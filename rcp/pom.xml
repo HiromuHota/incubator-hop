@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.hop</groupId>
+  <groupId>org.apache.hop</groupId>
   <artifactId>hop-ui-rcp</artifactId>
   <packaging>jar</packaging>
   <version>0.40-SNAPSHOT</version>
@@ -11,7 +11,7 @@
   <name>Hop GUI (RCP fragment)</name>
 
   <parent>
-    <groupId>org.hop</groupId>
+    <groupId>org.apache.hop</groupId>
     <artifactId>hop</artifactId>
     <version>0.40-SNAPSHOT</version>
   </parent>
@@ -29,7 +29,7 @@
   <dependencies>
     <!-- Hop dependencies -->
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-ui-swt</artifactId>
       <version>${project.version}</version>
       <exclusions>

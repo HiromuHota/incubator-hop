@@ -17,7 +17,7 @@
     <dependencySet>
       <includes>
         <!--<include>org.hop:hop-assemblies-demo:zip</include>-->
-        <include>org.hop:hop-assemblies-libs:zip</include>
+        <include>org.apache.hop:hop-assemblies-libs:zip</include>
       </includes>
       <unpack>true</unpack>
       <outputDirectory>WEB-INF</outputDirectory>
@@ -26,7 +26,7 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.hop:hop-assemblies-static:zip</include>
+        <include>org.apache.hop:hop-assemblies-static:zip</include>
       </includes>
       <unpack>true</unpack>
       <outputDirectory>.</outputDirectory>
@@ -44,7 +44,7 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.hop:hop-ui-rap:jar</include>
+        <include>org.apache.hop:hop-ui-rap:jar</include>
       </includes>
       <outputDirectory>WEB-INF/lib</outputDirectory>
       <useTransitiveDependencies>false</useTransitiveDependencies>

@@ -74,7 +74,7 @@
 
     <!-- RCP fragment -->
     <dependency>
-      <groupId>org.hop</groupId>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-ui-rcp</artifactId>
       <version>${project.version}</version>
     </dependency>
