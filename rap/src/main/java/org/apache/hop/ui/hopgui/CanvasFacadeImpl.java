@@ -53,7 +53,7 @@ public class CanvasFacadeImpl extends CanvasFacade {
 
     WorkflowMeta workflowMeta = (WorkflowMeta) meta;
     JsonObject jsonNodes = new JsonObject();
-    workflowMeta.getActionCopies().forEach( node -> {
+    workflowMeta.getActions().forEach( node -> {
       JsonObject jsonNode = new JsonObject();
       jsonNode.add( "x", node.getLocation().x );
       jsonNode.add( "y", node.getLocation().y );
