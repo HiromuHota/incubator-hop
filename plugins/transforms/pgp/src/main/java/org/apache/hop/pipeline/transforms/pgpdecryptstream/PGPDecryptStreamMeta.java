@@ -53,11 +53,11 @@ import java.util.List;
         i18nPackageName = "org.apache.hop.pipeline.transforms.pgpdecryptstream",
         description = "PGPDecryptStream.Description",
         name = "PGPDecryptStream.Name",
-        categoryDescription = "BaseTransform.Category.Cryptography",
+        categoryDescription = "i18n:org.apache.hop.pipeline.transform:BaseTransform.Category.Cryptography",
         documentationUrl = "https://www.project-hop.org/manual/latest/plugins/transforms/pgpdecryptstream.html"
 )
 public class PGPDecryptStreamMeta extends BaseTransformMeta implements ITransformMeta<PGPDecryptStream, PGPDecryptStreamData> {
-  private static final Class<?> PKG = PGPDecryptStreamMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = PGPDecryptStreamMeta.class; // Needed by Translator
 
   /**
    * GPG location

@@ -53,13 +53,13 @@ import java.util.List;
         i18nPackageName = "org.apache.hop.pipeline.transforms.pgbulkloader",
         description = "PGBulkLoader.Description",
         name = "PGBulkLoader.Name",
-        categoryDescription = "BaseTransform.Category.Bulk",
+        categoryDescription = "i18n:org.apache.hop.pipeline.transform:BaseTransform.Category.Bulk",
         documentationUrl = "https://www.project-hop.org/manual/latest/plugins/transforms/pgbulkloader.html"
 )
 public class PGBulkLoaderMeta extends BaseTransformMeta implements ITransformMeta<PGBulkLoader, PGBulkLoaderData>,
   IProvidesDatabaseConnectionInformation {
 
-  private static final Class<?> PKG = PGBulkLoaderMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = PGBulkLoaderMeta.class; // Needed by Translator
 
   /**
    * what's the schema for the target?

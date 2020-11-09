@@ -66,7 +66,7 @@ import java.util.Locale;
 )
 public class SortRowsMeta extends BaseTransformMeta implements ITransformMeta<SortRows, SortRowsData>, Serializable {
   private static final long serialVersionUID = -9075883720765645655L;
-  private static final Class<?> PKG = SortRowsMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = SortRowsMeta.class; // Needed by Translator
 
   /**
    * order by which fields?
@@ -604,7 +604,7 @@ public class SortRowsMeta extends BaseTransformMeta implements ITransformMeta<So
   public List<String> getGroupFields() {
     if ( this.groupFields == null ) {
       for ( int i = 0; i < preSortedField.length; i++ ) {
-        if ( preSortedField[ i ] == true ) {
+        if ( preSortedField[ i ] ) {
           if ( groupFields == null ) {
             groupFields = new ArrayList<>();
           }
@@ -616,7 +616,7 @@ public class SortRowsMeta extends BaseTransformMeta implements ITransformMeta<So
   }
 
   public boolean isGroupSortEnabled() {
-    return ( this.getGroupFields() != null ) ? true : false;
+    return this.getGroupFields() != null ;
   }
 
   /**

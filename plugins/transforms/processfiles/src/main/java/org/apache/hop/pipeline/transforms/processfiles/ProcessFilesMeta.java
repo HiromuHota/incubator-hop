@@ -48,11 +48,11 @@ import java.util.List;
         i18nPackageName = "org.apache.hop.pipeline.transforms.ProcessFiles",
         description = "ProcessFiles.Description",
         name = "ProcessFiles.Name",
-        categoryDescription = "BaseTransform.Category.Utility",
+        categoryDescription = "i18n:org.apache.hop.pipeline.transform:BaseTransform.Category.Utility",
         documentationUrl = "https://www.project-hop.org/manual/latest/plugins/transforms/processfiles.html"
 )
 public class ProcessFilesMeta extends BaseTransformMeta implements ITransformMeta<ProcessFiles, ProcessFilesData> {
-  private static final Class<?> PKG = ProcessFilesMeta.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = ProcessFilesMeta.class; // Needed by Translator
 
   private boolean addresultfilenames;
   private boolean overwritetargetfile;

@@ -77,7 +77,7 @@ import java.util.regex.Pattern;
   documentationUrl = "https://www.project-hop.org/manual/latest/plugins/actions/pgpdecryptfiles.html"
 )
 public class ActionPGPDecryptFiles extends ActionBase implements Cloneable, IAction {
-  private static final Class<?> PKG = ActionPGPDecryptFiles.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = ActionPGPDecryptFiles.class; // Needed by Translator
 
   private SimpleDateFormat daf;
   private GPG gpg;
@@ -1215,19 +1215,19 @@ public class ActionPGPDecryptFiles extends ActionBase implements Cloneable, IAct
   }
 
   /**
-   * @param gpglocation
-   * @deprecated use {@link #setGPGLocation(String)} instead
+   * @param gpgLocation
+   * @deprecated use {@link #setGpgLocation(String)} instead
    */
   @Deprecated
-  public void setGPGPLocation( String gpgLocation ) {
+  public void setGpgPLocation( String gpgLocation ) {
     this.gpgLocation = gpgLocation;
   }
 
-  public void setGPGLocation( String gpgLocation ) {
+  public void setGpgLocation( String gpgLocation ) {
     this.gpgLocation = gpgLocation;
   }
 
-  public String getGPGLocation() {
+  public String getGpgLocation() {
     return gpgLocation;
   }
 

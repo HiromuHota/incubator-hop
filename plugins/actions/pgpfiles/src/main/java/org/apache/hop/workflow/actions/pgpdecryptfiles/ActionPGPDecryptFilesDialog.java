@@ -55,7 +55,7 @@ import org.eclipse.swt.widgets.*;
  * @since 20-02-2008
  */
 public class ActionPGPDecryptFilesDialog extends ActionDialog implements IActionDialog {
-  private static final Class<?> PKG = ActionPGPDecryptFiles.class; // for i18n purposes, needed by Translator!!
+  private static final Class<?> PKG = ActionPGPDecryptFiles.class; // Needed by Translator
 
   private static final String[] FILETYPES = new String[] { BaseMessages.getString(
     PKG, "ActionPGPDecryptFiles.Filetype.All" ) };
@@ -1515,8 +1515,8 @@ public class ActionPGPDecryptFilesDialog extends ActionDialog implements IAction
       wDateTimeFormat.setText( action.getDateTimeFormat() );
     }
 
-    if ( action.getGPGLocation() != null ) {
-      wGpgExe.setText( action.getGPGLocation() );
+    if ( action.getGpgLocation() != null ) {
+      wGpgExe.setText( action.getGpgLocation() );
     }
 
     wAddMovedDate.setSelection( action.isAddMovedDate() );
@@ -1579,7 +1579,7 @@ public class ActionPGPDecryptFilesDialog extends ActionDialog implements IAction
 
     action.setDestinationFolder( wDestinationFolder.getText() );
 
-    action.setGPGPLocation( wGpgExe.getText() );
+    action.setGpgPLocation( wGpgExe.getText() );
 
     if ( wIfMovedFileExists.getSelectionIndex() == 1 ) {
       action.setIfMovedFileExists( "overwrite_file" );
