@@ -1090,7 +1090,7 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
 
           // Show the context dialog
           //
-          GuiContextUtil.handleActionSelection( parent, message, new Point( p.x, p.y ), contextHandler.getSupportedActions() );
+          avoidContextDialog = GuiContextUtil.handleActionSelection( parent, message, new Point( p.x, p.y ), contextHandler );
         }
 
       }
