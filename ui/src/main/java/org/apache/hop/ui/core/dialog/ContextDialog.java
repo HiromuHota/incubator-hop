@@ -88,6 +88,7 @@ public class ContextDialog extends Dialog {
   public static final String TOOLBAR_ITEM_COLLAPSE_ALL = "ContextDialog-Toolbar-10010-CollapseAll";
   public static final String TOOLBAR_ITEM_EXPAND_ALL = "ContextDialog-Toolbar-10020-ExpandAll";
   public static final String TOOLBAR_ITEM_ENABLE_CATEGORIES = "ContextDialog-Toolbar-10030-EnableCategories";
+  public static final String TOOLBAR_ITEM_CLEAR_SEARCH = "ContextDialog-Toolbar-10040-ClearSearch";
 
   public static final String AUDIT_TYPE_TOOLBAR_SHOW_CATEGORIES = "ContextDialogShowCategories";
   public static final String AUDIT_TYPE_CONTEXT_DIALOG = "ContextDialog";
@@ -139,6 +140,8 @@ public class ContextDialog extends Dialog {
   private Item lastShownItem;
   private ToolBar toolBar;
   private GuiToolbarWidgets toolBarWidgets;
+
+  private static ContextDialog activeInstance;
 
   private enum OwnerType {
     CATEGORY,
@@ -508,9 +511,16 @@ public class ContextDialog extends Dialog {
     } );
     wCanvas.addKeyListener( keyAdapter );
 
-    // Show the dialog now
+    // Layout all the widgets in the shell.
     //
     shell.layout();
+
+    // Set the active instance.
+    //
+    activeInstance = this;
+
+    // Show the dialog now
+    //
     shell.open();
 
     // Filter all actions by default
@@ -529,7 +539,18 @@ public class ContextDialog extends Dialog {
       }
     }
 
+    activeInstance = null;
+
     return selectedAction;
+  }
+
+  /**
+   * Gets the currently active instance
+   *
+   * @return The currently active instance or null if the dialog is not showing.
+   */
+  public static ContextDialog getInstance() {
+    return activeInstance;
   }
 
   private void recallToolbarSettings() {
@@ -646,6 +667,17 @@ public class ContextDialog extends Dialog {
       return null;
     }
     return (Button) checkboxItem.getControl();
+  }
+
+  @GuiToolbarElement(
+    root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
+    id = TOOLBAR_ITEM_CLEAR_SEARCH,
+    toolTip = "Clear search filter",
+    image = "ui/images/ClearText.svg",
+    separator = true
+  )
+  public void clearSearchFilter() {
+    wSearch.setText("");
   }
 
   /**
@@ -829,7 +861,9 @@ public class ContextDialog extends Dialog {
       // Pick the next category
       //
       categoryNr++;
-      y += yMargin;
+      if (!itemsToPaint.isEmpty()) {
+        y += yMargin;
+      }
     }
 
     totalContentHeight = y + heightOffSet;
@@ -899,7 +933,16 @@ public class ContextDialog extends Dialog {
     wCanvas.redraw();
   }
 
-  private void filter( String text ) {
+  /**
+   * Gets the search text widget
+   *
+   * @return the search text widget
+   */
+  public Text getSearchTextWidget() {
+    return wSearch;
+  }
+
+  public void filter( String text ) {
 
     if ( text == null ) {
       text = "";
@@ -947,9 +990,12 @@ public class ContextDialog extends Dialog {
     this.filter( text );
   }
 
-  private void onKeyPressed( KeyEvent event ) {
+  private synchronized void onKeyPressed( KeyEvent event ) {
 
     if ( filteredItems.isEmpty() ) {
+      return;
+    }
+    if (shell.isDisposed() || !shell.isVisible()) {
       return;
     }
 
@@ -964,7 +1010,9 @@ public class ContextDialog extends Dialog {
         area = firstShownItem.getAreaOwner().getArea();
       }
     } else {
-      area = selectedItem.getAreaOwner().getArea();
+      if (selectedItem.getAreaOwner()!=null) {
+        area = selectedItem.getAreaOwner().getArea();
+      }
     }
 
     switch ( event.keyCode ) {

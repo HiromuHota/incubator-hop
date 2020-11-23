@@ -85,6 +85,7 @@ public class HopWorkflowFileType<T extends WorkflowMeta> extends HopFileTypeBase
     capabilities.setProperty( IHopFileType.CAPABILITY_START, "true" );
     capabilities.setProperty( IHopFileType.CAPABILITY_STOP, "true" );
     capabilities.setProperty( IHopFileType.CAPABILITY_SAVE, "true" );
+    capabilities.setProperty( IHopFileType.CAPABILITY_SAVE_AS, "true" );
     capabilities.setProperty( IHopFileType.CAPABILITY_PAUSE, "false" );
     capabilities.setProperty( IHopFileType.CAPABILITY_PREVIEW, "false" );
     capabilities.setProperty( IHopFileType.CAPABILITY_DEBUG, "false" );
@@ -203,6 +204,9 @@ public class HopWorkflowFileType<T extends WorkflowMeta> extends HopFileTypeBase
           new ErrorDialog( hopGui.getShell(), "Error", "Error creating new workflow", e );
         }
       } );
+    newAction.setCategory( "File" );
+    newAction.setCategoryOrder( "1" );
+
     handlers.add( new GuiContextHandler( ACTION_ID_NEW_WORKFLOW, Arrays.asList( newAction ) ) );
 
     return handlers;

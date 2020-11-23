@@ -522,7 +522,7 @@ public class ActionWorkflow extends ActionBase implements Cloneable, IAction {
 
         // Create a new workflow
         //
-        workflow = WorkflowEngineFactory.createWorkflowEngine( environmentSubstitute( runConfiguration ), metadataProvider, workflowMeta );
+        workflow = WorkflowEngineFactory.createWorkflowEngine( environmentSubstitute( runConfiguration ), metadataProvider, workflowMeta, this );
         workflow.setParentWorkflow( parentWorkflow );
         workflow.setLogLevel( jobLogLevel );
         workflow.shareVariablesWith( this );
@@ -569,7 +569,6 @@ public class ActionWorkflow extends ActionBase implements Cloneable, IAction {
 
         // Link both ways!
         workflow.getWorkflowTracker().setParentWorkflowTracker( parentWorkflow.getWorkflowTracker() );
-
 
         ActionWorkflowRunner runner = new ActionWorkflowRunner( workflow, result, nr, log );
         Thread jobRunnerThread = new Thread( runner );

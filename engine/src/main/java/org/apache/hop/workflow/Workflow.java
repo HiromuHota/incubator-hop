@@ -187,6 +187,8 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
 
   protected IHopMetadataProvider metadataProvider;
 
+  protected boolean initializingVariablesOnStart;
+
   /**
    * <p>
    * This enum stores bit masks which are used to manipulate with statuses over field {@link Workflow#status}
@@ -226,6 +228,8 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
     result = null;
     startActionMeta = null;
     startActionResult = null;
+
+    initializingVariablesOnStart = true;
   }
 
   public Workflow( WorkflowMeta workflowMeta ) {
@@ -287,13 +291,15 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
       setFinished( false );
       setInitialized( true );
 
-      // Create a new variable name space as we want workflows to have their own set of variables.
-      // initialize from parentWorkflow or null
-      //
-      initializeVariablesFrom( parentWorkflow );
-      setInternalHopVariables();
-      copyParametersFrom( workflowMeta );
-      activateParameters();
+      if (initializingVariablesOnStart) {
+        // Create a new variable name space as we want workflows to have their own set of variables.
+        // initialize from parentWorkflow or null
+        //
+        initializeVariablesFrom(parentWorkflow);
+        setInternalHopVariables();
+        copyParametersFrom(workflowMeta);
+        activateParameters();
+      }
 
       // Run the workflow
       //
@@ -1320,6 +1326,13 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
   }
 
   /**
+   * @param parentLoggingObject The parentLoggingObject to set
+   */
+  public void setParentLoggingObject( ILoggingObject parentLoggingObject ) {
+    this.parentLoggingObject = parentLoggingObject;
+  }
+
+  /**
    * Gets the registration date. For workflow, this always returns null
    *
    * @return null
@@ -1525,5 +1538,21 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
    */
   @Override public void setMetadataProvider( IHopMetadataProvider metadataProvider ) {
     this.metadataProvider = metadataProvider;
+  }
+
+  /**
+   * Gets initializingVariablesOnStart
+   *
+   * @return value of initializingVariablesOnStart
+   */
+  public boolean isInitializingVariablesOnStart() {
+    return initializingVariablesOnStart;
+  }
+
+  /**
+   * @param initializingVariablesOnStart The initializingVariablesOnStart to set
+   */
+  public void setInitializingVariablesOnStart( boolean initializingVariablesOnStart ) {
+    this.initializingVariablesOnStart = initializingVariablesOnStart;
   }
 }
