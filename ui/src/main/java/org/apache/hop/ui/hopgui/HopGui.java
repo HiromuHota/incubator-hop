@@ -90,6 +90,7 @@ import org.apache.hop.ui.hopgui.perspective.dataorch.HopDataOrchestrationPerspec
 import org.apache.hop.ui.hopgui.perspective.search.HopSearchPerspective;
 import org.apache.hop.ui.hopgui.search.HopGuiSearchLocation;
 import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
+import org.apache.hop.ui.util.EnvironmentUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.DeviceData;
@@ -353,6 +354,10 @@ public class HopGui implements IActionContextHandlersProvider, ISearchableProvid
     //
     if ( openingLastFiles ) {
       auditDelegate.openLastFiles();
+    }
+    // On RAP, return here otherwise UIThread doesn't get terminated properly.
+    if ( EnvironmentUtils.getInstance().isWeb() ) {
+      return;
     }
     boolean retry = true;
     while ( retry ) {
