@@ -1131,6 +1131,19 @@
 
     <repositories>
         <repository>
+            <id>hop</id>
+            <name>Hop Repository</name>
+            <url>https://artifactory.project-hop.org/artifactory/hop-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>interval:15</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
             <id>central</id>
             <url>https://repo1.maven.org/maven2/</url>
             <name>Maven Central</name>
