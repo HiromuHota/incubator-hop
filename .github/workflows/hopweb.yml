@@ -37,7 +37,7 @@ jobs:
           assemblies/plugins/dist/target/hop-assemblies-plugins-dist-*.zip
 
   docker:
-    #needs: maven
+    needs: maven
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
