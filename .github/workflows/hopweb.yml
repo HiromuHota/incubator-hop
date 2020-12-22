@@ -53,10 +53,10 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: my-artifact
-        path: docker
-    - name: Rename artifact
+    - name: Move artifacts
       run: |
-        mv docker/hop-assemblies-plugins-dist-*.zip docker/hop-assemblies-plugins-dist.zip
+        mv assemblies/web/target/hop.war docker/
+        mv assemblies/plugins/dist/target/hop-assemblies-plugins-dist-*.zip docker/hop-assemblies-plugins-dist.zip
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
