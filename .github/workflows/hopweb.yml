@@ -53,6 +53,8 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: my-artifact
+    - name: Check downloaded artifacts
+      run: ls -la
     - name: Move artifacts
       run: |
         mv assemblies/web/target/hop.war docker/
