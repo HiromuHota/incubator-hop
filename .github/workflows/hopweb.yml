@@ -29,6 +29,18 @@ jobs:
       run: mvn -B install
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: |
+          assemblies/web/target/hop.war
+          assemblies/plugins/dist/target/hop-assemblies-plugins-dist-*.zip
+
+  docker:
+    needs: maven
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
     - name: Set up Docker Buildx
@@ -38,6 +50,11 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - uses: actions/download-artifact@v2
+      with:
+        name: my-artifact
+    - name: Check downloaded artifacts
+      run: ls -la
     - name: Move artifacts
       run: |
         mv assemblies/web/target/hop.war docker/
