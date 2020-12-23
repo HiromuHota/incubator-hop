@@ -53,12 +53,11 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: my-artifact
-    - name: Check downloaded artifacts
-      run: ls -la
+        path: artifacts
     - name: Move artifacts
       run: |
-        mv assemblies/web/target/hop.war docker/
-        mv assemblies/plugins/dist/target/hop-assemblies-plugins-dist-*.zip docker/hop-assemblies-plugins-dist.zip
+        mv artifacts/web/target/hop.war docker/
+        mv artifacts/plugins/dist/target/hop-assemblies-plugins-dist-*.zip docker/hop-assemblies-plugins-dist.zip
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
