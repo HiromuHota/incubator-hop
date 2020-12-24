@@ -39,6 +39,7 @@ jobs:
   docker:
     needs: maven
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/web'
     steps:
     - uses: actions/checkout@v2
     - name: Set up QEMU
