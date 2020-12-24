@@ -1,29 +1,23 @@
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.pipeline.transforms.dimensionlookup;
 
 import org.apache.hop.core.Const;
-import org.apache.hop.core.Counters;
 import org.apache.hop.core.RowMetaAndData;
 import org.apache.hop.core.database.Database;
 import org.apache.hop.core.database.DatabaseMeta;
@@ -112,7 +106,7 @@ public class DimensionLookup extends BaseTransform<DimensionLookupMeta, Dimensio
     if ( first ) {
       first = false;
 
-      data.schemaTable = meta.getDatabaseMeta().getQuotedSchemaTableCombination( data.realSchemaName, data.realTableName );
+      data.schemaTable = meta.getDatabaseMeta().getQuotedSchemaTableCombination( this, data.realSchemaName, data.realTableName );
 
       data.inputRowMeta = getInputRowMeta().clone();
       data.outputRowMeta = getInputRowMeta().clone();
@@ -121,7 +115,7 @@ public class DimensionLookup extends BaseTransform<DimensionLookupMeta, Dimensio
       // Get the fields that need conversion to normal storage...
       // Modify the storage type of the input data...
       //
-      data.lazyList = new ArrayList<Integer>();
+      data.lazyList = new ArrayList<>();
       for ( int i = 0; i < data.inputRowMeta.size(); i++ ) {
         IValueMeta valueMeta = data.inputRowMeta.getValueMeta( i );
         if ( valueMeta.isStorageBinaryString() ) {
@@ -303,7 +297,7 @@ public class DimensionLookup extends BaseTransform<DimensionLookupMeta, Dimensio
       // Also see what indexes to take to populate the lookup row...
       // We only ever compare indexes and the lookup date in the cache, the rest is not needed...
       //
-      data.preloadIndexes = new ArrayList<Integer>();
+      data.preloadIndexes = new ArrayList<>();
       for ( int i = 0; i < meta.getKeyStream().length; i++ ) {
         int index = data.inputRowMeta.indexOfValue( meta.getKeyStream()[ i ] );
         if ( index < 0 ) {
@@ -501,7 +495,7 @@ public class DimensionLookup extends BaseTransform<DimensionLookupMeta, Dimensio
         switch ( getTechKeyCreation() ) {
           case CREATION_METHOD_TABLEMAX:
             // What's the next value for the technical key?
-            technicalKey = data.db.getNextValue( Counters.getInstance().getCounterMap(), data.realSchemaName, data.realTableName, meta
+            technicalKey = data.db.getNextValue( data.realSchemaName, data.realTableName, meta
               .getKeyField() );
             break;
           case CREATION_METHOD_AUTOINC:
@@ -723,7 +717,7 @@ public class DimensionLookup extends BaseTransform<DimensionLookupMeta, Dimensio
           } else {
             // Use our own sequence here...
             // What's the next value for the technical key?
-            technicalKey = data.db.getNextValue( Counters.getInstance().getCounterMap(), data.realSchemaName, data.realTableName,
+            technicalKey = data.db.getNextValue( data.realSchemaName, data.realTableName,
               meta.getKeyField() );
           }
 
@@ -1525,7 +1519,7 @@ public class DimensionLookup extends BaseTransform<DimensionLookupMeta, Dimensio
       //
       List<byte[]> keys = data.cache.getKeys();
       int sizeBefore = keys.size();
-      List<Long> samples = new ArrayList<Long>();
+      List<Long> samples = new ArrayList<>();
 
       // Take 10 sample technical keys....
       int transformsize = keys.size() / 5;
@@ -1686,8 +1680,8 @@ public class DimensionLookup extends BaseTransform<DimensionLookupMeta, Dimensio
       data.minDate = meta.getMinDate();
       data.maxDate = meta.getMaxDate();
 
-      data.realSchemaName = environmentSubstitute( meta.getSchemaName() );
-      data.realTableName = environmentSubstitute( meta.getTableName() );
+      data.realSchemaName = resolve( meta.getSchemaName() );
+      data.realTableName = resolve( meta.getTableName() );
 
       data.startDateChoice = DimensionLookupMeta.START_DATE_ALTERNATIVE_NONE;
       if ( meta.isUsingStartDateAlternative() ) {
@@ -1698,7 +1692,7 @@ public class DimensionLookup extends BaseTransform<DimensionLookupMeta, Dimensio
         return false;
       }
       data.db = new Database( this, meta.getDatabaseMeta() );
-      data.db.shareVariablesWith( this );
+      data.db.shareWith( this );
       try {
         data.db.connect( getPartitionId() );
 

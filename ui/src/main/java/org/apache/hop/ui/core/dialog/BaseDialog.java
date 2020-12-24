@@ -1,30 +1,26 @@
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * Copyright (C) 2018 by Hitachi Vantara : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.ui.core.dialog;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.hop.core.Const;
 import org.apache.hop.core.extension.ExtensionPointHandler;
 import org.apache.hop.core.logging.LogChannel;
@@ -152,6 +148,11 @@ public abstract class BaseDialog extends Dialog {
       if (save) {
         if ( fileObject != null ) {
           vfsDialog.setSaveFilename( fileObject.getName().getBaseName() );
+          try {
+          vfsDialog.setFilterPath( HopVfs.getFilename(fileObject.getParent() ) );
+          } catch ( FileSystemException fse ) {
+            // This wasn't a valid filename, ignore the error to reduce spamming
+          }
         } else {
           // Take the first extension with "filename" prepended
           //
@@ -182,13 +183,13 @@ public abstract class BaseDialog extends Dialog {
       dialog.setFileName( HopVfs.getFilename( fileObject ) );
     }
     if ( variables != null && textVar != null && textVar.getText() != null ) {
-      dialog.setFileName( variables.environmentSubstitute( textVar.getText() ) );
+      dialog.setFileName( variables.resolve( textVar.getText() ) );
     }
 
     AtomicBoolean doIt = new AtomicBoolean( true );
     try {
-      ExtensionPointHandler.callExtensionPoint( LogChannel.UI, HopGuiExtensionPoint.HopGuiFileOpenDialog.id,
-        new HopGuiFileDialogExtension( doIt, dialog ) );
+      ExtensionPointHandler.callExtensionPoint( LogChannel.UI, variables,
+        HopGuiExtensionPoint.HopGuiFileOpenDialog.id, new HopGuiFileDialogExtension( doIt, dialog ) );
     } catch ( Exception xe ) {
       LogChannel.UI.logError( "Error handling extension point 'HopGuiFileOpenDialog'", xe );
     }
@@ -203,7 +204,7 @@ public abstract class BaseDialog extends Dialog {
 
       try {
         HopGuiFileOpenedExtension openedExtension = new HopGuiFileOpenedExtension( dialog, variables, filename );
-        ExtensionPointHandler.callExtensionPoint( LogChannel.UI, HopGuiExtensionPoint.HopGuiFileOpenedDialog.id, openedExtension );
+        ExtensionPointHandler.callExtensionPoint( LogChannel.UI, variables, HopGuiExtensionPoint.HopGuiFileOpenedDialog.id, openedExtension );
         if ( openedExtension.filename != null ) {
           filename = openedExtension.filename;
         }
@@ -242,14 +243,14 @@ public abstract class BaseDialog extends Dialog {
     }
     directoryDialog.setText( BaseMessages.getString( PKG, "BaseDialog.OpenDirectory" ) );
     if ( textVar != null && variables != null && textVar.getText() != null ) {
-      directoryDialog.setFilterPath( variables.environmentSubstitute( textVar.getText() ) );
+      directoryDialog.setFilterPath( variables.resolve( textVar.getText() ) );
     }
     String directoryName = null;
 
     AtomicBoolean doIt = new AtomicBoolean( true );
     try {
-      ExtensionPointHandler.callExtensionPoint( LogChannel.UI, HopGuiExtensionPoint.HopGuiFileDirectoryDialog.id,
-        new HopGuiDirectoryDialogExtension( doIt, directoryDialog ) );
+      ExtensionPointHandler.callExtensionPoint( LogChannel.UI, variables,
+        HopGuiExtensionPoint.HopGuiFileDirectoryDialog.id, new HopGuiDirectoryDialogExtension( doIt, directoryDialog ) );
     } catch ( Exception xe ) {
       LogChannel.UI.logError( "Error handling extension point 'HopGuiFileDirectoryDialog'", xe );
     }
@@ -258,7 +259,7 @@ public abstract class BaseDialog extends Dialog {
       directoryName = directoryDialog.getFilterPath();
       try {
         HopGuiDirectorySelectedExtension ext = new HopGuiDirectorySelectedExtension( directoryDialog, variables, directoryName );
-        ExtensionPointHandler.callExtensionPoint( LogChannel.UI, HopGuiExtensionPoint.HopGuiDirectorySelected.id, ext );
+        ExtensionPointHandler.callExtensionPoint( LogChannel.UI, variables, HopGuiExtensionPoint.HopGuiDirectorySelected.id, ext );
         if ( ext.folderName != null ) {
           directoryName = ext.folderName;
         }

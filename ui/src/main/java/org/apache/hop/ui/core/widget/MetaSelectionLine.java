@@ -1,24 +1,19 @@
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.ui.core.widget;
 
@@ -35,7 +30,6 @@ import org.apache.hop.i18n.BaseMessages;
 import org.apache.hop.metadata.api.HopMetadata;
 import org.apache.hop.metadata.api.IHopMetadata;
 import org.apache.hop.metadata.api.IHopMetadataProvider;
-import org.apache.hop.metadata.api.IHopMetadataSerializer;
 import org.apache.hop.metadata.util.HopMetadataUtil;
 import org.apache.hop.ui.core.ConstUi;
 import org.apache.hop.ui.core.PropsUi;
@@ -130,7 +124,7 @@ public class MetaSelectionLine<T extends IHopMetadata> extends Composite {
     wLabel.requestLayout(); // Avoid GTK error in log
 
     HopMetadata hopMetadata = HopMetadataUtil.getHopMetadataAnnotation( managedClass );
-    Image image = SwtSvgImageUtil.getImage( getDisplay(), managedClass.getClassLoader(), hopMetadata.iconImage(), ConstUi.SMALL_ICON_SIZE, ConstUi.SMALL_ICON_SIZE );
+    Image image = SwtSvgImageUtil.getImage( getDisplay(), managedClass.getClassLoader(), hopMetadata.image(), ConstUi.SMALL_ICON_SIZE, ConstUi.SMALL_ICON_SIZE );
     
     final Menu menu = new Menu (getShell(), SWT.POP_UP);
     
@@ -140,10 +134,10 @@ public class MetaSelectionLine<T extends IHopMetadata> extends Composite {
     MenuItem itemEdit = new MenuItem (menu, SWT.PUSH);
     itemEdit.setText( BaseMessages.getString( PKG, "System.Button.Edit" ) );
     itemEdit.addListener( SWT.Selection, e -> editMetadata() );
-    MenuItem itemManage = new MenuItem (menu, SWT.PUSH);
-    itemManage.setText( BaseMessages.getString( PKG, "System.Button.Manage" ) );
-    itemManage.addListener( SWT.Selection, e -> manageMetadata() );
-        
+//    MenuItem itemManage = new MenuItem (menu, SWT.PUSH);
+//    itemManage.setText( BaseMessages.getString( PKG, "System.Button.Manage" ) );
+//    itemManage.addListener( SWT.Selection, e -> manageMetadata() );
+//        
     wToolBar = new ToolBar(this, SWT.FLAT | SWT.HORIZONTAL );    
     FormData fdToolBar = new FormData();
     fdToolBar.right = new FormAttachment( 100, 0 );
@@ -192,7 +186,7 @@ public class MetaSelectionLine<T extends IHopMetadata> extends Composite {
 
 
   protected void manageMetadata() {
-    manager.openMetaStoreExplorer();
+   // manager.openMetaStoreExplorer();
   }
 
   /**
@@ -206,13 +200,13 @@ public class MetaSelectionLine<T extends IHopMetadata> extends Composite {
 
     return manager.editMetadata( selected );
   }
-
-  private void openMetaDialog( T element, IHopMetadataSerializer<T> serializer ) throws Exception {
-    if ( manager.openMetaDialog( element, serializer ) ) {
-      fillItems();
-      wCombo.setText( element.getName() );
-    }
-  }
+//
+//  private void openMetaDialog( T element, IHopMetadataSerializer<T> serializer ) throws Exception {
+//    if ( manager.openMetaDialog( element, serializer ) ) {
+//      fillItems();
+//      wCombo.setText( element.getName() );
+//    }
+//  }
 
   private T newMetadata() {
     T element = manager.newMetadata();
@@ -379,9 +373,9 @@ public class MetaSelectionLine<T extends IHopMetadata> extends Composite {
   }
 
   /**
-   * Gets space
+   * Gets variables
    *
-   * @return value of space
+   * @return value of variables
    */
   public IVariables getSpace() {
     return variables;

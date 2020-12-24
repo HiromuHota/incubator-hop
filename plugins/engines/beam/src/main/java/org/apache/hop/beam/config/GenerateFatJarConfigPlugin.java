@@ -1,24 +1,19 @@
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * http://www.project-hop.org
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.beam.config;
 
@@ -59,13 +54,13 @@ public class GenerateFatJarConfigPlugin implements IConfigOptions {
   }
 
   private void createFatJar( ILogChannel log, IVariables variables ) throws HopException {
-    String realFatJarFilename = variables.environmentSubstitute( fatJarFilename );
+    String realFatJarFilename = variables.resolve( fatJarFilename );
     log.logBasic( "Generating a Hop fat jar file in : " + realFatJarFilename);
 
     List<String> installedJarFilenames = HopBeamGuiPlugin.findInstalledJarFilenames();
     log.logBasic( "Found " + installedJarFilenames.size()+" jar files to combine into one fat jar file.");
 
-    FatJarBuilder fatJarBuilder = new FatJarBuilder( realFatJarFilename, installedJarFilenames );
+    FatJarBuilder fatJarBuilder = new FatJarBuilder( variables, realFatJarFilename, installedJarFilenames );
     fatJarBuilder.setExtraTransformPluginClasses( null );
     fatJarBuilder.setExtraXpPluginClasses( null );
     fatJarBuilder.buildTargetJar();
@@ -89,4 +84,3 @@ public class GenerateFatJarConfigPlugin implements IConfigOptions {
     this.fatJarFilename = fatJarFilename;
   }
 }
-

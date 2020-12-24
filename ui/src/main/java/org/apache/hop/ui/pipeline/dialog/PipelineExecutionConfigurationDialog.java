@@ -1,24 +1,19 @@
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.ui.pipeline.dialog;
 
@@ -108,7 +103,7 @@ public class PipelineExecutionConfigurationDialog extends ConfigurationDialog {
 
   public boolean open() {
     String shellTitle = BaseMessages.getString( PKG, "PipelineExecutionConfigurationDialog.Shell.Title" );
-    mainLayout( shellTitle, GuiResource.getInstance().getImagePipelineGraph() );
+    mainLayout( shellTitle, GuiResource.getInstance().getImagePipeline() );
 
     String alwaysShowOptionLabel = BaseMessages.getString( PKG, "PipelineExecutionConfigurationDialog.AlwaysOption.Value" );
     String alwaysShowOptionTooltip = BaseMessages.getString( PKG, "PipelineExecutionConfigurationDialog.alwaysShowOption" );
@@ -194,9 +189,9 @@ public class PipelineExecutionConfigurationDialog extends ConfigurationDialog {
     }
 
     try {
-      ExtensionPointHandler.callExtensionPoint( LogChannel.UI, HopExtensionPoint.HopUiRunConfiguration.id, wRunConfiguration );
+      ExtensionPointHandler.callExtensionPoint( LogChannel.UI, hopGui.getVariables(), HopExtensionPoint.HopGuiRunConfiguration.id, wRunConfiguration );
     } catch ( HopException e ) {
-      hopGui.getLog().logError( "Error calling extension point with ID '" + HopExtensionPoint.HopUiRunConfiguration.id + "'", e );
+      hopGui.getLog().logError( "Error calling extension point with ID '" + HopExtensionPoint.HopGuiRunConfiguration.id + "'", e );
     }
 
     // If we don't have a run configuration from history or from a plugin,

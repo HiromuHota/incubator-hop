@@ -1,30 +1,25 @@
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * http://www.project-hop.org
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
+
 
 package org.apache.hop.workflow.config;
 
-import org.apache.hop.core.variables.IVariables;
-import org.apache.hop.core.variables.Variables;
 import org.apache.hop.metadata.api.HopMetadata;
+import org.apache.hop.metadata.api.HopMetadataBase;
 import org.apache.hop.metadata.api.HopMetadataProperty;
 import org.apache.hop.metadata.api.IHopMetadata;
 
@@ -32,22 +27,17 @@ import org.apache.hop.metadata.api.IHopMetadata;
   key = "workflow-run-configuration",
   name = "Workflow Run Configuration",
   description = "Describes how to execute a workflow",
-  iconImage = "ui/images/run.svg"
+  image = "ui/images/workflow_run_config.svg"
 )
-public class WorkflowRunConfiguration extends Variables implements Cloneable, IVariables, IHopMetadata {
+public class WorkflowRunConfiguration extends HopMetadataBase implements Cloneable, IHopMetadata {
 
   public static final String GUI_PLUGIN_ELEMENT_PARENT_ID = "WorkflowRunConfiguration-PluginSpecific-Options";
-
-  @HopMetadataProperty
-  private String name;
 
   @HopMetadataProperty
   private String description;
 
   @HopMetadataProperty
   private IWorkflowEngineRunConfiguration engineRunConfiguration;
-
-  private IVariables variables = new Variables();
 
   public WorkflowRunConfiguration() {
   }
@@ -69,22 +59,6 @@ public class WorkflowRunConfiguration extends Variables implements Cloneable, IV
 
   @Override protected WorkflowRunConfiguration clone() {
     return new WorkflowRunConfiguration( this );
-  }
-
-  /**
-   * Gets name
-   *
-   * @return value of name
-   */
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * @param name The name to set
-   */
-  public void setName( String name ) {
-    this.name = name;
   }
 
   /**

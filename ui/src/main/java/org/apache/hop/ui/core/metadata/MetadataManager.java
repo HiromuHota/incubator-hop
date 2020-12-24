@@ -34,11 +34,13 @@ import org.apache.hop.ui.hopgui.HopGui;
 import org.apache.hop.ui.hopgui.context.GuiContextHandler;
 import org.apache.hop.ui.hopgui.context.GuiContextUtil;
 import org.apache.hop.ui.hopgui.dialog.MetadataExplorerDialog;
+import org.apache.hop.ui.hopgui.perspective.metadata.MetadataPerspective;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +67,7 @@ public class MetadataManager<T extends IHopMetadata> {
   }
 
   public void openMetaStoreExplorer() {
-    MetadataExplorerDialog dialog = new MetadataExplorerDialog( HopGui.getInstance().getShell(), metadataProvider );
+    MetadataExplorerDialog dialog = new MetadataExplorerDialog( HopGui.getInstance().getShell());
     dialog.open();
   }
 
@@ -87,7 +89,7 @@ public class MetadataManager<T extends IHopMetadata> {
       //
       List<GuiAction> actions = new ArrayList<>();
       for ( final String name : names ) {
-        GuiAction action = new GuiAction( name, GuiActionType.Modify, name, name + " : " + hopMetadata.description(), hopMetadata.iconImage(),
+        GuiAction action = new GuiAction( name, GuiActionType.Modify, name, name + " : " + hopMetadata.description(), hopMetadata.image(),
           ( shiftAction, controlAction, t ) -> editMetadata( name ) );
         action.setClassLoader( getClassLoader() );
         actions.add( action );
@@ -116,7 +118,7 @@ public class MetadataManager<T extends IHopMetadata> {
       //
       List<GuiAction> actions = new ArrayList<>();
       for ( final String name : names ) {
-        GuiAction action = new GuiAction( name, GuiActionType.Delete, name, name + " : " + hopMetadata.description(), hopMetadata.iconImage(),
+        GuiAction action = new GuiAction( name, GuiActionType.Delete, name, name + " : " + hopMetadata.description(), hopMetadata.image(),
           ( shiftAction, controlAction, t ) -> deleteMetadata( name ) );
         action.setClassLoader( getClassLoader() );
         actions.add( action );
@@ -141,6 +143,8 @@ public class MetadataManager<T extends IHopMetadata> {
       return false;
     }
 
+    HopGui hopGui = HopGui.getInstance();
+    
     try {
       IHopMetadataSerializer<T> serializer = metadataProvider.getSerializer( managedClass );
 
@@ -155,17 +159,64 @@ public class MetadataManager<T extends IHopMetadata> {
 
       initializeElementVariables( element );
 
-      return openMetaDialog( element, serializer );
+      MetadataEditor<T> editor = this.createEditor(element);	    
+      editor.setTitle(getManagedName());
+      MetadataEditorDialog dialog = new MetadataEditorDialog(hopGui.getShell(), editor);
+      String result = dialog.open();
+
+      if (result != null) {
+        ExtensionPointHandler.callExtensionPoint(
+            hopGui.getLog(), variables, HopExtensionPoint.HopGuiMetadataObjectUpdated.id, element );
+        return true;
+      } else {
+        return false;
+      }
 
     } catch ( Exception e ) {
-      new ErrorDialog( HopGui.getInstance().getShell(), "Error", "Error editing metadata", e );
+      new ErrorDialog( hopGui.getShell(), "Error", "Error editing metadata", e );
       return false;
     }
   }
 
+  public void editWithEditor(String name) {
+    if (name == null) {
+      return;
+    }
+
+    HopGui hopGui = HopGui.getInstance();
+
+    try {
+      HopMetadata annotation = HopMetadataUtil.getHopMetadataAnnotation(managedClass);
+
+      MetadataPerspective perspective = MetadataPerspective.getInstance();
+      MetadataEditor<?> editor = perspective.findEditor(annotation.key(), name);
+
+      if (editor == null) {
+
+        // Load the metadata element from the metadata
+        //
+        IHopMetadataSerializer<T> serializer = metadataProvider.getSerializer(managedClass);
+        T element = serializer.load(name);
+        if (element == null) {
+          // Something removed or renamed the element in the background
+          //
+          throw new HopException("Unable to find element '" + name + "' in the metadata");
+        }
+
+        initializeElementVariables(element);
+
+        perspective.addEditor(createEditor(element));
+      } else {
+        perspective.setActiveEditor(editor);
+      }
+    } catch (Exception e) {
+      new ErrorDialog(hopGui.getShell(), "Error", "Error editing metadata", e);
+    }
+  }
+  
   private void initializeElementVariables( T element ) {
     if ( element instanceof IVariables ) {
-      ( (IVariables) element ).initializeVariablesFrom( variables );
+      ( (IVariables) element ).initializeFrom( variables );
     }
   }
 
@@ -200,7 +251,7 @@ public class MetadataManager<T extends IHopMetadata> {
       //
       initializeElementVariables( object );
 
-      ExtensionPointHandler.callExtensionPoint( HopGui.getInstance().getLog(), HopExtensionPoint.HopGuiMetadataObjectDeleted.id, object );
+      ExtensionPointHandler.callExtensionPoint( HopGui.getInstance().getLog(), variables, HopExtensionPoint.HopGuiMetadataObjectDeleted.id, object );
 
       return true;
 
@@ -208,6 +259,27 @@ public class MetadataManager<T extends IHopMetadata> {
       new ErrorDialog( HopGui.getInstance().getShell(), "Error", "Error deleting metadata element " + elementName, e );
       return false;
     }
+  }
+
+  public boolean rename(String oldName, String newName) throws HopException {
+    IHopMetadataSerializer<T> serializer = this.getSerializer();
+
+    if (serializer.exists(newName)) {
+      MessageBox messageBox =
+          new MessageBox(HopGui.getInstance().getShell(), SWT.ICON_ERROR | SWT.OK);
+      messageBox.setText(getManagedName());
+      messageBox.setMessage("Name '" + newName + "' already existe.");
+      messageBox.open();
+
+      return false;
+    }
+
+    T metadata = this.loadElement(oldName);
+    metadata.setName(newName);
+    serializer.save(metadata);
+    serializer.delete( oldName );
+
+    return true;
   }
 
   public IHopMetadataSerializer<T> getSerializer() throws HopException {
@@ -268,35 +340,17 @@ public class MetadataManager<T extends IHopMetadata> {
       throw new HopException( "Unable to find dialog class (" + dialogClassName + ") constructor with arguments: Shell, IHopMetadataProvider, T and optionally IVariables" );
     }
 
-    String originalName = object.getName();
-    while (true) {
-      IMetadataDialog dialog = constructor.newInstance(constructorParameters);
-      String name = dialog.open();
-      if (name != null) {
+    IMetadataDialog dialog = constructor.newInstance( constructorParameters );
+    String name = dialog.open();
+    if ( name != null ) {
+      // Save it in the metadata
+      serializer.save( object );
 
-        // Changing the name of a metadata object is not yet supported.
-        //
-        if (StringUtils.isNotEmpty(originalName) && !originalName.equals(name)) {
-          MessageBox box = new MessageBox( hopGui.getShell(), SWT.ICON_ERROR | SWT.OK );
-          box.setText( "Sorry" );
-          box.setMessage( "Sorry, renaming metadata object '"+originalName+"' is not possible!" );
-          box.open();
-          object.setName( originalName );
-          continue;
-        }
+      ExtensionPointHandler.callExtensionPoint( HopGui.getInstance().getLog(), variables, HopExtensionPoint.HopGuiMetadataObjectUpdated.id, object );
 
-        // Save it in the metadata
-        serializer.save(object);
-
-        ExtensionPointHandler.callExtensionPoint(
-            HopGui.getInstance().getLog(),
-            HopExtensionPoint.HopGuiMetadataObjectUpdated.id,
-            object);
-
-        return true;
-      } else {
-        return false;
-      }
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -305,21 +359,62 @@ public class MetadataManager<T extends IHopMetadata> {
       // Create a new instance of the managed class
       //
       T element = managedClass.newInstance();
-      initializeElementVariables( element );
+      initializeElementVariables(element);
 
-      ExtensionPointHandler.callExtensionPoint( HopGui.getInstance().getLog(), HopExtensionPoint.HopGuiMetadataObjectCreateBeforeDialog.id, element );
-
-      boolean created = openMetaDialog( element, getSerializer() );
-      if ( created ) {
-        ExtensionPointHandler.callExtensionPoint( HopGui.getInstance().getLog(), HopExtensionPoint.HopGuiMetadataObjectCreated.id, element );
-      }
-      return element;
-    } catch ( Exception e ) {
-      new ErrorDialog( HopGui.getInstance().getShell(), "Error", "Error creating new metadata element", e );
+      return newMetadata(element);
+    } catch (Exception e) {
+      new ErrorDialog(HopGui.getInstance().getShell(), "Error", "Error creating new metadata element", e);
       return null;
     }
   }
 
+  public T newMetadata(T element) {
+      try {
+
+        ExtensionPointHandler.callExtensionPoint( HopGui.getInstance().getLog(), variables, HopExtensionPoint.HopGuiMetadataObjectCreateBeforeDialog.id, element );
+
+  	MetadataEditor<T> editor = this.createEditor(element);
+  	editor.setTitle(getManagedName());
+
+  	MetadataEditorDialog dialog = new MetadataEditorDialog(HopGui.getInstance().getShell(), editor);
+
+  	String name = dialog.open();
+  	if (name != null) {
+  		ExtensionPointHandler.callExtensionPoint(HopGui.getInstance().getLog(), variables,
+        HopExtensionPoint.HopGuiMetadataObjectCreated.id, element );
+  	}
+  	return element;
+      } catch ( Exception e ) {
+        new ErrorDialog( HopGui.getInstance().getShell(), "Error", "Error editing new metadata element", e );
+        return null;
+      }
+    }
+  
+  public T newMetadataWithEditor() {
+    HopGui hopGui = HopGui.getInstance();
+
+    try {
+
+      // Create a new instance of the managed class
+      //
+      T element = managedClass.newInstance();
+      initializeElementVariables(element);
+
+      ExtensionPointHandler.callExtensionPoint(
+          hopGui.getLog(), variables, HopExtensionPoint.HopGuiMetadataObjectCreateBeforeDialog.id, element );
+
+      MetadataEditor<T> editor = this.createEditor(element);
+      editor.setTitle("New " + this.getManagedName());
+
+      MetadataPerspective.getInstance().addEditor(editor);
+
+      return element;
+    } catch (Exception e) {
+      new ErrorDialog(hopGui.getShell(), "Error", "Error creating new metadata element", e);
+      return null;
+    }
+  }
+  
   public List<String> getNames() throws HopException {
     try {
       List<String> names = getSerializer().listObjectNames();
@@ -352,6 +447,55 @@ public class MetadataManager<T extends IHopMetadata> {
     return dialogClassName;
   }
 
+  protected MetadataEditor<T> createEditor(T metadata) throws HopException {
+
+    // Find the class editor...
+    //
+    String className = managedClass.getName();
+    className += "Editor";
+    Class<MetadataEditor<T>> editorClass;
+    try {
+      editorClass = (Class<MetadataEditor<T>>) classLoader.loadClass(className);
+    } catch (ClassNotFoundException e1) {
+      className = managedClass.getName();
+      className = className.replaceFirst("\\.hop\\.", ".hop.ui.");
+      className += "Editor";
+      try {
+        editorClass = (Class<MetadataEditor<T>>) classLoader.loadClass(className);
+      } catch (ClassNotFoundException e) {
+        throw new HopException("Unable to find editor class (" + className + ")");
+      }
+    }
+
+    // Create the class editor...
+    // Always pass the HopGui, the metadata manager and the object to edit...
+    //
+    try {
+
+      Class<?>[] constructorArguments =
+          new Class<?>[] {HopGui.class, MetadataManager.class, metadata.getClass()};
+
+      Constructor<MetadataEditor<T>> constructor;
+      constructor = editorClass.getDeclaredConstructor(constructorArguments);
+
+      if (constructor == null) {
+        throw new HopException(
+            "Unable to find editor class ("
+                + className
+                + ") constructor with arguments: HopGui, MetadataManager and IHopMetadata, T and optionally IVariables");
+      }
+
+      return constructor.newInstance(new Object[] {HopGui.getInstance(), this, metadata});
+    } catch (InstantiationException
+        | IllegalAccessException
+        | NoSuchMethodException
+        | SecurityException
+        | IllegalArgumentException
+        | InvocationTargetException e) {
+      throw new HopException("Unable to create editor for class " + managedClass.getName(), e);
+    }
+  }
+
   /**
    * Gets metadataProvider
    *
@@ -369,16 +513,19 @@ public class MetadataManager<T extends IHopMetadata> {
   }
 
   /**
-   * Gets space
+   * Gets variables
+    		  variables
    *
-   * @return value of space
+   * @return value of variables
+    		  variables
    */
   public IVariables getVariables() {
     return variables;
   }
 
   /**
-   * @param variables The space to set
+   * @param variables The variables
+    		  variables to set
    */
   public void setVariables( IVariables variables ) {
     this.variables = variables;
@@ -409,6 +556,14 @@ public class MetadataManager<T extends IHopMetadata> {
     return managedClass;
   }
 
+  protected String getManagedName() { 	
+    HopMetadata annotation = managedClass.getAnnotation(HopMetadata.class);
+    if (annotation != null) {
+      return annotation.name();
+    }    
+    return null;
+  }
+  
   /**
    * @param managedClass The managedClass to set
    */

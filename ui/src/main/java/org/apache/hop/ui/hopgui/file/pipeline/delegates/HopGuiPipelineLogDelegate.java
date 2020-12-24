@@ -41,8 +41,6 @@ import org.apache.hop.ui.hopgui.file.pipeline.HopGuiPipelineGraph;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -53,7 +51,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import java.util.ArrayList;
 import java.util.Map;
 
-@GuiPlugin
+@GuiPlugin(description = "Pipeline Graph Log Delegate")
 public class HopGuiPipelineLogDelegate {
   private static final Class<?> PKG = HopGui.class; // Needed by Translator
 
@@ -189,7 +187,7 @@ public class HopGuiPipelineLogDelegate {
     // label = "PipelineLog.Button.ClearLog",
     toolTip = "PipelineLog.Button.ClearLog",
     i18nPackageClass = HopGui.class,
-    image = "ui/images/trash.svg"
+    image = "ui/images/delete.svg"
   )
   public void clearLog() {
     if ( pipelineLogText != null && !pipelineLogText.isDisposed() ) {
@@ -208,7 +206,7 @@ public class HopGuiPipelineLogDelegate {
     // label = "PipelineLog.Button.LogSettings",
     toolTip = "PipelineLog.Button.LogSettings",
     i18nPackageClass = HopGui.class,
-    image = "ui/images/log-settings.svg"
+    image = "ui/images/settings.svg"
   )
   public void showLogSettings() {
     // TODO: implement or rethink
@@ -220,7 +218,7 @@ public class HopGuiPipelineLogDelegate {
     // label = "PipelineLog.Button.ShowErrorLines",
     toolTip = "PipelineLog.Button.ShowErrorLines",
     i18nPackageClass = HopGui.class,
-    image = "ui/images/show-error-lines.svg"
+    image = "ui/images/filter.svg"
   )
   public void showErrors() {
     String all = pipelineLogText.getText();
@@ -301,17 +299,17 @@ public class HopGuiPipelineLogDelegate {
     // label = "WorkflowLog.Button.Pause",
     toolTip = "WorkflowLog.Button.Pause",
     i18nPackageClass = HopGui.class,
-    image = "ui/images/pause-log.svg",
+    image = "ui/images/pause.svg",
     separator = true
   )
   public void pauseLog() {
     ToolItem item = toolBarWidgets.findToolItem( TOOLBAR_ICON_LOG_PAUSE_RESUME );
     if ( logBrowser.isPaused() ) {
       logBrowser.setPaused( false );
-      item.setImage( GuiResource.getInstance().getImageContinueLog() );
+      item.setImage( GuiResource.getInstance().getImageRun() );
     } else {
       logBrowser.setPaused( true );
-      item.setImage( GuiResource.getInstance().getImagePauseLog() );
+      item.setImage( GuiResource.getInstance().getImagePause() );
     }
   }
 

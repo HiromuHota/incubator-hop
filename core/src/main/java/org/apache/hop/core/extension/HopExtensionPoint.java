@@ -1,24 +1,19 @@
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.core.extension;
 
@@ -55,13 +50,13 @@ public enum HopExtensionPoint {
   PipelineBeforeDeleteTransforms( "Pipeline transforms about to be deleted" ),
 
   HopGuiPipelineMetaExecutionStart( "Hop GUI initiates the execution of a pipeline (PipelineMeta)" ),
-  HopUiPipelineExecutionConfiguration( "Right before Hop UI configuration of Pipeline to be executed takes place" ),
-  HopUiPipelineBeforeStart( "Right before the Pipeline is started" ),
+  HopGuiPipelineExecutionConfiguration( "Right before Hop UI configuration of Pipeline to be executed takes place" ),
+  HopGuiPipelineBeforeStart( "Right before the Pipeline is started (Pipeline)" ),
 
-  HopUiWorkflowBeforeStart( "Right before the workflow is started" ),
+  HopGuiWorkflowBeforeStart( "Right before the workflow is started" ),
   RunConfigurationSelection( "Check when run configuration is selected" ),
   RunConfigurationIsRemote( "Check when run configuration is pointing to a remote server" ),
-  HopUiRunConfiguration( "Send the run configuration" ),
+  HopGuiRunConfiguration( "Send the run configuration" ),
 
   WorkflowStart( "A workflow starts" ),
   WorkflowFinish( "A workflow finishes" ),
@@ -85,9 +80,9 @@ public enum HopExtensionPoint {
   WorkflowGraphMouseDoubleClick( "A left or right button was double-clicked in a workflow" ),
   WorkflowDialogShowRetrieveLogTableFields( "Show or retrieve the contents of the fields of a log channel on the log channel composite" ),
 
-  WorkflowMetaLoaded( "Job metadata was loaded" ),
-  HopUiWorkflowMetaExecutionStart( "Hop UI initiates the execution of a workflow (WorkflowMeta)" ),
-  HopUiJobExecutionConfiguration( "Right before Hop UI configuration of workflow to be executed takes place" ),
+  WorkflowMetaLoaded( "Workflow metadata was loaded" ),
+  HopGuiWorkflowMetaExecutionStart( "Hop UI initiates the execution of a workflow (WorkflowMeta)" ),
+  HopGuiWorkflowExecutionConfiguration( "Right before Hop UI configuration of workflow to be executed takes place" ),
 
   DatabaseConnected( "A connection to a database was made" ),
   DatabaseDisconnected( "A connection to a database was terminated" ),
@@ -107,8 +102,8 @@ public enum HopExtensionPoint {
   HopServerShutdown( "Right before the Hop webserver will shut down" ),
 
   HopGuiFileOpenDialog( "Allows you to modify the file dialog before it's shown. If you want to show your own, set doIt to false (" ),
-  HopGuiNewPipelineTab( "Determine the tab name of a Pipeline (HopGuiPipelineGraph)" ),
-  HopGuiNewJobTab( "Determine the tab name of a workflow (HopGuiJobGraph)" ),
+  HopGuiNewPipelineTab( "Determine the tab name of a pipeline (HopGuiPipelineGraph)" ),
+  HopGuiNewWorkflowTab( "Determine the tab name of a workflow (HopGuiJobGraph)" ),
 
   HopGuiMetadataObjectCreateBeforeDialog("A new metadata object is created. Before showing the dialog"),
   HopGuiMetadataObjectCreated("A new metadata object is created"),
@@ -127,11 +122,14 @@ public enum HopExtensionPoint {
 
   HopGuiPipelineAfterClose("Called after a pipeline is closed in the Hop GUI (PipelineMeta)"),
   HopGuiWorkflowAfterClose("Called after a workflow is closed in the Hop GUI (WorkflowMeta)"),
-
+  
   GetFieldsExtension( "Get Fields dialog" ),
 
   HopEnvironmentAfterInit("Called after HopEnvironment.init() was called.  It allows you to add your own plugins and so on at this time."),
 
+  HopGuiProjectAfterEnabled( "Called after a project is enabled in Hop GUI" ),
+
+  HopGuiGetControlSpaceSortOrderPrefix("Gets a prefix to steer the sort order of variables when using CTRL-SPACE.  Defaults range from 900_ to 400_. Set prefixes in Map<String,String>"),
   ;
 
   public String id;

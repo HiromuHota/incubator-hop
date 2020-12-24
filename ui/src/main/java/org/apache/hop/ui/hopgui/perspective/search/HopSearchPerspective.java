@@ -66,12 +66,12 @@ import java.util.List;
 import java.util.Map;
 
 @HopPerspectivePlugin(
-  id = "HopSearchPerspective",
+  id = "300-HopSearchPerspective",
   name = "Search",
   description = "The Hop Search Perspective",
   image = "ui/images/search.svg"
 )
-@GuiPlugin
+@GuiPlugin(description="Hop Search Perspective GUI")
 public class HopSearchPerspective implements IHopPerspective {
 
   public static final String ID_PERSPECTIVE_TOOLBAR_ITEM = "20020-perspective-search";

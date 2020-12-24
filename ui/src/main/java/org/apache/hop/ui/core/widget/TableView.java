@@ -1,25 +1,20 @@
 // CHECKSTYLE:FileLength:OFF
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.ui.core.widget;
 
@@ -69,7 +64,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
@@ -97,7 +91,6 @@ import org.eclipse.swt.widgets.Text;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -826,7 +819,7 @@ public class TableView extends Composite {
           if ( activeTableItem != null ) {
             activeTableItem.setText( activeTableColumn, beforeEdit[ activeTableColumn - 1 ] );
           }
-          combo.dispose();
+          safelyDisposeControl(combo);
           table.setFocus();
           e.doit = false;
         }
@@ -1244,6 +1237,18 @@ public class TableView extends Composite {
     pack();
   }
 
+  private void safelyDisposeControl( Control combo ) {
+    if (combo==null) {
+      return;
+    }
+    synchronized ( combo ) {
+      if (combo.isDisposed()) {
+        return;
+      }
+      combo.dispose();
+    }
+  }
+
   protected String getTextWidgetValue( int colNr ) {
     boolean b = columns[ colNr - 1 ].isUsingVariables();
     if ( b ) {
@@ -1319,7 +1324,7 @@ public class TableView extends Composite {
     try {
       // First, get all info and put it in a Vector of Rows...
       TableItem[] items = table.getItems();
-      List<Object[]> v = new ArrayList<Object[]>();
+      List<Object[]> v = new ArrayList<>();
 
       // First create the row metadata for the grid
       //
@@ -2399,7 +2404,7 @@ public class TableView extends Composite {
     if ( buttonText != null ) {
       button.setText( buttonText );
     }
-    button.setImage( GuiResource.getInstance().getImage( "ui/images/edittext.svg" ) );
+    button.setImage( GuiResource.getInstance().getImage( "ui/images/edit.svg" ) );
 
     SelectionListener selAdpt = colinfo.getSelectionAdapter();
     if ( selAdpt != null ) {
@@ -2643,7 +2648,7 @@ public class TableView extends Composite {
    * @return the number of rows/table-items that are not empty
    */
   public int nrNonEmpty() {
-    nonEmptyIndexes = new ArrayList<Integer>();
+    nonEmptyIndexes = new ArrayList<>();
 
     // Count only non-empty rows
     for ( int i = 0; i < table.getItemCount(); i++ ) {
@@ -2979,7 +2984,7 @@ public class TableView extends Composite {
   }
 
   private void clearUndo() {
-    undo = new ArrayList<ChangeAction>();
+    undo = new ArrayList<>();
     undoPosition = -1;
   }
 
@@ -3022,7 +3027,7 @@ public class TableView extends Composite {
     EnterConditionDialog ecd = new EnterConditionDialog( parent.getShell(), SWT.NONE, f, condition );
     Condition cond = ecd.open();
     if ( cond != null ) {
-      ArrayList<Integer> tokeep = new ArrayList<Integer>();
+      ArrayList<Integer> tokeep = new ArrayList<>();
 
       // Apply the condition to the TableView...
       int nr = table.getItemCount();

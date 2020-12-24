@@ -1,25 +1,19 @@
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
- * http://www.project-hop.org
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.workflow;
 
@@ -40,6 +34,7 @@ import org.apache.hop.core.gui.IScrollBar;
 import org.apache.hop.core.gui.Point;
 import org.apache.hop.core.gui.Rectangle;
 import org.apache.hop.core.logging.LogChannel;
+import org.apache.hop.core.variables.IVariables;
 import org.apache.hop.workflow.action.ActionMeta;
 
 import java.util.Collections;
@@ -57,12 +52,12 @@ public class WorkflowPainter extends BasePainter<WorkflowHopMeta, ActionMeta> {
   private List<ActionMeta> activeActions;
   private List<ActionResult> actionResults;
 
-  public WorkflowPainter( IGc gc, WorkflowMeta workflowMeta, Point area, IScrollBar hori,
+  public WorkflowPainter( IGc gc, IVariables variables, WorkflowMeta workflowMeta, Point area, IScrollBar hori,
                           IScrollBar vert, WorkflowHopMeta candidate, Point drop_candidate, Rectangle selrect,
                           List<AreaOwner> areaOwners, int iconSize, int lineWidth, int gridSize,
-                          String noteFontName, int noteFontHeight, double zoomFactor ) {
-    super( gc, workflowMeta, area, hori, vert, drop_candidate, selrect, areaOwners, iconSize, lineWidth, gridSize,
-      noteFontName, noteFontHeight, zoomFactor );
+                          String noteFontName, int noteFontHeight, double zoomFactor, boolean drawingEditIcons ) {
+    super( gc, variables, workflowMeta, area, hori, vert, drop_candidate, selrect, areaOwners, iconSize, lineWidth, gridSize,
+      noteFontName, noteFontHeight, zoomFactor, drawingEditIcons );
     this.workflowMeta = workflowMeta;
 
     this.candidate = candidate;
@@ -107,7 +102,7 @@ public class WorkflowPainter extends BasePainter<WorkflowHopMeta, ActionMeta> {
     }
 
     try {
-      ExtensionPointHandler.callExtensionPoint( LogChannel.GENERAL, HopExtensionPoint.WorkflowPainterStart.id, this );
+      ExtensionPointHandler.callExtensionPoint( LogChannel.GENERAL, variables, HopExtensionPoint.WorkflowPainterStart.id, this );
     } catch ( HopException e ) {
       LogChannel.GENERAL.logError( "Error in JobPainterStart extension point", e );
     }
@@ -188,7 +183,7 @@ public class WorkflowPainter extends BasePainter<WorkflowHopMeta, ActionMeta> {
     }
 
     try {
-      ExtensionPointHandler.callExtensionPoint( LogChannel.GENERAL, HopExtensionPoint.WorkflowPainterEnd.id, this );
+      ExtensionPointHandler.callExtensionPoint( LogChannel.GENERAL, variables, HopExtensionPoint.WorkflowPainterEnd.id, this );
     } catch ( HopException e ) {
       LogChannel.GENERAL.logError( "Error in JobPainterEnd extension point", e );
     }
@@ -235,11 +230,45 @@ public class WorkflowPainter extends BasePainter<WorkflowHopMeta, ActionMeta> {
     gc.setBackground( EColor.BACKGROUND );
     gc.setLineWidth( 1 );
 
-    int xpos = x + ( iconSize / 2 ) - ( textsize.x / 2 );
-    int ypos = y + iconSize + 5;
+    int xPos = x + ( iconSize / 2 ) - ( textsize.x / 2 );
+    int yPos = y + iconSize + 5;
 
     gc.setForeground( EColor.BLACK );
-    gc.drawText( name, xpos, ypos, true );
+
+    // Help out the user working in single-click mode by allowing the name to be clicked to edit
+    //
+    if (isDrawingEditIcons()) {
+
+      Point nameExtent = gc.textExtent( name );
+
+      int tmpAlpha = gc.getAlpha();
+      gc.setAlpha(230);
+
+      gc.drawImage( EImage.EDIT, xPos - 6, yPos-2, magnification );
+
+      gc.setBackground(240, 240, 240);
+      gc.fillRoundRectangle(
+        xPos - 8,
+        yPos - 2,
+        nameExtent.x + 15,
+        nameExtent.y + 8,
+        BasePainter.CORNER_RADIUS_5 + 15,
+        BasePainter.CORNER_RADIUS_5 + 15);
+      gc.setAlpha(tmpAlpha);
+
+      areaOwners.add(
+        new AreaOwner(
+          AreaType.ACTION_NAME,
+          xPos - 8,
+          yPos - 2,
+          nameExtent.x + 15,
+          nameExtent.y + 4,
+          offset,
+          actionMeta,
+          name));
+    }
+
+    gc.drawText( name, xPos, yPos, true );
 
     if ( activeActions != null && activeActions.contains( actionMeta ) ) {
       gc.setForeground( EColor.BLUE );
@@ -251,7 +280,7 @@ public class WorkflowPainter extends BasePainter<WorkflowHopMeta, ActionMeta> {
       gc.setForeground( EColor.BLACK );
     }
 
-    ActionResult actionResult = findJobEntryResult( actionMeta );
+    ActionResult actionResult = findActionResult( actionMeta );
     if ( actionResult != null ) {
       Result result = actionResult.getResult();
       int iconX = ( x + iconSize ) - ( miniIconSize / 2 );
@@ -278,7 +307,7 @@ public class WorkflowPainter extends BasePainter<WorkflowHopMeta, ActionMeta> {
 
     WorkflowPainterExtension extension = new WorkflowPainterExtension( gc, areaOwners, workflowMeta, null, actionMeta, x, y, 0, 0, 0, 0, offset, iconSize );
     try {
-      ExtensionPointHandler.callExtensionPoint( LogChannel.GENERAL, HopExtensionPoint.WorkflowPainterAction.id, extension );
+      ExtensionPointHandler.callExtensionPoint( LogChannel.GENERAL, variables, HopExtensionPoint.WorkflowPainterAction.id, extension );
     } catch ( Exception e ) {
       LogChannel.GENERAL.logError( "Error calling extension point(s) for the workflow painter action", e );
     }
@@ -288,7 +317,7 @@ public class WorkflowPainter extends BasePainter<WorkflowHopMeta, ActionMeta> {
     gc.setAlpha( alpha );
   }
 
-  private ActionResult findJobEntryResult( ActionMeta actionCopy ) {
+  private ActionResult findActionResult( ActionMeta actionCopy ) {
     if ( actionResults == null ) {
       return null;
     }
@@ -454,7 +483,7 @@ public class WorkflowPainter extends BasePainter<WorkflowHopMeta, ActionMeta> {
       WorkflowPainterExtension extension = new WorkflowPainterExtension( gc, areaOwners, workflowMeta, jobHop, null, x1, y1, x2, y2, mx, my, offset, iconSize );
       try {
         ExtensionPointHandler.callExtensionPoint(
-          LogChannel.GENERAL, HopExtensionPoint.WorkflowPainterArrow.id, extension );
+          LogChannel.GENERAL, variables, HopExtensionPoint.WorkflowPainterArrow.id, extension );
       } catch ( Exception e ) {
         LogChannel.GENERAL.logError( "Error calling extension point(s) for the workflow painter arrow", e );
       }

@@ -100,6 +100,8 @@ public class LifecycleEnvironmentDialog extends Dialog {
     middle = Const.MIDDLE_PCT;
 
     FormLayout formLayout = new FormLayout();
+    formLayout.marginWidth = Const.FORM_MARGIN;
+    formLayout.marginHeight = Const.FORM_MARGIN;
 
     shell.setLayout( formLayout );
     shell.setText( "Project Lifecycle Environment dialog" );
@@ -240,7 +242,7 @@ public class LifecycleEnvironmentDialog extends Dialog {
       if ( StringUtils.isEmpty( configFilename ) ) {
         return;
       }
-      String realConfigFilename = variables.environmentSubstitute(configFilename);
+      String realConfigFilename = variables.resolve(configFilename);
 
       DescribedVariablesConfigFile variablesConfigFile = new DescribedVariablesConfigFile( realConfigFilename );
 
