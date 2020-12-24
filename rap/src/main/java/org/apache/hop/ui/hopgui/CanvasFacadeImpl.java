@@ -53,37 +53,36 @@ public class CanvasFacadeImpl extends CanvasFacade {
 
     WorkflowMeta workflowMeta = (WorkflowMeta) meta;
     JsonObject jsonNodes = new JsonObject();
-    workflowMeta.getActions().forEach( node -> {
+    workflowMeta.getActions().forEach( actionMeta -> {
       JsonObject jsonNode = new JsonObject();
-      jsonNode.add( "x", node.getLocation().x );
-      jsonNode.add( "y", node.getLocation().y );
-      jsonNode.add( "selected", node.isSelected() );
+      jsonNode.add( "x", actionMeta.getLocation().x );
+      jsonNode.add( "y", actionMeta.getLocation().y );
+      jsonNode.add( "selected", actionMeta.isSelected() );
 
+      // Translated from org.apache.hop.ui.hopgui.shared.SwtGc.drawActionIcon(int, int, ActionMeta, float)
       SwtUniversalImage swtImage = null;
 
-      if ( node.isSpecial() ) {
-        if ( node.isStart() ) {
-          swtImage = GuiResource.getInstance().getSwtImageStart();
-        }
-        if ( node.isDummy() ) {
-          swtImage = GuiResource.getInstance().getSwtImageDummy();
-        }
-      } else {
-        String configId = node.getAction().getPluginId();
-        if ( configId != null ) {
-          swtImage = GuiResource.getInstance().getImagesActions().get( configId );
-        }
-      }
-      if ( node.isMissing() ) {
+      if ( actionMeta.isMissing() ) {
         swtImage = GuiResource.getInstance().getSwtImageMissing();
       }
+      else {
+        String pluginId = actionMeta.getAction().getPluginId();
+        if ( pluginId != null ) {
+          swtImage = GuiResource.getInstance().getImagesActions().get( pluginId );
+        }
+      }
+
       if ( swtImage == null ) {
         return;
       }
 
-      Image image = swtImage.getAsBitmapForSize( Display.getCurrent(), Math.round( iconSize * magnification ), Math.round( iconSize * magnification ) );
+      int w = Math.round( iconSize * magnification );
+      int h = Math.round( iconSize * magnification );
+      Image image = swtImage.getAsBitmapForSize( Display.getCurrent(), w, h );
+      // Translated
+
       jsonNode.add( "img",  image.internalImage.getResourceName() );
-      jsonNodes.add( node.getName(), jsonNode );
+      jsonNodes.add( actionMeta.getName(), jsonNode );
     } );
     canvas.setData( "nodes", jsonNodes );
 
@@ -103,20 +102,37 @@ public class CanvasFacadeImpl extends CanvasFacade {
 
     PipelineMeta pipelineMeta = (PipelineMeta) meta;
     JsonObject jsonNodes = new JsonObject();
-    pipelineMeta.getTransforms().forEach( transform -> {
+    pipelineMeta.getTransforms().forEach( transformMeta -> {
       JsonObject jsonNode = new JsonObject();
-      jsonNode.add( "x", transform.getLocation().x );
-      jsonNode.add( "y", transform.getLocation().y );
-      jsonNode.add( "selected", transform.isSelected() );
-      Image im = null;
-      if ( transform.isMissing() ) {
-        im = GuiResource.getInstance().getImageMissing();
+      jsonNode.add( "x", transformMeta.getLocation().x );
+      jsonNode.add( "y", transformMeta.getLocation().y );
+      jsonNode.add( "selected", transformMeta.isSelected() );
+
+      // Translated from org.apache.hop.ui.hopgui.shared.SwtGc.drawTransformIcon(int, int, TransformMeta, float)
+      SwtUniversalImage swtImage = null;
+
+      if ( transformMeta.isMissing() ) {
+        swtImage = GuiResource.getInstance().getSwtImageMissing();
+      } else if ( transformMeta.isDeprecated() ) {
+        swtImage = GuiResource.getInstance().getSwtImageDeprecated();
       } else {
-        im = GuiResource.getInstance().getImagesTransforms().get( transform.getTransformPluginId() )
-        .getAsBitmapForSize( Display.getCurrent(), Math.round( iconSize * magnification ), Math.round( iconSize * magnification ) );
+        String pluginId = transformMeta.getPluginId();
+        if ( pluginId != null ) {
+          swtImage = GuiResource.getInstance().getImagesTransforms().get( pluginId );
+        }
       }
-      jsonNode.add( "img",  im.internalImage.getResourceName() );
-      jsonNodes.add( transform.getName(), jsonNode );
+
+      if ( swtImage == null ) {
+        return;
+      }
+
+      int w = Math.round( iconSize * magnification );
+      int h = Math.round( iconSize * magnification );
+      Image image = swtImage.getAsBitmapForSize( Display.getCurrent(), w, h );
+      // Translated
+
+      jsonNode.add( "img",  image.internalImage.getResourceName() );
+      jsonNodes.add( transformMeta.getName(), jsonNode );
     } );
     canvas.setData( "nodes", jsonNodes );
 
