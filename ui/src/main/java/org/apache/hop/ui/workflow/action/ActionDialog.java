@@ -1,25 +1,19 @@
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
- * http://www.project-hop.org
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.ui.workflow.action;
 
@@ -27,10 +21,13 @@ import org.apache.hop.core.database.DatabaseMeta;
 import org.apache.hop.core.logging.ILoggingObject;
 import org.apache.hop.core.logging.LoggingObjectType;
 import org.apache.hop.core.logging.SimpleLoggingObject;
+import org.apache.hop.core.variables.IVariables;
 import org.apache.hop.i18n.BaseMessages;
 import org.apache.hop.metadata.api.IHopMetadataProvider;
+import org.apache.hop.pipeline.transform.ITransform;
 import org.apache.hop.ui.core.PropsUi;
 import org.apache.hop.ui.core.widget.MetaSelectionLine;
+import org.apache.hop.ui.hopgui.HopGui;
 import org.apache.hop.workflow.WorkflowMeta;
 import org.apache.hop.workflow.action.IAction;
 import org.eclipse.swt.SWT;
@@ -57,7 +54,7 @@ public class ActionDialog extends Dialog {
   /**
    * The package name, used for internationalization.
    */
-  private static final Class<?> PKG = IAction.class; // Needed by Translator
+  private static final Class<?> PKG = ITransform.class; // Needed by Translator
 
   /**
    * The loggingObject for the dialog
@@ -67,12 +64,17 @@ public class ActionDialog extends Dialog {
   /**
    * The Metadata provider
    */
-  private IHopMetadataProvider metadataProvider;
+  protected IHopMetadataProvider metadataProvider;
+
+  /**
+   * The variables for the action dialogs
+   */
+  protected IVariables variables;
 
   /**
    * The workflow metadata object.
    */
-  private WorkflowMeta workflowMeta;
+  protected WorkflowMeta workflowMeta;
 
   /**
    * A reference to the properties user interface
@@ -87,7 +89,8 @@ public class ActionDialog extends Dialog {
    */
   public ActionDialog( Shell parent, WorkflowMeta workflowMeta ) {
     super( parent, SWT.NONE );
-    props = PropsUi.getInstance();
+    this.props = PropsUi.getInstance();
+    this.variables = HopGui.getInstance().getVariables();
 
     this.workflowMeta = workflowMeta;
   }
@@ -103,7 +106,7 @@ public class ActionDialog extends Dialog {
   public MetaSelectionLine<DatabaseMeta> addConnectionLine( Composite parent, Control previous, DatabaseMeta selected, ModifyListener lsMod ) {
 
     final MetaSelectionLine<DatabaseMeta> wConnection = new MetaSelectionLine<>(
-      workflowMeta,
+      variables,
       metadataProvider,
       DatabaseMeta.class, parent, SWT.NONE,
       BaseMessages.getString( PKG, "BaseTransformDialog.Connection.Label" ),

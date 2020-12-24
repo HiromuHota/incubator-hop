@@ -1,26 +1,20 @@
 //CHECKSTYLE:FileLength:OFF
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
- * http://www.project-hop.org
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.pipeline.transforms.javascript;
 
@@ -35,6 +29,7 @@ import org.apache.hop.core.row.IRowMeta;
 import org.apache.hop.core.row.IValueMeta;
 import org.apache.hop.core.row.value.ValueMetaFactory;
 import org.apache.hop.core.util.Utils;
+import org.apache.hop.core.variables.IVariables;
 import org.apache.hop.i18n.BaseMessages;
 import org.apache.hop.pipeline.Pipeline;
 import org.apache.hop.pipeline.PipelineHopMeta;
@@ -97,14 +92,6 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
   private Image imageInactiveScript = null;
   private Image imageActiveStartScript = null;
   private Image imageActiveEndScript = null;
-  private Image imageInputFields = null;
-  private Image imageOutputFields = null;
-  private Image imageArrowOrange = null;
-  private Image imageArrowGreen = null;
-  private Image imageUnderGreen = null;
-  private Image imageAddScript = null;
-  private Image imageDeleteScript = null;
-  private Image imageDuplicateScript = null;
 
   private CTabFolder folder;
   private Menu cMenu;
@@ -148,38 +135,21 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
 
   private RowGeneratorMeta genMeta;
 
-  public ScriptValuesMetaModDialog(Shell parent, Object in, PipelineMeta pipelineMeta, String sname ) {
+  public ScriptValuesMetaModDialog( Shell parent, IVariables variables, Object in, PipelineMeta pipelineMeta, String sname ) {
 
-    super( parent, (BaseTransformMeta) in, pipelineMeta, sname );
+    super( parent, variables, (BaseTransformMeta) in, pipelineMeta, sname );
     input = (ScriptValuesMetaMod) in;
     genMeta = null;
     try {
-      // ImageLoader xl = new ImageLoader();
-      imageUnderGreen = guiresource.getImage("ui/images/add_all.svg");
-      imageArrowGreen = guiresource.getImage("ui/images/add_all.svg");
-      imageArrowOrange = guiresource.getImage("ui/images/add_all.svg");
-      imageInputFields = guiresource.getImage("ui/images/hop-input.svg");
-      imageOutputFields = guiresource.getImage("ui/images/hop-output.svg");
       imageActiveScript = guiresource.getImage("ui/images/active-script.svg");
       imageInactiveScript = guiresource.getImage("ui/images/inactive-script.svg");
       imageActiveStartScript = guiresource.getImage("ui/images/start-script.svg");
       imageActiveEndScript = guiresource.getImage("ui/images/end-script.svg");
-      imageDeleteScript = guiresource.getImage("ui/images/generic-delete.svg");
-      imageAddScript = guiresource.getImage("ui/images/addSmall.svg");
-      imageDuplicateScript = guiresource.getImage("ui/images/copy-hop.svg");
     } catch ( Exception e ) {
-      imageActiveScript = guiresource.getImageEmpty16x16();
-      imageInactiveScript = guiresource.getImageEmpty16x16();
-      imageActiveStartScript = guiresource.getImageEmpty16x16();
-      imageActiveEndScript = guiresource.getImageEmpty16x16();
-      imageInputFields = guiresource.getImageEmpty16x16();
-      imageOutputFields = guiresource.getImageEmpty16x16();
-      imageArrowOrange = guiresource.getImageEmpty16x16();
-      imageArrowGreen = guiresource.getImageEmpty16x16();
-      imageUnderGreen = guiresource.getImageEmpty16x16();
-      imageDeleteScript = guiresource.getImageEmpty16x16();
-      imageAddScript = guiresource.getImageEmpty16x16();
-      imageDuplicateScript = guiresource.getImageEmpty16x16();
+      imageActiveScript = guiresource.getImageEmpty();
+      imageInactiveScript = guiresource.getImageEmpty();
+      imageActiveStartScript = guiresource.getImageEmpty();
+      imageActiveEndScript = guiresource.getImageEmpty();
     }
 
     try {
@@ -301,7 +271,7 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
     fdlOptimizationLevel.top = new FormAttachment( wlPosition, margin );
     wlOptimizationLevel.setLayoutData( fdlOptimizationLevel );
 
-    wOptimizationLevel = new TextVar( pipelineMeta, wTop, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
+    wOptimizationLevel = new TextVar( variables, wTop, SWT.SINGLE | SWT.LEFT | SWT.BORDER );
     wOptimizationLevel.setToolTipText( BaseMessages.getString(
       PKG, "ScriptValuesDialogMod.OptimizationLevel.Tooltip" ) );
     props.setLook( wOptimizationLevel );
@@ -380,7 +350,7 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
 
     wFields =
       new TableView(
-        pipelineMeta, wBottom, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, FieldsRows, lsMod, props );
+        variables, wBottom, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, FieldsRows, lsMod, props );
 
     FormData fdFields = new FormData();
     fdFields.left = new FormAttachment( 0, 0 );
@@ -476,7 +446,7 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
 
     // Adding the Default Transform Scripts Item to the Tree
     wTreeScriptsItem = new TreeItem( wTree, SWT.NULL );
-    wTreeScriptsItem.setImage( guiresource.getImageBol() );
+    wTreeScriptsItem.setImage( guiresource.getImageFolder() );
     wTreeScriptsItem.setText( BaseMessages.getString( PKG, "ScriptValuesDialogMod.TransformScript.Label" ) );
 
     // Set the shell size, based upon previous time...
@@ -488,11 +458,11 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
 
     // Input Fields
     iteminput = new TreeItem( wTree, SWT.NULL );
-    iteminput.setImage( imageInputFields );
+    iteminput.setImage(  guiresource.getImageInput() );
     iteminput.setText( BaseMessages.getString( PKG, "ScriptValuesDialogMod.InputFields.Label" ) );
     // Output Fields
     itemoutput = new TreeItem( wTree, SWT.NULL );
-    itemoutput.setImage( imageOutputFields );
+    itemoutput.setImage(  guiresource.getImageOutput() );
     itemoutput.setText( BaseMessages.getString( PKG, "ScriptValuesDialogMod.OutputFields.Label" ) );
 
     // Display waiting message for input
@@ -515,7 +485,7 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
       TransformMeta transformMeta = pipelineMeta.findTransform( transformName );
       if ( transformMeta != null ) {
         try {
-          rowPrevTransformFields = pipelineMeta.getPrevTransformFields( transformMeta );
+          rowPrevTransformFields = pipelineMeta.getPrevTransformFields( variables, transformMeta );
           if ( rowPrevTransformFields != null ) {
             setInputOutputFields();
           } else {
@@ -599,7 +569,7 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
         break;
     }
     StyledTextComp wScript =
-      new StyledTextComp( pipelineMeta, item.getParent(), SWT.MULTI | SWT.LEFT | SWT.H_SCROLL | SWT.V_SCROLL, item
+      new StyledTextComp( variables, item.getParent(), SWT.MULTI | SWT.LEFT | SWT.H_SCROLL | SWT.V_SCROLL, item
         .getText(), false );
     if ( ( strScript != null ) && strScript.length() > 0 ) {
       wScript.setText( strScript );
@@ -1023,7 +993,7 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
     try {
       // What fields are coming into the transform?
       //
-      IRowMeta rowMeta = pipelineMeta.getPrevTransformFields( transformName ).clone();
+      IRowMeta rowMeta = pipelineMeta.getPrevTransformFields( variables, transformName ).clone();
       if ( rowMeta != null ) {
         // Create a new RowGenerator transform to generate rows for the test data...
         // Only create a new instance the first time to help the user.
@@ -1118,7 +1088,7 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
           //
           PipelinePreviewProgressDialog progressDialog =
             new PipelinePreviewProgressDialog(
-              shell, pipelineMeta, new String[] { scriptTransformName, }, new int[] { Const.toInt( genMeta
+              shell, variables, pipelineMeta, new String[] { scriptTransformName, }, new int[] { Const.toInt( genMeta
               .getRowLimit(), 10 ), } );
           progressDialog.open();
 
@@ -1142,7 +1112,7 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
           if ( previewRowsMeta != null && previewRows != null && previewRows.size() > 0 ) {
             PreviewRowsDialog prd =
               new PreviewRowsDialog(
-                shell, pipelineMeta, SWT.NONE, wTransformName.getText(), previewRowsMeta, previewRows, loggingText );
+                shell, variables, SWT.NONE, wTransformName.getText(), previewRowsMeta, previewRows, loggingText );
             prd.open();
           }
         }
@@ -1189,10 +1159,10 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
     jsscope.put( "_PipelineName_", jsscope, this.transformName );
 
     try {
-      IRowMeta rowMeta = pipelineMeta.getPrevTransformFields( transformName );
+      IRowMeta rowMeta = pipelineMeta.getPrevTransformFields( variables, transformName );
       if ( rowMeta != null ) {
 
-        ScriptValuesModDummy dummyTransform = new ScriptValuesModDummy( rowMeta, pipelineMeta.getTransformFields( transformName ) );
+        ScriptValuesModDummy dummyTransform = new ScriptValuesModDummy( rowMeta, pipelineMeta.getTransformFields(variables, transformName ) );
         Scriptable jsvalue = Context.toObject( dummyTransform, jsscope );
         jsscope.put( "_transform_", jsscope, jsvalue );
 
@@ -1428,55 +1398,55 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
   private void buildSpecialFunctionsTree() {
 
     TreeItem item = new TreeItem( wTree, SWT.NULL );
-    item.setImage( guiresource.getImageBol() );
+    item.setImage( guiresource.getImageFolder() );
     item.setText( BaseMessages.getString( PKG, "ScriptValuesDialogMod.TansformConstant.Label" ) );
     TreeItem itemT = new TreeItem( item, SWT.NULL );
-    itemT.setImage( imageArrowGreen );
+    itemT.setImage( GuiResource.getInstance().getImageLabel() );
     itemT.setText( "SKIP_PIPELINE" );
     itemT.setData( "SKIP_PIPELINE" );
     // itemT = new TreeItem(item, SWT.NULL);
     // itemT.setText("ABORT_PIPELINE");
     // itemT.setData("ABORT_PIPELINE");
     itemT = new TreeItem( item, SWT.NULL );
-    itemT.setImage( imageArrowGreen );
+    itemT.setImage( GuiResource.getInstance().getImageLabel() );
     itemT.setText( "ERROR_PIPELINE" );
     itemT.setData( "ERROR_PIPELINE" );
     itemT = new TreeItem( item, SWT.NULL );
-    itemT.setImage( imageArrowGreen );
+    itemT.setImage( GuiResource.getInstance().getImageLabel() );
     itemT.setText( "CONTINUE_PIPELINE" );
     itemT.setData( "CONTINUE_PIPELINE" );
 
     item = new TreeItem( wTree, SWT.NULL );
-    item.setImage( guiresource.getImageBol() );
+    item.setImage( guiresource.getImageFolder() );
     item.setText( BaseMessages.getString( PKG, "ScriptValuesDialogMod.TransformFunctions.Label" ) );
     String strData = "";
 
     // Adding the Grouping Items to the Tree
     TreeItem itemStringFunctionsGroup = new TreeItem( item, SWT.NULL );
-    itemStringFunctionsGroup.setImage( imageUnderGreen );
+    itemStringFunctionsGroup.setImage( GuiResource.getInstance().getImageFolder() );
     itemStringFunctionsGroup
       .setText( BaseMessages.getString( PKG, "ScriptValuesDialogMod.StringFunctions.Label" ) );
     itemStringFunctionsGroup.setData( "Function" );
     TreeItem itemNumericFunctionsGroup = new TreeItem( item, SWT.NULL );
-    itemNumericFunctionsGroup.setImage( imageUnderGreen );
+    itemNumericFunctionsGroup.setImage( GuiResource.getInstance().getImageFolder() );
     itemNumericFunctionsGroup.setText( BaseMessages
       .getString( PKG, "ScriptValuesDialogMod.NumericFunctions.Label" ) );
     itemNumericFunctionsGroup.setData( "Function" );
     TreeItem itemDateFunctionsGroup = new TreeItem( item, SWT.NULL );
-    itemDateFunctionsGroup.setImage( imageUnderGreen );
+    itemDateFunctionsGroup.setImage( GuiResource.getInstance().getImageFolder() );
     itemDateFunctionsGroup.setText( BaseMessages.getString( PKG, "ScriptValuesDialogMod.DateFunctions.Label" ) );
     itemDateFunctionsGroup.setData( "Function" );
     TreeItem itemLogicFunctionsGroup = new TreeItem( item, SWT.NULL );
-    itemLogicFunctionsGroup.setImage( imageUnderGreen );
+    itemLogicFunctionsGroup.setImage( GuiResource.getInstance().getImageFolder() );
     itemLogicFunctionsGroup.setText( BaseMessages.getString( PKG, "ScriptValuesDialogMod.LogicFunctions.Label" ) );
     itemLogicFunctionsGroup.setData( "Function" );
     TreeItem itemSpecialFunctionsGroup = new TreeItem( item, SWT.NULL );
-    itemSpecialFunctionsGroup.setImage( imageUnderGreen );
+    itemSpecialFunctionsGroup.setImage( GuiResource.getInstance().getImageFolder() );
     itemSpecialFunctionsGroup.setText( BaseMessages
       .getString( PKG, "ScriptValuesDialogMod.SpecialFunctions.Label" ) );
     itemSpecialFunctionsGroup.setData( "Function" );
     TreeItem itemFileFunctionsGroup = new TreeItem( item, SWT.NULL );
-    itemFileFunctionsGroup.setImage( imageUnderGreen );
+    itemFileFunctionsGroup.setImage( GuiResource.getInstance().getImageFolder() );
     itemFileFunctionsGroup.setText( BaseMessages.getString( PKG, "ScriptValuesDialogMod.FileFunctions.Label" ) );
     itemFileFunctionsGroup.setData( "Function" );
 
@@ -1518,7 +1488,7 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
       }
       if ( itemFunction != null ) {
         itemFunction.setText( strFunction );
-        itemFunction.setImage( imageArrowGreen );
+        itemFunction.setImage( GuiResource.getInstance().getImageFunction() );
         strData = "jsFunction";
         itemFunction.setData( strData );
       }
@@ -1560,7 +1530,7 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
           strItemToAddOut = v.getName() + ".setValue(var)";
           strItemInToAdd = v.getName();
           TreeItem itemFields = new TreeItem( iteminput, SWT.NULL );
-          itemFields.setImage( imageArrowOrange );
+          itemFields.setImage( GuiResource.getInstance().getImageLabel() ); // TODO: Replace me with value meta image
           itemFields.setText( strItemInToAdd );
           itemFields.setData( strItemInToAdd );
 
@@ -1674,12 +1644,12 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
     // styledTextPopupmenu = new Menu(, SWT.POP_UP);
     MenuItem addNewItem = new MenuItem( cMenu, SWT.PUSH );
     addNewItem.setText( BaseMessages.getString( PKG, "ScriptValuesDialogMod.AddNewTab" ) );
-    addNewItem.setImage( imageAddScript );
+    addNewItem.setImage(  guiresource.getImageAdd() );
     addNewItem.addListener( SWT.Selection, e -> addCtab( "", "", ADD_BLANK ) );
 
     MenuItem copyItem = new MenuItem( cMenu, SWT.PUSH );
     copyItem.setText( BaseMessages.getString( PKG, "ScriptValuesDialogMod.AddCopy" ) );
-    copyItem.setImage( imageDuplicateScript );
+    copyItem.setImage( guiresource.getImageDuplicate() );
     copyItem.addListener( SWT.Selection, e -> {
       CTabItem item = folder.getSelection();
       StyledTextComp st = (StyledTextComp) item.getControl();
@@ -1779,7 +1749,7 @@ public class ScriptValuesMetaModDialog extends BaseTransformDialog implements IT
     // styledTextPopupmenu = new Menu(, SWT.POP_UP);
     MenuItem addDeleteItem = new MenuItem( tMenu, SWT.PUSH );
     addDeleteItem.setText( BaseMessages.getString( PKG, "ScriptValuesDialogMod.Delete.Label" ) );
-    addDeleteItem.setImage( imageDeleteScript );
+    addDeleteItem.setImage(  guiresource.getImageDelete() );
     addDeleteItem.addListener( SWT.Selection, e -> {
       if ( wTree.getSelectionCount() <= 0 ) {
         return;

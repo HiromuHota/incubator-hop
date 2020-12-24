@@ -22,8 +22,6 @@
 
 package org.apache.hop.ui.hopgui.file;
 
-import org.apache.hop.core.Const;
-import org.apache.hop.core.exception.HopPluginException;
 import org.apache.hop.core.plugins.BasePluginType;
 import org.apache.hop.core.plugins.IPluginType;
 import org.apache.hop.core.plugins.PluginAnnotationType;
@@ -50,31 +48,6 @@ public class HopFileTypePluginType extends BasePluginType<HopFileTypePlugin> imp
   }
 
   @Override
-  protected void registerNatives() throws HopPluginException {
-    super.registerNatives();
-  }
-
-  @Override
-  protected String getXmlPluginFile() {
-    return Const.XML_FILE_HOP_FILE_TYPES;
-  }
-
-  @Override
-  protected String getMainTag() {
-    return "hop-file-types";
-  }
-
-  @Override
-  protected String getSubTag() {
-    return "hop-file-type";
-  }
-
-  @Override
-  protected String getPath() {
-    return "./";
-  }
-
-  @Override
   protected String extractDesc( HopFileTypePlugin annotation ) {
     return annotation.description();
   }
@@ -88,4 +61,9 @@ public class HopFileTypePluginType extends BasePluginType<HopFileTypePlugin> imp
   protected String extractName( HopFileTypePlugin annotation ) {
     return  annotation.name();
   }
+  
+  @Override
+  protected String extractImageFile( HopFileTypePlugin annotation ) {
+    return annotation.image();
+  }  
 }

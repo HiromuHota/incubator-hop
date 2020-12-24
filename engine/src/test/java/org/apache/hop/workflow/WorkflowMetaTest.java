@@ -1,24 +1,19 @@
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * http://www.project-hop.org
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.workflow;
 
@@ -28,9 +23,11 @@ import org.apache.hop.core.exception.HopException;
 import org.apache.hop.core.exception.HopXmlException;
 import org.apache.hop.core.gui.Point;
 import org.apache.hop.core.listeners.IContentChangedListener;
+import org.apache.hop.core.variables.IVariables;
+import org.apache.hop.core.variables.Variables;
 import org.apache.hop.workflow.action.ActionMeta;
-import org.apache.hop.workflow.actions.empty.ActionEmpty;
 import org.apache.hop.workflow.action.IAction;
+import org.apache.hop.workflow.actions.dummy.ActionDummy;
 import org.apache.hop.metadata.api.IHopMetadataProvider;
 import org.apache.hop.workflow.engine.IWorkflowEngine;
 import org.apache.hop.workflow.engines.local.LocalWorkflowEngine;
@@ -56,9 +53,10 @@ import static org.mockito.Mockito.when;
 
 public class WorkflowMetaTest {
 
-  private static final String JOB_META_NAME = "workflowName";
+  private static final String WORKFLOW_META_NAME = "workflowName";
 
   private WorkflowMeta workflowMeta;
+  private IVariables variables;
   private IContentChangedListener listener;
 
   @Before
@@ -68,7 +66,9 @@ public class WorkflowMetaTest {
     // prepare
     listener = mock( IContentChangedListener.class );
     workflowMeta.addContentChangedListener( listener );
-    workflowMeta.setName( JOB_META_NAME );
+    workflowMeta.setName( WORKFLOW_META_NAME );
+
+    variables = new Variables();
   }
 
   @Test
@@ -82,21 +82,21 @@ public class WorkflowMetaTest {
   }
 
   private boolean testPath( String branch ) {
-    ActionEmpty je1 = new ActionEmpty();
+    ActionDummy je1 = new ActionDummy();
     je1.setName( "je1" );
 
-    ActionEmpty je2 = new ActionEmpty();
+    ActionDummy je2 = new ActionDummy();
     je2.setName( "je2" );
 
     WorkflowHopMeta hop = new WorkflowHopMeta( new ActionMeta( je1 ), new ActionMeta( je2 ) );
     workflowMeta.addWorkflowHop( hop );
 
-    ActionEmpty je3 = new ActionEmpty();
+    ActionDummy je3 = new ActionDummy();
     je3.setName( "je3" );
     hop = new WorkflowHopMeta( new ActionMeta( je1 ), new ActionMeta( je3 ) );
     workflowMeta.addWorkflowHop( hop );
 
-    ActionEmpty je4 = new ActionEmpty();
+    ActionDummy je4 = new ActionDummy();
     je4.setName( "je4" );
     hop = new WorkflowHopMeta( new ActionMeta( je3 ), new ActionMeta( je4 ) );
     workflowMeta.addWorkflowHop( hop );
@@ -164,7 +164,7 @@ public class WorkflowMetaTest {
   @Test
   public void testEquals_secondNameNull() {
     workflowMeta.setName( null );
-    assertFalse( testEquals( JOB_META_NAME, null ) );
+    assertFalse( testEquals( WORKFLOW_META_NAME, null ) );
   }
 
   @Test
@@ -177,14 +177,14 @@ public class WorkflowMetaTest {
   @Test
   public void testEquals_difFilenameSameName() {
     workflowMeta.setFilename( "Filename" );
-    assertFalse( testEquals( JOB_META_NAME, "OtherFileName" ) );
+    assertFalse( testEquals( WORKFLOW_META_NAME, "OtherFileName" ) );
   }
 
   @Test
   public void testEquals_sameFilenameSameName() {
     String newFilename = "Filename";
     workflowMeta.setFilename( newFilename );
-    assertTrue( testEquals( JOB_META_NAME, newFilename ) );
+    assertTrue( testEquals( WORKFLOW_META_NAME, newFilename ) );
   }
 
   @Test
@@ -229,7 +229,7 @@ public class WorkflowMetaTest {
 
     WorkflowMeta meta = new WorkflowMeta();
 
-    meta.loadXml( workflowNode, null, Mockito.mock( IHopMetadataProvider.class ) );
+    meta.loadXml( workflowNode, null, Mockito.mock( IHopMetadataProvider.class ), new Variables() );
     IWorkflowEngine<WorkflowMeta> workflow = new LocalWorkflowEngine( meta );
     workflow.setInternalHopVariables();
   }
@@ -291,44 +291,44 @@ public class WorkflowMetaTest {
   public void testSetInternalEntryCurrentDirectoryWithFilename() {
     WorkflowMeta workflowMetaTest = new WorkflowMeta();
     workflowMetaTest.setFilename( "hasFilename" );
-    workflowMetaTest.setVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER, "Original value defined at run execution" );
-    workflowMetaTest.setVariable( Const.INTERNAL_VARIABLE_WORKFLOW_FILENAME_FOLDER, "file:///C:/SomeFilenameDirectory" );
-    workflowMetaTest.setInternalEntryCurrentDirectory();
+    variables.setVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER, "Original value defined at run execution" );
+    variables.setVariable( Const.INTERNAL_VARIABLE_WORKFLOW_FILENAME_FOLDER, "file:///C:/SomeFilenameDirectory" );
+    workflowMetaTest.setInternalEntryCurrentDirectory(variables);
 
-    assertEquals( "file:///C:/SomeFilenameDirectory", workflowMetaTest.getVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER ) );
+    assertEquals( "file:///C:/SomeFilenameDirectory", variables.getVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER ) );
 
   }
 
   @Test
   public void testSetInternalEntryCurrentDirectoryWithoutFilename() {
     WorkflowMeta workflowMetaTest = new WorkflowMeta();
-    workflowMetaTest.setVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER, "Original value defined at run execution" );
-    workflowMetaTest.setVariable( Const.INTERNAL_VARIABLE_WORKFLOW_FILENAME_FOLDER, "file:///C:/SomeFilenameDirectory" );
-    workflowMetaTest.setInternalEntryCurrentDirectory();
+    variables.setVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER, "Original value defined at run execution" );
+    variables.setVariable( Const.INTERNAL_VARIABLE_WORKFLOW_FILENAME_FOLDER, "file:///C:/SomeFilenameDirectory" );
+    workflowMetaTest.setInternalEntryCurrentDirectory(variables);
 
-    assertEquals( "Original value defined at run execution", workflowMetaTest.getVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER ) );
+    assertEquals( "Original value defined at run execution", variables.getVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER ) );
   }
 
   @Test
   public void testUpdateCurrentDirWithFilename() {
     WorkflowMeta workflowMetaTest = new WorkflowMeta();
     workflowMetaTest.setFilename( "hasFilename" );
-    workflowMetaTest.setVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER, "Original value defined at run execution" );
-    workflowMetaTest.setVariable( Const.INTERNAL_VARIABLE_WORKFLOW_FILENAME_FOLDER, "file:///C:/SomeFilenameDirectory" );
-    workflowMetaTest.updateCurrentDir();
+    variables.setVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER, "Original value defined at run execution" );
+    variables.setVariable( Const.INTERNAL_VARIABLE_WORKFLOW_FILENAME_FOLDER, "file:///C:/SomeFilenameDirectory" );
+    workflowMetaTest.updateCurrentDir(variables);
 
-    assertEquals( "file:///C:/SomeFilenameDirectory", workflowMetaTest.getVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER ) );
+    assertEquals( "file:///C:/SomeFilenameDirectory", variables.getVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER ) );
 
   }
 
   @Test
   public void testUpdateCurrentDirWithoutFilename() {
     WorkflowMeta workflowMetaTest = new WorkflowMeta();
-    workflowMetaTest.setVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER, "Original value defined at run execution" );
-    workflowMetaTest.setVariable( Const.INTERNAL_VARIABLE_WORKFLOW_FILENAME_FOLDER, "file:///C:/SomeFilenameDirectory" );
-    workflowMetaTest.updateCurrentDir();
+    variables.setVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER, "Original value defined at run execution" );
+    variables.setVariable( Const.INTERNAL_VARIABLE_WORKFLOW_FILENAME_FOLDER, "file:///C:/SomeFilenameDirectory" );
+    workflowMetaTest.updateCurrentDir(variables);
 
-    assertEquals( "Original value defined at run execution", workflowMetaTest.getVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER ) );
+    assertEquals( "Original value defined at run execution", variables.getVariable( Const.INTERNAL_VARIABLE_ENTRY_CURRENT_FOLDER ) );
   }
 
 }

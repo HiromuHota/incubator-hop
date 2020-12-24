@@ -21,6 +21,7 @@ import org.apache.hop.core.Result;
 import org.apache.hop.core.annotations.Action;
 import org.apache.hop.core.exception.HopException;
 import org.apache.hop.core.exception.HopXmlException;
+import org.apache.hop.core.variables.IVariables;
 import org.apache.hop.metadata.api.IHopMetadataProvider;
 import org.apache.hop.workflow.action.ActionBase;
 import org.apache.hop.workflow.action.IAction;
@@ -31,7 +32,7 @@ import org.w3c.dom.Node;
     name = "End Repeat",
     description = "End repeated execution of a workflow or a transformation",
     categoryDescription = "General",
-    image = "ui/images/SUC.svg")
+    image = "endrepeat.svg")
 public class EndRepeat extends ActionBase implements IAction, Cloneable {
 
   public EndRepeat(String name, String description) {
@@ -82,7 +83,7 @@ public class EndRepeat extends ActionBase implements IAction, Cloneable {
     return xml.toString();
   }
 
-  public void loadXml(Node actionNode, IHopMetadataProvider metadataProvider)
+  public void loadXml( Node actionNode, IHopMetadataProvider metadataProvider, IVariables variables )
       throws HopXmlException {
     try {
       super.loadXml(actionNode);

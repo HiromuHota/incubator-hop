@@ -1,25 +1,20 @@
 // CHECKSTYLE:FileLength:OFF
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * Copyright (C) 2002-2017 by Hitachi Vantara : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.ui.pipeline.dialog;
 
@@ -30,10 +25,10 @@ import org.apache.hop.core.parameters.DuplicateParamException;
 import org.apache.hop.core.parameters.UnknownParamException;
 import org.apache.hop.core.plugins.IPlugin;
 import org.apache.hop.core.plugins.PluginRegistry;
+import org.apache.hop.core.variables.IVariables;
 import org.apache.hop.i18n.BaseMessages;
 import org.apache.hop.pipeline.PipelineMeta;
 import org.apache.hop.ui.core.PropsUi;
-import org.apache.hop.ui.core.database.dialog.DatabaseDialog;
 import org.apache.hop.ui.core.dialog.ErrorDialog;
 import org.apache.hop.ui.core.gui.GuiResource;
 import org.apache.hop.ui.core.gui.WindowProperty;
@@ -112,6 +107,7 @@ public class PipelineDialog extends Dialog {
 
   private Button wOk, wCancel;
 
+  private IVariables variables;
   private PipelineMeta pipelineMeta;
   private Shell shell;
 
@@ -130,24 +126,23 @@ public class PipelineDialog extends Dialog {
 
   private Tabs currentTab = null;
 
-  private String[] connectionNames;
-
   protected boolean changed;
 
-  private DatabaseDialog databaseDialog;
+  //private DatabaseDialog databaseDialog;
   private SelectionAdapter lsModSel;
   private TextVar wTransformPerfMaxSize;
 
   private ArrayList<IPipelineDialogPlugin> extraTabs;
 
-  public PipelineDialog( Shell parent, int style, PipelineMeta pipelineMeta, Tabs currentTab ) {
-    this( parent, style, pipelineMeta );
+  public PipelineDialog( Shell parent, int style, IVariables variables, PipelineMeta pipelineMeta, Tabs currentTab ) {
+    this( parent, style, variables, pipelineMeta );
     this.currentTab = currentTab;
   }
 
-  public PipelineDialog( Shell parent, int style, PipelineMeta pipelineMeta ) {
+  public PipelineDialog( Shell parent, int style, IVariables variables, PipelineMeta pipelineMeta ) {
     super( parent, style );
     this.props = PropsUi.getInstance();
+    this.variables = variables;
     this.pipelineMeta = pipelineMeta;
 
     changed = false;
@@ -159,7 +154,7 @@ public class PipelineDialog extends Dialog {
 
     shell = new Shell( parent, SWT.DIALOG_TRIM | SWT.RESIZE | SWT.MAX | SWT.MIN );
     props.setLook( shell );
-    shell.setImage( GuiResource.getInstance().getImagePipelineGraph() );
+    shell.setImage( GuiResource.getInstance().getImagePipeline() );
 
     lsMod = e -> changed = true;
     lsModSel = new SelectionAdapter() {
@@ -187,7 +182,7 @@ public class PipelineDialog extends Dialog {
     addMonitoringTab();
 
     // See if there are any other tabs to be added...
-    extraTabs = new ArrayList<IPipelineDialogPlugin>();
+    extraTabs = new ArrayList<>();
     java.util.List<IPlugin> pipelineDialogPlugins =
       PluginRegistry.getInstance().getPlugins( PipelineDialogPluginType.class );
     for ( IPlugin pipelineDialogPlugin : pipelineDialogPlugins ) {
@@ -256,14 +251,6 @@ public class PipelineDialog extends Dialog {
       }
     }
     return pipelineMeta;
-  }
-
-  private DatabaseDialog getDatabaseDialog() {
-    if ( databaseDialog != null ) {
-      return databaseDialog;
-    }
-    databaseDialog = new DatabaseDialog( shell );
-    return databaseDialog;
   }
 
   private void addPipelineTab() {
@@ -567,7 +554,7 @@ public class PipelineDialog extends Dialog {
 
     wParamFields =
       new TableView(
-        pipelineMeta, wParamComp, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, FieldsRows, lsMod, props );
+        variables, wParamComp, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, colinf, FieldsRows, lsMod, props );
 
     FormData fdFields = new FormData();
     fdFields.left = new FormAttachment( 0, 0 );
@@ -658,7 +645,7 @@ public class PipelineDialog extends Dialog {
     fdlTransformPerfMaxSize.right = new FormAttachment( middle, -margin );
     fdlTransformPerfMaxSize.top = new FormAttachment( wTransformPerfInterval, margin );
     wlTransformPerfMaxSize.setLayoutData( fdlTransformPerfMaxSize );
-    wTransformPerfMaxSize = new TextVar( pipelineMeta, wMonitorComp, SWT.LEFT | SWT.BORDER | SWT.SINGLE );
+    wTransformPerfMaxSize = new TextVar( variables, wMonitorComp, SWT.LEFT | SWT.BORDER | SWT.SINGLE );
     wTransformPerfMaxSize.setToolTipText( BaseMessages.getString( PKG, "PipelineDialog.TransformPerformanceMaxSize.Tooltip" ) );
     props.setLook( wTransformPerfMaxSize );
     FormData fdTransformPerfMaxSize = new FormData();
@@ -781,7 +768,7 @@ public class PipelineDialog extends Dialog {
     }
 
     // Clear and add parameters
-    pipelineMeta.eraseParameters();
+    pipelineMeta.removeAllParameters();
     int nrNonEmptyFields = wParamFields.nrNonEmpty();
     for ( int i = 0; i < nrNonEmptyFields; i++ ) {
       TableItem item = wParamFields.getNonEmpty( i );
@@ -792,7 +779,6 @@ public class PipelineDialog extends Dialog {
         // Ignore the duplicate parameter.
       }
     }
-    pipelineMeta.activateParameters();
 
     // Performance monitoring tab:
     //

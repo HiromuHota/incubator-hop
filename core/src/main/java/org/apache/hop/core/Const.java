@@ -1,25 +1,20 @@
 // CHECKSTYLE:FileLength:OFF
-/*! ******************************************************************************
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Hop : The Hop Orchestration Platform
- *
- * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
- *
- *******************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- ******************************************************************************/
+ */
 
 package org.apache.hop.core;
 
@@ -382,8 +377,6 @@ public class Const {
    * at the bottom of the variables dropdown when pressing ctrl+space
    * */
   public static final String[] DEPRECATED_VARIABLES = new String[] {
-    Const.INTERNAL_VARIABLE_PIPELINE_FILENAME_DIRECTORY,
-    Const.INTERNAL_VARIABLE_PIPELINE_FILENAME_NAME, Const.INTERNAL_VARIABLE_PIPELINE_NAME,
   };
 
   /**
@@ -644,39 +637,14 @@ public class Const {
   public static final String VERSION_COMMENT_EDIT_VERSION = "Modification by user";
 
   /**
-   * The XML file that contains the list of native Hop transforms
-   */
-  public static final String XML_FILE_HOP_TRANSFORMS = "hop-transforms.xml";
-
-  /**
    * The name of the environment variable that will contain the alternative location of the hop-transforms.xml file
    */
   public static final String HOP_CORE_TRANSFORMS_FILE = "HOP_CORE_TRANSFORMS_FILE";
 
   /**
-   * The XML file that contains the list of native partition plugins
-   */
-  public static final String XML_FILE_HOP_PARTITION_PLUGINS = "hop-partition-plugins.xml";
-
-  /**
    * The name of the environment variable that will contain the alternative location of the hop-workflow-actions.xml file
    */
   public static final String HOP_CORE_WORKFLOW_ACTIONS_FILE = "HOP_CORE_WORKFLOW_ACTIONS_FILE";
-
-  /**
-   * The XML file that contains the list of native Hop Carte Servlets
-   */
-  public static final String XML_FILE_HOP_SERVLETS = "hop-servlets.xml";
-
-  /**
-   * The XML file that contains the list of native Hop value metadata plugins
-   */
-  public static final String XML_FILE_HOP_VALUEMETA_PLUGINS = "hop-valuemeta-plugins.xml";
-
-  /**
-   * The XML file that contains the list of native Hop two-way password encoder plugins
-   */
-  public static final String XML_FILE_HOP_PASSWORD_ENCODER_PLUGINS = "hop-password-encoder-plugins.xml";
 
   /**
    * The name of the environment variable that will contain the alternative location of the hop-valuemeta-plugins.xml
@@ -699,11 +667,6 @@ public class Const {
    * The name of the Hop encryption seed environment variable for the HopTwoWayPasswordEncoder class
    */
   public static final String HOP_TWO_WAY_PASSWORD_ENCODER_SEED = "HOP_TWO_WAY_PASSWORD_ENCODER_SEED";
-
-  /**
-   * The XML file that contains the list of native Hop logging plugins
-   */
-  public static final String XML_FILE_HOP_LOGGING_PLUGINS = "hop-logging-plugins.xml";
 
   /**
    * The name of the environment variable that will contain the alternative location of the hop-logging-plugins.xml
@@ -747,81 +710,6 @@ public class Const {
    * Set this variable to Y to disable standard Hop logging to the console. (stdout)
    */
   public static final String HOP_DISABLE_CONSOLE_LOGGING = "HOP_DISABLE_CONSOLE_LOGGING";
-
-  /**
-   * The XML file that contains the list of native Hop actions
-   */
-  public static final String XML_FILE_HOP_WORKFLOW_ACTIONS = "hop-workflow-actions.xml";
-
-  /**
-   * The XML file that contains the list of native Hop database types (MySQL, Oracle, etc)
-   */
-  public static final String XML_FILE_HOP_DATABASE_TYPES = "hop-database-types.xml";
-
-  /**
-   * The XML file that contains the list of native Hop database types (MySQL, Oracle, etc)
-   */
-  public static final String XML_FILE_HOP_SEARCH_ANALYSER_PLUGINS = "hop-search-analyser-plugins.xml";
-
-  /**
-   * The XML file that contains the list of native Hop database types (MySQL, Oracle, etc)
-   */
-  public static final String XML_FILE_HOP_VFS_PLUGINS = "hop-vfs-plugins.xml";
-
-  /**
-   * The XML file that contains the list of native Hop metadata plugins (DatabaseMeta, HopServer, ...)
-   */
-  public static final String XML_FILE_HOP_METADATA_PLUGINS = "hop-metadata-plugins.xml";
-
-  /**
-   * The XML file that contains the list of native config plugins
-   */
-  public static final String XML_FILE_HOP_CONFIG_PLUGINS = "hop-config-plugins.xml";
-
-  /**
-   * The XML file that contains the list of native Hop database types (MySQL, Oracle, etc)
-   */
-  public static final String XML_FILE_HOP_GUI_PLUGINS = "hop-gui-plugins.xml";
-
-  /**
-   * The XML file that contains the list of native Hop database types (MySQL, Oracle, etc)
-   */
-  public static final String XML_FILE_HOP_PERSPECTIVE_PLUGINS = "hop-perspective-plugins.xml";
-
-  /**
-   * The XML file that contains the list of native Hop database types (MySQL, Oracle, etc)
-   */
-  public static final String XML_FILE_HOP_FILE_TYPES = "hop-file-types.xml";
-
-  /**
-   * The XML file that contains the list of native Hop compression providers (None, ZIP, GZip, etc.)
-   */
-  public static final String XML_FILE_HOP_COMPRESSION_PROVIDERS = "hop-compression-providers.xml";
-
-  /**
-   * The XML file that contains the list of native Hop compression providers (None, ZIP, GZip, etc.)
-   */
-  public static final String XML_FILE_HOP_AUTHENTICATION_PROVIDERS = "hop-authentication-providers.xml";
-
-  /**
-   * The XML file that contains the list of native extension points (None by default, this is mostly for OEM purposes)
-   */
-  public static final String XML_FILE_HOP_EXTENSION_POINTS = "hop-extension-points.xml";
-
-  /**
-   * The XML file that contains the list of lifecycle listeners
-   */
-  public static final String XML_FILE_HOP_LIFECYCLE_LISTENERS = "hop-lifecycle-listeners.xml";
-
-  /**
-   * The XML file that contains the list of native pipeline engines
-   */
-  public static final String XML_FILE_HOP_PIPELINE_ENGINES = "hop-pipeline-engines.xml";
-
-  /**
-   * The XML file that contains the list of native workflow engines
-   */
-  public static final String XML_FILE_HOP_WORKFLOW_ENGINES = "hop-workflow-engines.xml";
 
   /**
    * the value the Pan JVM should return on exit.
@@ -1042,6 +930,17 @@ public class Const {
   public static final String HOP_ZIP_MAX_TEXT_SIZE_DEFAULT_STRING =
     String.valueOf( HOP_ZIP_MAX_TEXT_SIZE_DEFAULT );
 
+  public static final String[] HOP_SYSTEM_SETTING_VARIABLES = new String[] {
+    HOP_METADATA_FOLDER,
+    HOP_PLATFORM_OS,
+    HOP_PLATFORM_RUNTIME,
+    HOP_SHARED_JDBC_FOLDER,
+    HOP_CONFIG_FOLDER,
+    HOP_AUDIT_FOLDER,
+    HOP_SIMPLE_STACK_TRACES,
+  };
+
+
   /**
    * <p>A variable to configure if the S3 input / output transforms should use the Amazon Default Credentials Provider Chain
    * even if access credentials are specified within the pipeline.</p>
@@ -1058,7 +957,7 @@ public class Const {
    */
 
   public static double round( double f, int places ) {
-    return round( f, places, java.math.BigDecimal.ROUND_HALF_EVEN );
+    return round( f, places, BigDecimal.ROUND_HALF_EVEN );
   }
 
   /**
@@ -1079,7 +978,7 @@ public class Const {
 
     // Do the rounding...
     //
-    java.math.BigDecimal bdtemp = round( java.math.BigDecimal.valueOf( f ), places, roundingMode );
+    BigDecimal bdtemp = round( BigDecimal.valueOf( f ), places, roundingMode );
     return bdtemp.doubleValue();
   }
 
@@ -1216,11 +1115,11 @@ public class Const {
   }
 
   /**
-   * Determines whether or not a character is considered a space. A character is considered a space in Hop if it is a
-   * space, a tab, a newline or a cariage return.
+   * Determines whether or not a character is considered a variables. A character is considered a variables in Hop if it is a
+   * variables, a tab, a newline or a cariage return.
    *
-   * @param c The character to verify if it is a space.
-   * @return true if the character is a space. false otherwise.
+   * @param c The character to verify if it is a variables.
+   * @return true if the character is a variables. false otherwise.
    */
   public static boolean isSpace( char c ) {
     return c == ' ' || c == '\t' || c == '\r' || c == '\n' || Character.isWhitespace( c );
@@ -2587,7 +2486,7 @@ public class Const {
    * Create an array of Strings consisting of spaces. The index of a String in the array determines the number of spaces
    * in that string.
    *
-   * @return array of 'space' Strings.
+   * @return array of 'variables' Strings.
    */
   public static String[] getEmptyPaddedStrings() {
     if ( emptyPaddedSpacesStrings == null ) {

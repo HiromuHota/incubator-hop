@@ -22,7 +22,6 @@
 
 package org.apache.hop.core.row.value;
 
-import org.apache.hop.core.Const;
 import org.apache.hop.core.plugins.BasePluginType;
 import org.apache.hop.core.plugins.IPluginType;
 import org.apache.hop.core.plugins.PluginAnnotationType;
@@ -56,24 +55,6 @@ public class ValueMetaPluginType extends BasePluginType<ValueMetaPlugin> impleme
   }
 
   @Override
-  protected String getXmlPluginFile() {
-    return Const.XML_FILE_HOP_VALUEMETA_PLUGINS;
-  }
-
-  @Override
-  protected String getAlternativePluginFile() {
-    return Const.HOP_VALUEMETA_PLUGINS_FILE;
-  }
-
-  @Override public String getMainTag() {
-    return "valuemeta-plugins";
-  }
-
-  @Override public String getSubTag() {
-    return "valuemeta-plugin";
-  }
-
-  @Override
   protected String extractCategory( ValueMetaPlugin annotation ) {
     return null;
   }
@@ -95,7 +76,7 @@ public class ValueMetaPluginType extends BasePluginType<ValueMetaPlugin> impleme
 
   @Override
   protected String extractImageFile( ValueMetaPlugin annotation ) {
-    return null;
+    return annotation.image();
   }
 
   @Override

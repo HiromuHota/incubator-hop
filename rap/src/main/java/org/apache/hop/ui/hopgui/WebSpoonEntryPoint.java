@@ -76,7 +76,12 @@ public class WebSpoonEntryPoint extends AbstractEntryPoint {
       e1.printStackTrace();
     }
     try {
-      ExtensionPointHandler.callExtensionPoint( HopGui.getInstance().getLog(), HopExtensionPoint.HopGuiInit.id, HopGui.getInstance() );
+      ExtensionPointHandler.callExtensionPoint(
+        HopGui.getInstance().getLog(),
+        HopGui.getInstance().getVariables(),
+        HopExtensionPoint.HopGuiInit.id,
+        HopGui.getInstance()
+      );
     } catch(Exception e) {
       HopGui.getInstance().getLog().logError( "Error calling extension point plugin(s) for HopGuiInit", e);
     }
