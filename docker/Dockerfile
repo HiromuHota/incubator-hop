@@ -19,8 +19,9 @@
 FROM tomcat:jdk8
 MAINTAINER Hiromu Hota <hiromu.hota@gmail.com>
 
-ADD hop.war webapps/
-ADD hop-assemblies-plugins-dist.zip /tmp/
-RUN unzip -q /tmp/hop-assemblies-plugins-dist.zip
-RUN mkdir config
-ADD https://raw.githubusercontent.com/project-hop/hop/master/assemblies/static/src/main/resources/config/hop-config.json config/
+RUN wget -q https://github.com/HiromuHota/incubator-hop/releases/download/hopweb%2Fnightly/hop.war -O webapps/hop.war \
+ && wget -q https://github.com/HiromuHota/incubator-hop/releases/download/hopweb%2Fnightly/hop-assemblies-plugins-dist-0.60-SNAPSHOT.zip -O hop-assemblies-plugins-dist.zip \
+ && unzip -q hop-assemblies-plugins-dist.zip \
+ && rm hop-assemblies-plugins-dist.zip \
+ && mkdir config \
+ && wget -q https://raw.githubusercontent.com/project-hop/hop/master/assemblies/static/src/main/resources/config/hop-config.json -O config/hop-config.json
