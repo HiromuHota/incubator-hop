@@ -71,8 +71,6 @@ public class GuiResource {
 
   private Display display;
 
-  private static boolean initialized = false;
-
   private double zoomFactor;
 
   // 33 resources
@@ -313,7 +311,7 @@ public class GuiResource {
         // nothing needed here
       }
     } );
-    initialized = true;
+
   }
 
   private static final ISingletonProvider PROVIDER;
@@ -375,10 +373,8 @@ public class GuiResource {
     // Load all images from files...
     loadFonts();
     loadCommonImages();
-    if ( !initialized ) {
-      loadTransformImages();
-      loadWorkflowActionImages();
-    }
+    loadTransformImages();
+    loadWorkflowActionImages();
   }
 
   private void dispose( boolean reload ) {
