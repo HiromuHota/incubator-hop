@@ -18,6 +18,9 @@
 
 FROM tomcat:jdk8
 MAINTAINER Hiromu Hota <hiromu.hota@gmail.com>
+RUN rm -rf ${CATALINA_HOME}/webapps/* \
+    && mkdir ${CATALINA_HOME}/webapps/ROOT \
+    && echo "<% response.sendRedirect(\"hop\"); %>" > ${CATALINA_HOME}/webapps/ROOT/index.jsp
 
 RUN wget -q https://github.com/HiromuHota/incubator-hop/releases/download/hopweb%2Fnightly/hop.war -O webapps/hop.war \
  && wget -q https://github.com/HiromuHota/incubator-hop/releases/download/hopweb%2Fnightly/hop-assemblies-plugins-dist-0.60-SNAPSHOT.zip -O hop-assemblies-plugins-dist.zip \
