@@ -41,7 +41,7 @@ Change into the clone repository and build:
     $ cd incubator-hop 
     $ mvn clean install
     $ cd docker
-    $ sh ./build.sh
+    $ docker build -t project-hop .
 
 ## Run Hop 
 
