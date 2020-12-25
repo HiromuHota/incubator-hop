@@ -483,6 +483,10 @@ public class HopGui
     mainMenuWidgets.registerGuiPluginObject(this);
     mainMenuWidgets.createMenuWidgets(ID_MAIN_MENU, shell, mainMenu);
 
+    if ( EnvironmentUtils.getInstance().isWeb() ) {
+      mainMenuWidgets.enableMenuItem(HopGui.ID_MAIN_MENU_FILE_EXIT, false);
+    }
+
     shell.setMenuBar(mainMenu);
     setUndoMenu(null);
   }
