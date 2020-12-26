@@ -123,10 +123,6 @@ public class ShowHelpDialog extends Dialog {
   }
 
   public void open() {
-    if ( EnvironmentUtils.getInstance().isWeb() ) {
-      Program.launch( url );
-      return;
-    }
     Shell parent = getParent();
     display = parent.getDisplay();
 
@@ -344,7 +340,10 @@ public class ShowHelpDialog extends Dialog {
           wBrowser.execute( PRINT_SCRIPT );
           fromPrint = false;
         }
-        setForwardBackEnable();
+        if (!EnvironmentUtils.getInstance().isWeb()) {
+          // Browser in RAP does not implement back() and forward()
+          setForwardBackEnable();
+        }
       }
     };
 
