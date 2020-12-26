@@ -39,13 +39,9 @@
       </includes>
       <fileMode>0755</fileMode>
     </fileSet>
-    <!-- docs -->
     <fileSet>
       <directory>${project.basedir}/src/main/resources</directory>
       <outputDirectory>.</outputDirectory>
-      <includes>
-        <include>docs/**</include>
-      </includes>
     </fileSet>
 
     <!-- the remaining static resources -->
@@ -69,4 +65,6 @@
       <outputDirectory>.</outputDirectory>
     </fileSet>
   </fileSets>
+  <dependencySets>
+  </dependencySets>
 </assembly>
