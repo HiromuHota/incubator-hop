@@ -64,7 +64,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Server</servlet-name>
-    <url-pattern>/server/*</url-pattern>
+    <url-pattern>/hop/*</url-pattern>
   </servlet-mapping>
 
 </web-app>
