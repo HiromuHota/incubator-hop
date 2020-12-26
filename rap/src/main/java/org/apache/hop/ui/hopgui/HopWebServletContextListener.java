@@ -1,6 +1,6 @@
 /*! ******************************************************************************
  *
- * Pentaho Data Integration
+ * Hop : The Hop Orchestration Platform
  *
  * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  * Copyright (C) 2016 by Hitachi America, Ltd., R&D : http://www.hitachi-america.us/rd/
@@ -44,8 +44,8 @@ import org.eclipse.rap.rwt.engine.RWTServletContextListener;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class WebSpoonServletContextListener extends RWTServletContextListener {
-  private final static Logger logger = Logger.getLogger( WebSpoonServletContextListener.class.getName() );
+public class HopWebServletContextListener extends RWTServletContextListener {
+  private final static Logger logger = Logger.getLogger( HopWebServletContextListener.class.getName() );
 
   public void contextInitialized( ServletContextEvent event ) {
     /*

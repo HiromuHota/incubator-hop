@@ -1,6 +1,6 @@
 /*! ******************************************************************************
  *
- * Pentaho Data Integration
+ * Hop : The Hop Orchestration Platform
  *
  * Copyright (C) 2002-2016 by Pentaho : http://www.pentaho.com
  * Copyright (C) 2016 by Hitachi America, Ltd., R&D : http://www.hitachi-america.us/rd/
@@ -35,7 +35,7 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 
-public class WebSpoon implements ApplicationConfiguration {
+public class HopWeb implements ApplicationConfiguration {
 
   public void configure( Application application ) {
     application.addResource( "ui/images/hopUi.ico", new ResourceLoader() {
@@ -56,7 +56,7 @@ public class WebSpoon implements ApplicationConfiguration {
     Map<String, String> properties = new HashMap<String, String>();
     properties.put( WebClient.PAGE_TITLE, "Hop" );
     properties.put( WebClient.FAVICON, "ui/images/hopUi.ico" );
-    application.addEntryPoint( "/ui", WebSpoonEntryPoint.class, properties );
+    application.addEntryPoint( "/ui", HopWebEntryPoint.class, properties );
     application.setOperationMode( Application.OperationMode.SWT_COMPATIBILITY );
 
     application.addServiceHandler( "downloadServiceHandler", new DownloadServiceHandler() );

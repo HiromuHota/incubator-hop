@@ -1,6 +1,6 @@
 /*! ******************************************************************************
  *
- * Pentaho Data Integration
+ * Hop : The Hop Orchestration Platform
  *
  * Copyright (C) 2002-2018 by Hitachi Vantara : http://www.pentaho.com
  * Copyright (C) 2016-2018 by Hitachi America, Ltd., R&D : http://www.hitachi-america.us/rd/
@@ -26,22 +26,17 @@ package org.apache.hop.ui.hopgui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.hop.core.Const;
-import org.apache.hop.core.HopClientEnvironment;
-import org.apache.hop.core.Props;
 import org.apache.hop.core.exception.HopException;
 import org.apache.hop.core.extension.ExtensionPointHandler;
 import org.apache.hop.core.extension.HopExtensionPoint;
-import org.apache.hop.core.logging.LogChannel;
 import org.apache.hop.ui.core.PropsUi;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.AbstractEntryPoint;
-import org.eclipse.rap.rwt.client.service.ExitConfirmation;
 import org.eclipse.rap.rwt.client.service.StartupParameters;
 import org.eclipse.rap.rwt.widgets.WidgetUtil;
 import org.eclipse.swt.widgets.Composite;
 
-public class WebSpoonEntryPoint extends AbstractEntryPoint {
+public class HopWebEntryPoint extends AbstractEntryPoint {
 
   @Override
   protected void createContents( Composite parent ) {
