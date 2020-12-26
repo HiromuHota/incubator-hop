@@ -24,11 +24,6 @@
 
 package org.apache.hop.ui.core.widget.text;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyleRange;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 
 /**
@@ -46,18 +41,9 @@ public class UrlFormatRule extends FormatRule {
   public Format execute( String value ) {
     Format format = new Format();
     Matcher matcher = parse( value );
-    List<StyleRange> styleRanges = new ArrayList<>();
     while ( matcher.find() ) {
-      StyleRange styleRange = new StyleRange();
-      styleRange.start = value.indexOf( matcher.group( 0 ) );
-      styleRange.length = matcher.group( 1 ).length();
-      styleRange.data = matcher.group( 2 );
-      styleRange.underlineStyle = SWT.UNDERLINE_LINK;
-      styleRange.underline = true;
-      styleRanges.add( styleRange );
       value = value.replace( matcher.group( LINK_TEXT ), matcher.group( LINK_URL ) );
     }
-    format.setStyleRanges( styleRanges );
     format.setText( value );
     return format;
   }

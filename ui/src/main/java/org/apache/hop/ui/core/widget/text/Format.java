@@ -24,17 +24,11 @@
 
 package org.apache.hop.ui.core.widget.text;
 
-import org.eclipse.swt.custom.StyleRange;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by bmorrise on 9/15/17.
  */
 public class Format {
   private String text;
-  private List<StyleRange> styleRanges = new ArrayList<>();
 
   public String getText() {
     return text;
@@ -44,16 +38,7 @@ public class Format {
     this.text = text;
   }
 
-  public List<StyleRange> getStyleRanges() {
-    return styleRanges;
-  }
-
-  public void setStyleRanges( List<StyleRange> styleRanges ) {
-    this.styleRanges = styleRanges;
-  }
-
   public void add( Format format ) {
     text = format.getText();
-    styleRanges.addAll( format.getStyleRanges() );
   }
 }
