@@ -59,12 +59,12 @@
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>Carte</servlet-name>
-    <servlet-class>org.pentaho.di.www.CarteServlet</servlet-class>
+    <servlet-name>Server</servlet-name>
+    <servlet-class>org.apache.hop.www.HopServerServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Carte</servlet-name>
-    <url-pattern>/kettle/*</url-pattern>
+    <servlet-name>Server</servlet-name>
+    <url-pattern>/server/*</url-pattern>
   </servlet-mapping>
 
 </web-app>
