@@ -96,6 +96,7 @@ import org.apache.hop.ui.hopgui.perspective.dataorch.HopDataOrchestrationPerspec
 import org.apache.hop.ui.hopgui.perspective.dataorch.HopGuiAbstractGraph;
 import org.apache.hop.ui.hopgui.shared.SwtGc;
 import org.apache.hop.ui.hopgui.shared.SwtScrollBar;
+import org.apache.hop.ui.util.EnvironmentUtils;
 import org.apache.hop.ui.workflow.dialog.WorkflowDialog;
 import org.apache.hop.workflow.ActionResult;
 import org.apache.hop.workflow.IActionListener;
@@ -435,8 +436,10 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
     lastClick = null;
 
     canvas.addMouseListener(this);
-    canvas.addMouseMoveListener(this);
-    canvas.addMouseTrackListener(this);
+    if (!EnvironmentUtils.getInstance().isWeb()) {
+      canvas.addMouseMoveListener(this);
+      canvas.addMouseTrackListener(this);
+    }
 
     hopGui.replaceKeyboardShortcutListeners(this);
 

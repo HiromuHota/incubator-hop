@@ -142,6 +142,7 @@ import org.apache.hop.ui.hopgui.perspective.dataorch.HopGuiAbstractGraph;
 import org.apache.hop.ui.hopgui.shared.SwtGc;
 import org.apache.hop.ui.hopgui.shared.SwtScrollBar;
 import org.apache.hop.ui.pipeline.dialog.PipelineDialog;
+import org.apache.hop.ui.util.EnvironmentUtils;
 import org.apache.hop.workflow.action.ActionMeta;
 import org.apache.hop.workflow.actions.pipeline.ActionPipeline;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -566,8 +567,10 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
      */
 
     canvas.addMouseListener(this);
-    canvas.addMouseMoveListener(this);
-    canvas.addMouseTrackListener(this);
+    if (!EnvironmentUtils.getInstance().isWeb()) {
+      canvas.addMouseMoveListener(this);
+      canvas.addMouseTrackListener(this);
+    }
     // canvas.addKeyListener( this );
 
     setBackground(GuiResource.getInstance().getColorBackground());

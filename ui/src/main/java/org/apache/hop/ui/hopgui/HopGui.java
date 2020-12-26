@@ -696,8 +696,6 @@ public class HopGui
       id = ID_MAIN_MENU_EDIT_UNSELECT_ALL,
       label = "Clear selection",
       parentId = ID_MAIN_MENU_EDIT_PARENT_ID)
-  @GuiKeyboardShortcut(key = SWT.ESC)
-  @GuiOsxKeyboardShortcut(key = SWT.ESC)
   public void menuEditUnselectAll() {
     getActiveFileTypeHandler().unselectAll();
   }
