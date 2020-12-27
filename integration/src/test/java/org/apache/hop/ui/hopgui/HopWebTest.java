@@ -66,12 +66,14 @@ public class HopWebTest {
     assertEquals( driver.getTitle(), "Hop" );
   }
 
+  /*
   @Test
   public void testContextDialog() {
     clickElement( "//div[text() = 'File']" );
     clickElement( "//div[text() = 'New']" );
     wait.until( ExpectedConditions.presenceOfElementLocated( By.xpath( "//div[text() = 'Select the item to create']" ) ) );
   }
+  */
 
   private void clickElement( String xpath ) {
     element = wait.until( ExpectedConditions.elementToBeClickable( By.xpath( xpath ) ) );
