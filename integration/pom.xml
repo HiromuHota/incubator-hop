@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.apache.hop</groupId>
+  <artifactId>hop-web-integration-tests</artifactId>
+  <version>0.60-SNAPSHOT</version>
+
+  <name>Hop Web Integration Tests</name>
+
+  <parent>
+    <groupId>org.apache.hop</groupId>
+    <artifactId>hop</artifactId>
+    <version>0.60-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <selenium.version>3.141.59</selenium.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <version>${selenium.version}</version>
+    </dependency>
+	<dependency>
+	  <groupId>junit</groupId>
+	  <artifactId>junit</artifactId>
+	  <version>4.13.1</version>
+	</dependency>
+  </dependencies>
+
+</project>
