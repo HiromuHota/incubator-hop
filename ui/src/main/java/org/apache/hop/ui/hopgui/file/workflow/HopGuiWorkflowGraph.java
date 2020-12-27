@@ -1038,7 +1038,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
           // Show the context dialog
           //
           ignoreNextClick =
-              GuiContextUtil.handleActionSelection(
+              GuiContextUtil.getInstance().handleActionSelection(
                   parent, message, new Point(p.x, p.y), contextHandler);
         }
       }
