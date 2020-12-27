@@ -45,7 +45,7 @@ Change into the clone repository and build:
 
 ## Run Hop 
 
-After a successful build, the Hop UI can be started.
+After a successful build, the Hop Web can be started.
 
     $ docker run -d -p 8080:8080 --name hop project-hop
 
