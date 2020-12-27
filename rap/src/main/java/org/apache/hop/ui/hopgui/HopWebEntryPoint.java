@@ -65,12 +65,6 @@ public class HopWebEntryPoint extends AbstractEntryPoint {
     HopGui.getInstance().setShell( parent.getShell() );
     HopGui.getInstance().setProps( PropsUi.getInstance() );
     try {
-      HopGuiEnvironment.init();
-    } catch (HopException e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
-    }
-    try {
       ExtensionPointHandler.callExtensionPoint(
         HopGui.getInstance().getLog(),
         HopGui.getInstance().getVariables(),
