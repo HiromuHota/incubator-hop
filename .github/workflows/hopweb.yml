@@ -61,6 +61,7 @@ jobs:
         files: |
           assemblies/web/target/hop.war
           assemblies/plugins/dist/target/hop-assemblies-plugins-dist-*.zip
+          assemblies/client/target/hop-client-*.zip
 
   docker:
     name: Docker build
