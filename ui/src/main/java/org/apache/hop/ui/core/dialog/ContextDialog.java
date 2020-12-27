@@ -45,6 +45,7 @@ import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
 import org.apache.hop.ui.util.EnvironmentUtils;
 import org.apache.hop.ui.util.SwtSvgImageUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
@@ -103,6 +104,7 @@ public class ContextDialog extends Dialog {
   private Text wSearch;
   private Label wlTooltip;
   private Canvas wCanvas;
+  private ScrolledComposite wScrolledComposite;
 
   private int iconSize;
 
@@ -404,13 +406,15 @@ public class ContextDialog extends Dialog {
 
     // The rest of the dialog is used to draw the actions...
     //
-    wCanvas = new Canvas( shell, SWT.NO_BACKGROUND | SWT.V_SCROLL );
+    wScrolledComposite = new ScrolledComposite(shell, SWT.V_SCROLL);
+    wCanvas = new Canvas(wScrolledComposite, SWT.NO_BACKGROUND | SWT.V_SCROLL);
+    wScrolledComposite.setContent(wCanvas);
     FormData fdCanvas = new FormData();
     fdCanvas.left = new FormAttachment( 0, 0 );
     fdCanvas.right = new FormAttachment( 100, 0 );
     fdCanvas.top = new FormAttachment( searchComposite, 0 );
     fdCanvas.bottom = new FormAttachment( wlTooltip, 0 );
-    wCanvas.setLayoutData( fdCanvas );
+    wScrolledComposite.setLayoutData(fdCanvas);
 
     itemsFont = wCanvas.getFont();
 
@@ -736,7 +740,7 @@ public class ContextDialog extends Dialog {
     // If so we might have a maximum height and a scrollbar selection
     //
     if ( totalContentHeight > 0 ) {
-      ScrollBar verticalBar = wCanvas.getVerticalBar();
+      ScrollBar verticalBar = wScrolledComposite.getVerticalBar();
 
       if ( totalContentHeight > canvasBounds.height ) {
         heightOffSet = totalContentHeight * verticalBar.getSelection() / ( 100 - verticalBar.getThumb() );
@@ -923,7 +927,7 @@ public class ContextDialog extends Dialog {
       if ( scroll && totalContentHeight > 0 ) {
         org.eclipse.swt.graphics.Rectangle canvasBounds = wCanvas.getBounds();
         Rectangle area = selectedItem.getAreaOwner().getArea();
-        ScrollBar verticalBar = wCanvas.getVerticalBar();
+        ScrollBar verticalBar = wScrolledComposite.getVerticalBar();
         if ( area.y + area.height + 2 * yMargin > canvasBounds.height ) {
           verticalBar.setSelection( Math.min( verticalBar.getSelection() + verticalBar.getPageIncrement(), 100 - verticalBar.getThumb() ) );
         } else if ( area.y < 0 ) {
@@ -1005,7 +1009,7 @@ public class ContextDialog extends Dialog {
     // Which item area are we currently using as a base...
     //
     org.apache.hop.core.gui.Rectangle area = null;
-    ScrollBar verticalBar = wCanvas.getVerticalBar();
+    ScrollBar verticalBar = wScrolledComposite.getVerticalBar();
 
     if ( selectedItem == null ) {
       // Select the first shown item
@@ -1146,7 +1150,7 @@ public class ContextDialog extends Dialog {
 
 
   private void updateVerticalBar() {
-    ScrollBar verticalBar = wCanvas.getVerticalBar();
+    ScrollBar verticalBar = wScrolledComposite.getVerticalBar();
     org.eclipse.swt.graphics.Rectangle canvasBounds = wCanvas.getBounds();
 
     if ( totalContentHeight < canvasBounds.height ) {
