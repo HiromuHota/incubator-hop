@@ -27,6 +27,7 @@ on:
 
 jobs:
   maven:
+    name: Maven build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -62,6 +63,7 @@ jobs:
           assemblies/plugins/dist/target/hop-assemblies-plugins-dist-*.zip
 
   docker:
+    name: Docker build
     needs: maven
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/web'
@@ -83,9 +85,10 @@ jobs:
         tags: hiromuhota/hopweb:nightly
 
   test:
-    # needs: docker
+    name: UI Testing
+    needs: docker
     runs-on: ubuntu-latest
-    # if: github.ref == 'refs/heads/web'
+    if: github.ref == 'refs/heads/web'
     services:
       hopweb:
         image: hiromuhota/hopweb:nightly
