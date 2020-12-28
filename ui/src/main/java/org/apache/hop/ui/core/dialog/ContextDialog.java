@@ -1163,7 +1163,7 @@ public class ContextDialog extends Dialog {
       // How much can we show in percentage?
       // That's the size of the thumb
       //
-      int percentage = (int) ( (double) 100 * canvasBounds.height / totalContentHeight );
+      int percentage = (int) ( (double) 100 * wScrolledComposite.getBounds().height / totalContentHeight );
       verticalBar.setThumb( percentage );
       if (!EnvironmentUtils.getInstance().isWeb()) {
         verticalBar.setPageIncrement( percentage / 2 );
