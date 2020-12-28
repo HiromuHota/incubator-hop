@@ -407,7 +407,7 @@ public class ContextDialog extends Dialog {
     // The rest of the dialog is used to draw the actions...
     //
     wScrolledComposite = new ScrolledComposite(shell, SWT.V_SCROLL);
-    wCanvas = new Canvas(wScrolledComposite, SWT.NO_BACKGROUND | SWT.V_SCROLL);
+    wCanvas = new Canvas(wScrolledComposite, SWT.NO_BACKGROUND);
     wScrolledComposite.setContent(wCanvas);
     FormData fdCanvas = new FormData();
     fdCanvas.left = new FormAttachment( 0, 0 );
@@ -515,6 +515,8 @@ public class ContextDialog extends Dialog {
     // Layout all the widgets in the shell.
     //
     shell.layout();
+
+    wCanvas.setSize(300, 300);
 
     // Set the active instance.
     //
