@@ -18,6 +18,7 @@
 
 FROM tomcat:jdk8
 MAINTAINER Hiromu Hota <hiromu.hota@gmail.com>
+ENV JAVA_OPTS="-Xms1024m -Xmx2048m"
 
 RUN rm -rf webapps/* \
  && wget -q https://github.com/HiromuHota/incubator-hop/releases/download/hopweb%2Fnightly/hop.war -O webapps/ROOT.war \
