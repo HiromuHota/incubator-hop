@@ -877,6 +877,7 @@ public class ContextDialog extends Dialog {
 
     if ( previousTotalContentHeight != totalContentHeight ) {
       previousTotalContentHeight = totalContentHeight;
+      wCanvas.setSize(wScrolledComposite.getClientArea().width, totalContentHeight);
       updateVerticalBar();
     }
 
