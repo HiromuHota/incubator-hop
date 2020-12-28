@@ -510,12 +510,6 @@ public class ContextDialog extends Dialog {
         }
       } );
     }
-    wCanvas.getVerticalBar().addSelectionListener( new SelectionAdapter() {
-      @Override
-      public void widgetSelected( SelectionEvent e ) {
-        wCanvas.redraw();
-      }
-    } );
     wCanvas.addKeyListener( keyAdapter );
 
     // Layout all the widgets in the shell.
