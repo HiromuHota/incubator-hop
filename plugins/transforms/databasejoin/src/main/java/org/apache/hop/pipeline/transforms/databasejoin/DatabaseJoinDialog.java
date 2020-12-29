@@ -36,7 +36,6 @@ import org.apache.hop.ui.core.widget.MetaSelectionLine;
 import org.apache.hop.ui.core.widget.StyledTextComp;
 import org.apache.hop.ui.core.widget.TableView;
 import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
-import org.apache.hop.ui.pipeline.transforms.tableinput.SqlValuesHighlight;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.FormAttachment;
@@ -172,9 +171,6 @@ public class DatabaseJoinDialog extends BaseTransformDialog implements ITransfor
         setPosition();
       }
     } );
-
-    // SQL Higlighting
-    wSql.addLineStyleListener( new SqlValuesHighlight() );
 
     wlPosition = new Label( shell, SWT.NONE );
     props.setLook( wlPosition );

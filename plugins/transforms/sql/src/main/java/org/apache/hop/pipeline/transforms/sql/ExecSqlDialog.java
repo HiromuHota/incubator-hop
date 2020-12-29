@@ -35,7 +35,6 @@ import org.apache.hop.ui.core.widget.StyledTextComp;
 import org.apache.hop.ui.core.widget.TableView;
 import org.apache.hop.ui.hopgui.file.workflow.HopGuiWorkflowGraph;
 import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
-import org.apache.hop.ui.pipeline.transforms.tableinput.SqlValuesHighlight;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Rectangle;
@@ -193,9 +192,6 @@ public class ExecSqlDialog extends BaseTransformDialog implements ITransformDial
         setPosition();
       }
     } );
-
-    // Text Higlighting
-    wSql.addLineStyleListener( new SqlValuesHighlight() );
 
     // Some buttons
     //

@@ -33,7 +33,6 @@ import org.apache.hop.ui.core.widget.MetaSelectionLine;
 import org.apache.hop.ui.core.widget.StyledTextComp;
 import org.apache.hop.ui.core.widget.TextVar;
 import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
-import org.apache.hop.ui.pipeline.transforms.tableinput.SqlValuesHighlight;
 import org.apache.hop.ui.workflow.action.ActionDialog;
 import org.apache.hop.ui.workflow.dialog.WorkflowDialog;
 import org.apache.hop.workflow.WorkflowMeta;
@@ -574,9 +573,6 @@ public class ActionWaitForSqlDialog extends ActionDialog implements IActionDialo
           }
         });
     wSql.addModifyListener(lsMod);
-
-    // Text Higlighting
-    wSql.addLineStyleListener(new SqlValuesHighlight());
 
     FormData fdCustomGroup = new FormData();
     fdCustomGroup.left = new FormAttachment(0, margin);

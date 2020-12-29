@@ -32,7 +32,6 @@ import org.apache.hop.i18n.BaseMessages;
 import org.apache.hop.pipeline.Pipeline;
 import org.apache.hop.pipeline.PipelineMeta;
 import org.apache.hop.pipeline.PipelinePreviewFactory;
-import org.apache.hop.pipeline.transforms.salesforce.SOQLValuesHighlight;
 import org.apache.hop.pipeline.transforms.salesforce.SalesforceConnection;
 import org.apache.hop.pipeline.transforms.salesforce.SalesforceConnectionUtils;
 import org.apache.hop.pipeline.transforms.salesforce.SalesforceTransformDialog;
@@ -504,9 +503,6 @@ public class SalesforceInputDialog extends SalesforceTransformDialog {
       }
     } );
 
-    // Text Higlighting
-    wCondition.addLineStyleListener( new SOQLValuesHighlight() );
-
     // Query
     wlQuery = new Label( wSettingsGroup, SWT.RIGHT );
     wlQuery.setText( BaseMessages.getString( PKG, "SalesforceInputDialog.Query.Label" ) );
@@ -573,9 +569,6 @@ public class SalesforceInputDialog extends SalesforceTransformDialog {
         setPosition();
       }
     } );
-
-    // Text Higlighting
-    wQuery.addLineStyleListener( new SOQLValuesHighlight() );
 
     FormData fdSettingsGroup = new FormData();
     fdSettingsGroup.left = new FormAttachment( 0, 0 );
