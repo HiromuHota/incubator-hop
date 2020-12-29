@@ -354,7 +354,9 @@ public class HopGui
     //
     // shell.pack();
     shell.open();
-    shell.setMaximized( true );
+    if (EnvironmentUtils.getInstance().isWeb()) {
+      shell.setMaximized(true);
+    }
 
     openingLastFiles = true; // TODO: make this configurable.
 
