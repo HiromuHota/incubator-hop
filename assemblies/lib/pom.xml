@@ -37,7 +37,6 @@
     <!-- third party -->
     <slf4j-api.version>1.7.7</slf4j-api.version>
     <slf4j-log4j12.version>1.7.7</slf4j-log4j12.version>
-    <log4j.version>1.2.17</log4j.version>
     <apache-log4j-extras>1.2.17</apache-log4j-extras>
     <webservices-api.version>2.3.1</webservices-api.version>
     <webservices-rt.version>2.3.1</webservices-rt.version>
@@ -45,10 +44,7 @@
     <blueprints-core.version>2.6.0</blueprints-core.version>
     <commons-configuration.version>1.9</commons-configuration.version>
     <flexjson.version>2.1</flexjson.version>
-    <!-- jackson-databind depends on jackson-core and jackson-annotations
-    so that this artifacts have the same version to prevent compile errors -->
-    <fasterxml.jackson.core.version>2.9.2</fasterxml.jackson.core.version>
-    <jersey.version>1.19.1</jersey.version>
+    <jersey-multipart.version>1.19.1</jersey-multipart.version>
     <mimepull.version>1.9.3</mimepull.version>
     <jsr311-api.version>1.1.1</jsr311-api.version>
     <enunciate-jersey-rt.version>1.27</enunciate-jersey-rt.version>
@@ -62,8 +58,7 @@
     <bahir.version>2.1.1</bahir.version>
 
     <!-- Spring -->
-    <springframework4.version>4.3.17.RELEASE</springframework4.version>
-    <springframework4-security.version>4.1.5.RELEASE</springframework4-security.version>
+    <springframework4.version>4.3.18</springframework4.version>
   </properties>
 
   <dependencies>
@@ -101,10 +96,6 @@
           <groupId>org.eclipse.swt</groupId>
           <artifactId>*</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.rap</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -124,82 +115,6 @@
       <artifactId>jaxen</artifactId>
     </dependency>
 
-    <!-- Spring -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>${springframework4.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-      <version>${springframework4.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-      <version>${springframework4.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-      <version>${springframework4.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>${springframework4.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context-support</artifactId>
-      <version>${springframework4.version}</version>
-    </dependency>
-
-    <!-- Spring Security -->
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-core</artifactId>
-      <version>${spring-security.version}</version>  <!-- see maven-parent-pom -->
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-ldap</artifactId>
-      <version>${springframework4-security.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.ldap</groupId>
-      <artifactId>spring-ldap-core</artifactId>
-      <version>2.3.2.RELEASE</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-tx</artifactId>
-      <version>${springframework4.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-config</artifactId>
-      <version>${springframework4-security.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-web</artifactId>
-      <version>${springframework4-security.version}</version>
-    </dependency>
-
     <!-- Other third-party dependencies -->
     <dependency>
       <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -210,11 +125,6 @@
           <artifactId>jackson-module-jaxb-annotations</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -300,18 +210,7 @@
     <dependency>
       <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-multipart</artifactId>
-      <version>${jersey.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey.contribs</groupId>
-      <artifactId>jersey-spring</artifactId>
-      <version>${jersey.version}</version>
+      <version>${jersey-multipart.version}</version>
       <exclusions>
         <exclusion>
           <groupId>*</groupId>
