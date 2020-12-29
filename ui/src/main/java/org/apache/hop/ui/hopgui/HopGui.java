@@ -60,7 +60,6 @@ import org.apache.hop.ui.core.PropsUi;
 import org.apache.hop.ui.core.bus.HopGuiEventsHandler;
 import org.apache.hop.ui.core.dialog.EnterOptionsDialog;
 import org.apache.hop.ui.core.dialog.ErrorDialog;
-import org.apache.hop.ui.core.dialog.ShowMessageDialog;
 import org.apache.hop.ui.core.dialog.HopDescribedVariablesDialog;
 import org.apache.hop.ui.core.gui.GuiMenuWidgets;
 import org.apache.hop.ui.core.gui.GuiResource;
@@ -1566,15 +1565,6 @@ public class HopGui
   /** @param openingLastFiles The openingLastFiles to set */
   public void setOpeningLastFiles(boolean openingLastFiles) {
     this.openingLastFiles = openingLastFiles;
-  }
-
-  public void instructShortcuts() {
-    ShowMessageDialog dialog =
-      new ShowMessageDialog( shell, SWT.ICON_WARNING | SWT.OK,
-        BaseMessages.getString( PKG, "Spoon.Error" ),
-        "Use keyboard shortcuts instead (cmd-x,-c,-v for Mac or ctrl-x,-c,-v for others)"
-    );
-    dialog.open();
   }
 
   /**
