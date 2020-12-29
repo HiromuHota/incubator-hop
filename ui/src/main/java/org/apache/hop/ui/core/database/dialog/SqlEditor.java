@@ -42,7 +42,6 @@ import org.apache.hop.ui.core.gui.GuiResource;
 import org.apache.hop.ui.core.gui.WindowProperty;
 import org.apache.hop.ui.core.widget.StyledTextComp;
 import org.apache.hop.ui.pipeline.transform.BaseTransformDialog;
-import org.apache.hop.ui.pipeline.transforms.tableinput.SqlValuesHighlight;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -99,8 +98,6 @@ public class SqlEditor {
   private IVariables variables;
 
   private List<SqlScriptStatement> statements;
-
-  private SqlValuesHighlight highlight;
 
   public SqlEditor( Shell parent, int style, IVariables variables, DatabaseMeta ci, DbCache dbc, String sql ) {
     props = PropsUi.getInstance();
@@ -181,11 +178,6 @@ public class SqlEditor {
         setPosition();
       }
     } );
-
-    // SQL Higlighting
-    highlight = new SqlValuesHighlight();
-    highlight.addKeyWords( connection.getReservedWords() );
-    wScript.addLineStyleListener( highlight );
 
     wlPosition = new Label( shell, SWT.NONE );
     wlPosition.setText( BaseMessages.getString( PKG, "SQLEditor.LineNr.Label", "0" ) );
@@ -417,7 +409,6 @@ public class SqlEditor {
    * During or after an execution we will mark regions of the SQL editor dialog in green or red.
    */
   protected void refreshExecutionResults() {
-    highlight.setScriptStatements( statements );
     wScript.redraw();
   }
 }

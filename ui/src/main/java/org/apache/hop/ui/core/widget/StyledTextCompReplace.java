@@ -26,7 +26,6 @@ import org.apache.hop.core.util.Utils;
 import org.apache.hop.i18n.BaseMessages;
 import org.apache.hop.ui.core.gui.GuiResource;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
@@ -49,7 +48,7 @@ public class StyledTextCompReplace extends org.eclipse.swt.widgets.Dialog {
   private Shell sShell = null;
   private Text searchText;
   private Text replaceText;
-  private StyledText text;
+  private Text text;
 
   private Button btnNext;
   private Button btnCancel;
@@ -58,7 +57,7 @@ public class StyledTextCompReplace extends org.eclipse.swt.widgets.Dialog {
 
   private Button btnIgnoreCase;
 
-  public StyledTextCompReplace( Shell parent, StyledText text ) {
+  public StyledTextCompReplace( Shell parent, Text text ) {
     super( parent );
     this.text = text;
   }
@@ -175,7 +174,7 @@ public class StyledTextCompReplace extends org.eclipse.swt.widgets.Dialog {
     } );
 
     btnReplaceAll.addListener( SWT.Selection, e -> {
-      text.setCaretOffset( -1 );
+      text.setSelection( -1 );
       while ( findText() ) {
         replaceText();
       }
@@ -222,7 +221,7 @@ public class StyledTextCompReplace extends org.eclipse.swt.widgets.Dialog {
   private boolean findText() {
     String searchString = searchText.getText();
     String textString = text.getText();
-    int offset = text.getCaretOffset();
+    int offset = text.getCaretPosition();
     int start = -1;
 
     if ( !btnIgnoreCase.getSelection() ) {
@@ -252,8 +251,9 @@ public class StyledTextCompReplace extends org.eclipse.swt.widgets.Dialog {
   }
 
   private void replaceText() {
-    int start = text.getSelectionRange().x;
-    text.replaceTextRange( start, text.getSelectionCount(), replaceText.getText() );
-    text.setSelection( start, start + replaceText.getText().length() );
+    int start = text.getSelection().x;
+    int length = text.getSelectionCount();
+    text.setText(text.getText(0, start) + replaceText.getText() + text.getText().substring(start + length));
+    text.setSelection(start, start + replaceText.getText().length());
   }
 }
