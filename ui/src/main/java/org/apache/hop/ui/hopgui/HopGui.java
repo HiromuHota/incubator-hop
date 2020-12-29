@@ -934,7 +934,7 @@ public class HopGui
       label = "About...",
       parentId = ID_MAIN_MENU_HELP_PARENT_ID)
   public void menuHelpAbout() {
-    AboutDialog dialog = new AboutDialog(hopGui.getShell());
+    AboutDialog dialog = new AboutDialog(getShell());
     dialog.open();
   }
   
