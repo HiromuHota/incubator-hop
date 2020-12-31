@@ -22,12 +22,30 @@
 
 package org.apache.hop.ui.hopgui;
 
+import java.io.IOException;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.rap.rwt.SingletonUtil;
+import org.eclipse.rap.rwt.scripting.ClientListener;
 
-public class CanvasListenerImpl implements ISingletonProvider{
+public class CanvasListenerImpl extends ClientListener implements ISingletonProvider{
 
   @Override
   public Object getInstanceInternal() {
-    return SingletonUtil.getSessionInstance( CanvasListenerImplImpl.class );
+    return SingletonUtil.getSessionInstance( CanvasListenerImpl.class );
+  }
+
+  private CanvasListenerImpl() {
+    super( getText() );
+  }
+
+  private static String getText() {
+    String canvasScript = null;
+    try {
+      canvasScript = IOUtils.toString( CanvasListenerImpl.class.getResourceAsStream( "canvas.js" ) );
+    } catch ( IOException e1 ) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+    return canvasScript;
   }
 }
