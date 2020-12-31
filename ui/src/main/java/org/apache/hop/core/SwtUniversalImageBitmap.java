@@ -25,7 +25,6 @@ package org.apache.hop.core;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Transform;
 
 public class SwtUniversalImageBitmap extends SwtUniversalImage {
@@ -52,9 +51,7 @@ public class SwtUniversalImageBitmap extends SwtUniversalImage {
 
   @Override
   protected Image renderSimple( Device device, int width, int height ) {
-    ImageData imageData = bitmap.getImageData();
-    ImageData scaledData = imageData.scaledTo( width, height );
-    return new Image( device, scaledData );
+    return renderRotated( device, width, height, 0d );
   }
 
   @Override
