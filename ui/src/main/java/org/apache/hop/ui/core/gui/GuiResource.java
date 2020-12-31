@@ -267,14 +267,10 @@ public class GuiResource {
   private Clipboard clipboard;
 
   protected GuiResource() {
-    initialize( PropsUi.getDisplay() );
+    this(Display.getCurrent());
   }
 
-//  private GUIResource( Display display ) {
-//    initialize( display );
-//  }
-
-  public void initialize( Display display ) {
+  private GuiResource( Display display ) {
     this.display = display;
 
     getResources();
