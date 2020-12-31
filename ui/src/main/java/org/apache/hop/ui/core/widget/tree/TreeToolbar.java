@@ -138,14 +138,6 @@ public class TreeToolbar extends Composite {
     sep4.setLayoutData( fdSep4 );
   }
 
-  public Text getSelectionFilter() {
-    return selectionFilter;
-  }
-
-  public ToolItem getExpandAll() {
-    return expandAll;
-  }
-
   public void setSearchTooltip( String tooltip ) {
     selectionFilter.setToolTipText( tooltip );
   }
