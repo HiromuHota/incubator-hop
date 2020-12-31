@@ -351,7 +351,7 @@ public class DBProcDialog extends BaseTransformDialog implements ITransformDialo
       wFields.table.setSize( size.x - 10, size.y - 50 );
       wFields.redraw();
     };
-//    shell.addListener( SWT.Resize, lsResize );
+    shell.addListener( SWT.Resize, lsResize );
 
     // Set the shell size, based upon previous time...
     setSize();
