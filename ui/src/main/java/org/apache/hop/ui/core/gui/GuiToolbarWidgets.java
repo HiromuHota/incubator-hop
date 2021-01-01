@@ -202,7 +202,7 @@ public class GuiToolbarWidgets extends BaseGuiWidgets {
   private int calculateComboWidth( Combo combo ) {
     int maxWidth = combo.getSize().x;
     for ( String item : combo.getItems() ) {
-      int width = TextSizeUtilFacade.textExtent(Display.getCurrent().getSystemFont(), item, Integer.MAX_VALUE).x;
+      int width = TextSizeUtilFacade.textExtent(item).x;
       if ( width > maxWidth ) {
         maxWidth = width;
       }

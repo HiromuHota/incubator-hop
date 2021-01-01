@@ -2232,7 +2232,7 @@ public class TableView extends Composite {
     }
     String str = getTextWidgetValue( colnr );
 
-    int strmax = TextSizeUtilFacade.textExtent( getFont(), str, 0 ).x + 20;
+    int strmax = TextSizeUtilFacade.textExtent(str).x + 20;
     int colmax = tablecolumn[ colnr ].getWidth();
     if ( strmax > colmax ) {
       tablecolumn[ colnr ].setWidth( strmax + 30 );
@@ -2480,7 +2480,7 @@ public class TableView extends Composite {
       TableColumn tc = table.getColumn( c );
       int max = 0;
       if ( header ) {
-        max = TextSizeUtilFacade.textExtent( getFont(), tc.getText(), 0 ).x;
+        max = TextSizeUtilFacade.textExtent(tc.getText()).x;
 
         // Check if the column has a sorted mark set. In that case, we need the
         // header to be a bit wider...
@@ -2530,7 +2530,7 @@ public class TableView extends Composite {
       }
 
       for ( String str : columnStrings ) {
-        int len = TextSizeUtilFacade.textExtent( getFont(), str == null ? "" : str, 0 ).x;
+        int len = TextSizeUtilFacade.textExtent(str == null ? "" : str).x;
         if ( len > max ) {
           max = len;
         }
