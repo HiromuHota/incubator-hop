@@ -31,7 +31,6 @@ import org.apache.hop.core.row.IValueMeta;
 import org.apache.hop.core.row.value.ValueMetaPluginType;
 import org.apache.hop.ui.core.ConstUi;
 import org.apache.hop.ui.core.PropsUi;
-import org.apache.hop.ui.hopgui.HopGui;
 import org.apache.hop.ui.hopgui.ISingletonProvider;
 import org.apache.hop.ui.hopgui.ImplementationLoader;
 import org.apache.hop.ui.util.SwtSvgImageUtil;
@@ -265,6 +264,10 @@ public class GuiResource {
    * singleton just for this one member.
    */
   private Clipboard clipboard;
+
+  protected GuiResource() {
+    this(Display.getCurrent());
+  }
 
   protected GuiResource() {
     this(Display.getCurrent());

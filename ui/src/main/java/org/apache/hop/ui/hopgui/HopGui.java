@@ -189,7 +189,6 @@ public class HopGui
 
   public static final String APP_NAME = "Hop";
 
-  private static HopGui hopGui;
   private String id;
 
   private IHopMetadataProvider metadataProvider;
@@ -232,7 +231,7 @@ public class HopGui
   private boolean openingLastFiles;
 
   protected HopGui() {
-    this( Display.getCurrent() );
+    this(Display.getCurrent());
   }
 
   private HopGui(Display display) {
@@ -294,7 +293,7 @@ public class HopGui
       HopLogStore.init();
       Locale.setDefault(LanguageChoice.getInstance().getDefaultLocale());
 
-      hopGui = HopGui.getInstance();
+      HopGui hopGui = HopGui.getInstance();
       hopGui.getCommandLineArguments().addAll(Arrays.asList(arguments));
       hopGui.setProps(PropsUi.getInstance());
 

@@ -107,6 +107,7 @@
         </exclusion>
       </exclusions>
     </dependency>
+
     <!-- swt -->
     <dependency>
       <groupId>org.eclipse.platform</groupId>
