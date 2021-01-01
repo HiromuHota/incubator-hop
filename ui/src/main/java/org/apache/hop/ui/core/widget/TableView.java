@@ -41,6 +41,7 @@ import org.apache.hop.ui.core.dialog.ErrorDialog;
 import org.apache.hop.ui.core.gui.GuiResource;
 import org.apache.hop.ui.hopgui.HopGui;
 import org.apache.hop.ui.hopgui.TextSizeUtilFacade;
+import org.apache.hop.ui.util.EnvironmentUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.CCombo;
@@ -2235,6 +2236,11 @@ public class TableView extends Composite {
     int strmax = TextSizeUtilFacade.textExtent(str).x + 20;
     int colmax = tablecolumn[ colnr ].getWidth();
     if ( strmax > colmax ) {
+      if (!EnvironmentUtils.getInstance().isWeb()) {
+        if ( Const.isOSX() || Const.isLinux() ) {
+          strmax *= 1.4;
+        }
+      }
       tablecolumn[ colnr ].setWidth( strmax + 30 );
 
       // On linux, this causes the text to select everything...
