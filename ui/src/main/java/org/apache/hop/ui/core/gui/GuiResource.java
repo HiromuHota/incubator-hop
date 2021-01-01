@@ -269,10 +269,6 @@ public class GuiResource {
     this(Display.getCurrent());
   }
 
-  protected GuiResource() {
-    this(Display.getCurrent());
-  }
-
   private GuiResource( Display display ) {
     this.display = display;
 
