@@ -29,16 +29,15 @@ import org.apache.hop.core.gui.plugin.toolbar.GuiToolbarElementType;
 import org.apache.hop.core.gui.plugin.toolbar.GuiToolbarItem;
 import org.apache.hop.ui.core.ConstUi;
 import org.apache.hop.ui.core.PropsUi;
-import org.apache.hop.ui.hopgui.HopGui;
+import org.apache.hop.ui.hopgui.TextSizeUtilFacade;
 import org.apache.hop.ui.hopgui.file.IHopFileType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -202,6 +201,12 @@ public class GuiToolbarWidgets extends BaseGuiWidgets {
 
   private int calculateComboWidth( Combo combo ) {
     int maxWidth = combo.getSize().x;
+    for ( String item : combo.getItems() ) {
+      int width = TextSizeUtilFacade.textExtent(Display.getCurrent().getSystemFont(), item, Integer.MAX_VALUE).x;
+      if ( width > maxWidth ) {
+        maxWidth = width;
+      }
+    }
     return maxWidth;
   }
 
