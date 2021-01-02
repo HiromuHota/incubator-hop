@@ -124,6 +124,10 @@ public class HopGuiEnvironment extends HopClientEnvironment {
           }
           GuiOsxKeyboardShortcut osxShortcut = method.getAnnotation( GuiOsxKeyboardShortcut.class );
           if ( osxShortcut != null ) {
+            // RAP does not support ESC as a shortcut key.
+            if (EnvironmentUtils.getInstance().isWeb() && osxShortcut.key() == SWT.ESC) {
+              continue;
+            }
             guiRegistry.addKeyboardShortcut( guiPluginClassName, method, osxShortcut );
           }
           GuiContextAction contextAction = method.getAnnotation( GuiContextAction.class );
