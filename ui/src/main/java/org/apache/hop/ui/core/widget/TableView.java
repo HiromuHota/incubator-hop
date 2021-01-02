@@ -119,6 +119,7 @@ public class TableView extends Composite {
   private static final Class<?> PKG = TableView.class; // Needed by Translator
 
   // define CANCEL_KEYS here so that RWT needs not to be imported.
+  // HiromuHota/pentaho-kettle#123
   private static final String CANCEL_KEYS = "org.eclipse.rap.rwt.cancelKeys";
 
   private Composite parent;
@@ -1800,6 +1801,7 @@ public class TableView extends Composite {
     }
 
     // Table.getSelection() of RWT are ordered reversely.
+    // HiromuHota/pentaho-kettle#156
     if (EnvironmentUtils.getInstance().isWeb()) {
       ArrayUtils.reverse(items);
     }
