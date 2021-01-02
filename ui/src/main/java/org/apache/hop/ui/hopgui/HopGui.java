@@ -1575,8 +1575,8 @@ public class HopGui
    *
    * @return value of id
    */
-  public static String getId() {
-    return getInstance().id;
+  public String getId() {
+    return id;
   }
 
   /**
