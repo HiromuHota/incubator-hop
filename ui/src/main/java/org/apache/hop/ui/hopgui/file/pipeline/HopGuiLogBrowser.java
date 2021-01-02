@@ -181,6 +181,7 @@ public class HopGuiLogBrowser {
     text.addDisposeListener( event -> logRefreshTimer.cancel() );
 
     // Make sure the timer goes down when the Display is disposed
+    // Lambda expression cannot be used here as it causes SecurityException in RAP.
     text.getDisplay().disposeExec( new Runnable() {
       @Override
       public void run() {
