@@ -41,6 +41,8 @@ import org.apache.hop.ui.hopgui.file.HopFileTypePluginType;
 import org.apache.hop.ui.hopgui.file.HopFileTypeRegistry;
 import org.apache.hop.ui.hopgui.file.IHopFileType;
 import org.apache.hop.ui.hopgui.perspective.HopPerspectivePluginType;
+import org.apache.hop.ui.util.EnvironmentUtils;
+import org.eclipse.swt.SWT;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -114,7 +116,11 @@ public class HopGuiEnvironment extends HopClientEnvironment {
           }
           GuiKeyboardShortcut shortcut = method.getAnnotation( GuiKeyboardShortcut.class );
           if ( shortcut != null ) {
-            guiRegistry.addKeyboardShortcut( guiPluginClassName, method, shortcut );
+            // RAP does not support ESC as a shortcut key.
+            if (EnvironmentUtils.getInstance().isWeb() && shortcut.key() == SWT.ESC) {
+              continue;
+            }
+            guiRegistry.addKeyboardShortcut(guiPluginClassName, method, shortcut);
           }
           GuiOsxKeyboardShortcut osxShortcut = method.getAnnotation( GuiOsxKeyboardShortcut.class );
           if ( osxShortcut != null ) {
