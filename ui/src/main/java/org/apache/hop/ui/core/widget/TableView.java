@@ -18,6 +18,7 @@
 
 package org.apache.hop.ui.core.widget;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hop.core.Condition;
 import org.apache.hop.core.Const;
@@ -1799,7 +1800,11 @@ public class TableView extends Composite {
     }
 
     // Table.getSelection() of RWT are ordered reversely.
-    for ( int r = items.length - 1; r >= 0; r-- ) {
+    if (EnvironmentUtils.getInstance().isWeb()) {
+      ArrayUtils.reverse(items);
+    }
+
+    for ( int r = 0; r < items.length; r++ ) {
       TableItem ti = items[ r ];
       for ( int c = 1; c < table.getColumnCount(); c++ ) {
         ColumnInfo ci = columns[c-1];
