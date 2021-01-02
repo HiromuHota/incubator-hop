@@ -120,7 +120,7 @@ public class HopGuiEnvironment extends HopClientEnvironment {
             if (EnvironmentUtils.getInstance().isWeb() && shortcut.key() == SWT.ESC) {
               continue;
             }
-            guiRegistry.addKeyboardShortcut(guiPluginClassName, method, shortcut);
+            guiRegistry.addKeyboardShortcut( guiPluginClassName, method, shortcut );
           }
           GuiOsxKeyboardShortcut osxShortcut = method.getAnnotation( GuiOsxKeyboardShortcut.class );
           if ( osxShortcut != null ) {
