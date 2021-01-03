@@ -501,14 +501,15 @@ public class ContextDialog extends Dialog {
       }
     } );
     if (!EnvironmentUtils.getInstance().isWeb()) {
-      wCanvas.addMouseMoveListener( ( MouseEvent event ) -> {
-        // Do we mouse over an action?
-        //
-        Item item = findItem( event.x, event.y );
-        if ( item != null ) {
-          selectItem( item, false );
-        }
-      } );
+      wCanvas.addMouseMoveListener(
+          (MouseEvent event) -> {
+            // Do we mouse over an action?
+            //
+            Item item = findItem(event.x, event.y);
+            if (item != null) {
+              selectItem(item, false);
+            }
+          });
     }
     wCanvas.addKeyListener( keyAdapter );
 
@@ -516,11 +517,12 @@ public class ContextDialog extends Dialog {
     //
     shell.layout();
 
-    wCanvas.setSize(300, 300);
-
     // Set the active instance.
     //
     activeInstance = this;
+
+    // Manually set canvas size otherwise canvas never gets drawn.
+    wCanvas.setSize(10, 10);
 
     // Show the dialog now
     //
@@ -730,7 +732,7 @@ public class ContextDialog extends Dialog {
 
     // The size of the canvas right now?
     //
-    org.eclipse.swt.graphics.Rectangle canvasBounds = wCanvas.getBounds();
+    org.eclipse.swt.graphics.Rectangle scrolledCompositeBounds = wScrolledComposite.getBounds();
 
     // Did we draw before?
     // If so we might have a maximum height and a scrollbar selection
@@ -738,7 +740,7 @@ public class ContextDialog extends Dialog {
     if ( totalContentHeight > 0 ) {
       ScrollBar verticalBar = wScrolledComposite.getVerticalBar();
 
-      if ( totalContentHeight > canvasBounds.height ) {
+      if ( totalContentHeight > scrolledCompositeBounds.height ) {
         heightOffSet = totalContentHeight * verticalBar.getSelection() / ( 100 - verticalBar.getThumb() );
       } else {
         heightOffSet = 0;
@@ -782,12 +784,12 @@ public class ContextDialog extends Dialog {
             gc.setForeground( GuiResource.getInstance().getColorBlack() );
           }
           org.eclipse.swt.graphics.Point categoryExtent = gc.textExtent( categoryAndOrder.category );
-          // gc.drawLine( margin, y-1, canvasBounds.width - xMargin, y-1 );
+          // gc.drawLine( margin, y-1, scrolledCompositeBounds.width - xMargin, y-1 );
           gc.drawText( categoryAndOrder.category, x, y );
           areaOwners.add( new AreaOwner<>( AreaOwner.AreaType.CUSTOM, x, y + heightOffSet, categoryExtent.x, categoryExtent.y, new Point( 0, heightOffSet ), OwnerType.CATEGORY, categoryAndOrder ) );
           y += categoryExtent.y + yMargin;
           gc.setLineWidth( 1 );
-          gc.drawLine( margin, y - yMargin, canvasBounds.width - xMargin, y - yMargin );
+          gc.drawLine( margin, y - yMargin, scrolledCompositeBounds.width - xMargin, y - yMargin );
         }
 
         gc.setForeground( GuiResource.getInstance().getColorBlack() );
@@ -812,7 +814,7 @@ public class ContextDialog extends Dialog {
             int width = Math.max( nameExtent.x, imageBounds.width );
             height = nameExtent.y + margin + imageBounds.height;
 
-            if ( x + width + xMargin > canvasBounds.width ) {
+            if ( x + width + xMargin > scrolledCompositeBounds.width ) {
               x = margin;
               y += height + yMargin;
             }
@@ -846,7 +848,7 @@ public class ContextDialog extends Dialog {
             // Now we advance x and y to where we want to draw the next one...
             //
             x += width + xMargin;
-            if ( x > canvasBounds.width ) {
+            if ( x > scrolledCompositeBounds.width ) {
               x = margin;
               y += height + yMargin;
             }
@@ -922,10 +924,10 @@ public class ContextDialog extends Dialog {
       // See if we need to show the selected item.
       //
       if ( scroll && totalContentHeight > 0 ) {
-        org.eclipse.swt.graphics.Rectangle canvasBounds = wCanvas.getBounds();
+        org.eclipse.swt.graphics.Rectangle scrolledCompositeBounds = wScrolledComposite.getBounds();
         Rectangle area = selectedItem.getAreaOwner().getArea();
         ScrollBar verticalBar = wScrolledComposite.getVerticalBar();
-        if ( area.y + area.height + 2 * yMargin > canvasBounds.height ) {
+        if ( area.y + area.height + 2 * yMargin > scrolledCompositeBounds.height ) {
           verticalBar.setSelection( Math.min( verticalBar.getSelection() + verticalBar.getPageIncrement(), 100 - verticalBar.getThumb() ) );
         } else if ( area.y < 0 ) {
           verticalBar.setSelection( Math.max( verticalBar.getSelection() - verticalBar.getPageIncrement(), 0 ) );
@@ -1148,9 +1150,9 @@ public class ContextDialog extends Dialog {
 
   private void updateVerticalBar() {
     ScrollBar verticalBar = wScrolledComposite.getVerticalBar();
-    org.eclipse.swt.graphics.Rectangle canvasBounds = wCanvas.getBounds();
+    org.eclipse.swt.graphics.Rectangle scrolledCompositeBounds = wScrolledComposite.getBounds();
 
-    if ( totalContentHeight < canvasBounds.height ) {
+    if ( totalContentHeight < scrolledCompositeBounds.height ) {
       verticalBar.setEnabled( false );
       verticalBar.setVisible( false );
     } else {
@@ -1163,16 +1165,16 @@ public class ContextDialog extends Dialog {
       // How much can we show in percentage?
       // That's the size of the thumb
       //
-      int percentage = (int) ( (double) 100 * wScrolledComposite.getBounds().height / totalContentHeight );
+      int percentage = (int) ( (double) 100 * scrolledCompositeBounds.height / totalContentHeight );
       verticalBar.setThumb( percentage );
       if (!EnvironmentUtils.getInstance().isWeb()) {
-        verticalBar.setPageIncrement( percentage / 2 );
-        verticalBar.setIncrement( percentage / 10 );
+        verticalBar.setPageIncrement(percentage / 2);
+        verticalBar.setIncrement(percentage / 10);
       }
 
       // Set the selection as well...
       //
-      int selection = Math.max( 0, (int) ( (double) 100 * ( heightOffSet - canvasBounds.height ) / totalContentHeight ) );
+      int selection = Math.max( 0, (int) ( (double) 100 * ( heightOffSet - scrolledCompositeBounds.height ) / totalContentHeight ) );
       verticalBar.setSelection( selection );
     }
   }
