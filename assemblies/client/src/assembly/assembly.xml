@@ -76,15 +76,8 @@
     <dependencySet>
       <includes>
         <include>org.eclipse.platform:org.eclipse.jface</include>
-        <include>org.apache.hop:hop-ui-rcp:jar</include>
-      </includes>
-      <outputDirectory>lib</outputDirectory>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <useProjectArtifact>false</useProjectArtifact>
-    </dependencySet>
-    <dependencySet>
-      <includes>
-        <include>javax.servlet:javax.servlet-api:jar</include>
+        <include>org.apache.hop:hop-ui-rcp</include>
+        <include>org.eclipse.jetty:*</include>
       </includes>
       <outputDirectory>lib</outputDirectory>
       <useTransitiveDependencies>false</useTransitiveDependencies>
