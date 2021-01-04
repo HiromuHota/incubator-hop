@@ -80,7 +80,7 @@
         <include>org.eclipse.jetty:*</include>
       </includes>
       <outputDirectory>lib</outputDirectory>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
       <useProjectArtifact>false</useProjectArtifact>
     </dependencySet>
 
