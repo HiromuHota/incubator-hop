@@ -59,17 +59,19 @@ public class SwtGc implements IGc {
   protected Color white;
   protected Color red;
   protected Color yellow;
-  protected Color orange;
+  protected Color hopFalse;
   protected Color green;
   protected Color blue;
   protected Color magenta;
+  protected Color purpule;
+  protected Color indigo;
   protected Color gray;
   protected Color lightGray;
   protected Color darkGray;
   protected Color lightBlue;
   protected Color crystal;
   protected Color hopDefault;
-  protected Color hopOK;
+  protected Color hopTrue;
   protected Color deprecated;
 
   private GC gc;
@@ -103,17 +105,19 @@ public class SwtGc implements IGc {
     this.white = GuiResource.getInstance().getColorWhite();
     this.red = GuiResource.getInstance().getColorRed();
     this.yellow = GuiResource.getInstance().getColorYellow();
-    this.orange = GuiResource.getInstance().getColorOrange();
+    this.hopFalse = GuiResource.getInstance().getColorOrange();
     this.green = GuiResource.getInstance().getColorGreen();
     this.blue = GuiResource.getInstance().getColorBlue();
     this.magenta = GuiResource.getInstance().getColorMagenta();
+    this.purpule = GuiResource.getInstance().getColorPurpule();
+    this.indigo = GuiResource.getInstance().getColorIndigo();
     this.gray = GuiResource.getInstance().getColorGray();
     this.lightGray = GuiResource.getInstance().getColorLightGray();
     this.darkGray = GuiResource.getInstance().getColorDarkGray();
     this.lightBlue = GuiResource.getInstance().getColorLightBlue();
     this.crystal = GuiResource.getInstance().getColorCrystalText();
     this.hopDefault = GuiResource.getInstance().getColorHopDefault();
-    this.hopOK = GuiResource.getInstance().getColorHopOK();
+    this.hopTrue = GuiResource.getInstance().getColorHopTrue();
     this.deprecated = GuiResource.getInstance().getColorDeprecated();
   }
 
@@ -170,10 +174,8 @@ public class SwtGc implements IGc {
     switch ( image ) {
       case LOCK:
         return GuiResource.getInstance().getSwtImageLocked();
-      case TRANSFORM_ERROR:
-        return GuiResource.getInstance().getSwtImageTransformError();
-      case TRANSFORM_ERROR_RED:
-        return GuiResource.getInstance().getSwtImageRedTransformError();
+      case FAILURE:
+        return GuiResource.getInstance().getSwtImageFailure();
       case EDIT:
         return GuiResource.getInstance().getSwtImageEdit();
       case CONTEXT_MENU:
@@ -184,6 +186,8 @@ public class SwtGc implements IGc {
         return GuiResource.getInstance().getSwtImageFalse();
       case ERROR:
         return GuiResource.getInstance().getSwtImageError();
+      case SUCCESS:
+        return GuiResource.getInstance().getSwtImageSuccess();
       case INFO:
         return GuiResource.getInstance().getSwtImageInfo();
       case TARGET:
@@ -212,8 +216,10 @@ public class SwtGc implements IGc {
         return GuiResource.getInstance().getSwtImageInject();
       case ARROW_DEFAULT:
         return GuiResource.getInstance().getSwtImageArrowDefault();
-      case ARROW_OK:
-        return GuiResource.getInstance().getSwtImageArrowOk();
+      case ARROW_TRUE:
+        return GuiResource.getInstance().getSwtImageArrowTrue();
+      case ARROW_FALSE:
+        return GuiResource.getInstance().getSwtImageArrowFalse();
       case ARROW_ERROR:
         return GuiResource.getInstance().getSwtImageArrowError();
       case ARROW_DISABLED:
@@ -301,14 +307,16 @@ public class SwtGc implements IGc {
         return red;
       case YELLOW:
         return yellow;
-      case ORANGE:
-        return orange;
       case GREEN:
         return green;
       case BLUE:
         return blue;
       case MAGENTA:
         return magenta;
+      case PURPULE:
+        return purpule;
+      case INDIGO:
+        return indigo;        
       case GRAY:
         return gray;
       case LIGHTGRAY:
@@ -321,8 +329,10 @@ public class SwtGc implements IGc {
         return crystal;
       case HOP_DEFAULT:
         return hopDefault;
-      case HOP_OK:
-        return hopOK;
+      case HOP_TRUE:
+        return hopTrue;
+      case HOP_FALSE:
+        return hopFalse;        
       case DEPRECATED:
         return deprecated;
       default:
@@ -411,7 +421,6 @@ public class SwtGc implements IGc {
   }
 
   public void drawTransformIcon( int x, int y, TransformMeta transformMeta, float magnification ) {
-    String transformType = transformMeta.getTransformPluginId();
     SwtUniversalImage swtImage = null;
     
     if ( transformMeta.isMissing() ) {
@@ -449,6 +458,9 @@ public class SwtGc implements IGc {
 
     if ( actionMeta.isMissing() ) {
 	  swtImage = GuiResource.getInstance().getSwtImageMissing();
+    }
+    else if ( actionMeta.isDeprecated() ) {
+      swtImage = GuiResource.getInstance().getSwtImageDeprecated();
     }
     else {
       String pluginId = actionMeta.getAction().getPluginId();
