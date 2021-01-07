@@ -47,8 +47,8 @@ jobs:
     - name: Build with Maven
       run: |
         # Test ui/ only as other packages are already tested in the upstream
-        mvn -B clean test -pl ui
         mvn -B clean install -DskipTests=true
+        mvn -B clean test -pl ui
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - uses: marvinpinto/action-automatic-releases@latest
