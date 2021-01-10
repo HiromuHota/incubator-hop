@@ -316,9 +316,6 @@ public class TableInputDialog extends BaseTransformDialog implements ITransformD
       }
     } );
 
-    // Text Higlighting
-    wSql.addLineStyleListener( new SqlValuesHighlight() );
-
     // Add listeners
     lsCancel = e -> cancel();
     lsPreview = e -> preview();

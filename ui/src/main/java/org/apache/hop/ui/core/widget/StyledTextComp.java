@@ -24,8 +24,6 @@ import org.apache.hop.ui.core.PropsUi;
 import org.apache.hop.ui.core.gui.GuiResource;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.LineStyleListener;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
@@ -57,6 +55,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Text;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -69,7 +68,7 @@ public class StyledTextComp extends Composite {
   private List<UndoRedoStack> undoStack;
   private List<UndoRedoStack> redoStack;
   private boolean bFullSelection = false;
-  private StyledText styledText;
+  private Text styledText;
   private Menu styledTextPopupmenu;
   private String strTabName;
   private Composite xParent;
@@ -95,7 +94,7 @@ public class StyledTextComp extends Composite {
     this.variables = variables;
     undoStack = new LinkedList<>();
     redoStack = new LinkedList<>();
-    styledText = new StyledText( this, args );
+    styledText = new Text( this, args );
     styledTextPopupmenu = new Menu( parent.getShell(), SWT.POP_UP );
     xParent = parent;
     this.strTabName = strTabName;
@@ -193,11 +192,12 @@ public class StyledTextComp extends Composite {
   }
 
   public int getCaretOffset() {
-    return styledText.getCaretOffset();
+    return styledText.getCaretPosition();
   }
 
   public int getLineAtOffset( int iOffset ) {
-    return styledText.getLineAtOffset( iOffset );
+    String beforeOffset = styledText.getText(0, iOffset);
+    return beforeOffset.length() - beforeOffset.replace(Text.DELIMITER, "").length();
   }
 
   public void insert( String strInsert ) {
@@ -206,10 +206,6 @@ public class StyledTextComp extends Composite {
 
   public void addModifyListener( ModifyListener lsMod ) {
     styledText.addModifyListener( lsMod );
-  }
-
-  public void addLineStyleListener( LineStyleListener lineStyler ) {
-    styledText.addLineStyleListener( lineStyler );
   }
 
   public void addKeyListener( KeyAdapter keyAdapter ) {
@@ -353,9 +349,9 @@ public class StyledTextComp extends Composite {
       bFullSelection = false;
       styledText.setText( urs.getReplacedText() );
       if ( urs.getType() == UndoRedoStack.INSERT ) {
-        styledText.setCaretOffset( urs.getCursorPosition() );
+        styledText.setSelection( urs.getCursorPosition() );
       } else if ( urs.getType() == UndoRedoStack.DELETE ) {
-        styledText.setCaretOffset( urs.getCursorPosition() + urs.getEventLength() );
+        styledText.setSelection( urs.getCursorPosition() + urs.getEventLength() );
         styledText.setSelection( urs.getCursorPosition(), urs.getCursorPosition() + urs.getEventLength() );
         if ( styledText.getSelectionCount() == styledText.getCharCount() ) {
           bFullSelection = true;
@@ -378,9 +374,9 @@ public class StyledTextComp extends Composite {
       bFullSelection = false;
       styledText.setText( urs.getReplacedText() );
       if ( urs.getType() == UndoRedoStack.INSERT ) {
-        styledText.setCaretOffset( urs.getCursorPosition() );
+        styledText.setSelection( urs.getCursorPosition() );
       } else if ( urs.getType() == UndoRedoStack.DELETE ) {
-        styledText.setCaretOffset( urs.getCursorPosition() + urs.getEventLength() );
+        styledText.setSelection( urs.getCursorPosition() + urs.getEventLength() );
         styledText.setSelection( urs.getCursorPosition(), urs.getCursorPosition() + urs.getEventLength() );
         if ( styledText.getSelectionCount() == styledText.getCharCount() ) {
           bFullSelection = true;
@@ -399,7 +395,7 @@ public class StyledTextComp extends Composite {
     return image;
   }
 
-  public StyledText getStyledText() {
+  public Text getStyledText() {
     return styledText;
   }
 

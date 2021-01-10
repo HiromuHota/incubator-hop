@@ -836,10 +836,6 @@ public class UserDefinedJavaClassDialog extends BaseTransformDialog implements I
 
     wScript.addModifyListener( lsMod );
 
-    // Text Higlighting
-    wScript.addLineStyleListener( new UserDefinedJavaClassHighlight() );
-    item.setControl( wScript );
-
     // Adding new Item to Tree
     modifyTabTree( item, TabActions.ADD_ITEM );
   }
