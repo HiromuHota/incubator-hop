@@ -37,7 +37,7 @@ public class SwtScrollBar implements IScrollBar {
   }
 
   public int getSelection() {
-    return Math.round( scrollBar.getSelection() / scrollBar.getMaximum() );
+    return scrollBar.getSelection();
   }
 
   public void setThumb( int thumb ) {

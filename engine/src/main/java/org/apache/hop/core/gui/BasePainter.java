@@ -267,7 +267,7 @@ public abstract class BasePainter<Hop extends BaseHopMeta<?>, Part extends IBase
     p.x = Math.round( -sel.x * area.x / thumb.x / magnification );
     p.y = Math.round( -sel.y * area.y / thumb.y / magnification );
 
-    return p;
+    return new Point(0, 0);
   }
 
   protected void drawRect( Rectangle rect ) {

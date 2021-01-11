@@ -3244,7 +3244,7 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
     Point area = getArea();
     Point max = pipelineMeta.getMaximum();
     Point thumb = getThumb(area, max);
-    return getOffset(thumb, area);
+    return new Point(0, 0);
   }
 
   protected Point getMaximum() {

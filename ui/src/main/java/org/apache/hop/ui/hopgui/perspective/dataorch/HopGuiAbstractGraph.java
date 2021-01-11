@@ -101,10 +101,7 @@ public abstract class HopGuiAbstractGraph extends Composite {
 
   protected Point getOffset( Point thumb, Point area ) {
     Point p = new Point( 0, 0 );
-    Point sel = new Point(
-        Math.round( horizontalScrollBar.getSelection() / horizontalScrollBar.getMaximum() ),
-        Math.round( verticalScrollBar.getSelection() / verticalScrollBar.getMaximum() )
-    );
+    Point sel = new Point( horizontalScrollBar.getSelection(), verticalScrollBar.getSelection() );
 
     if ( thumb.x == 0 || thumb.y == 0 ) {
       return p;
