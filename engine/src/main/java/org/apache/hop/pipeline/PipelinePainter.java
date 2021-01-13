@@ -58,7 +58,7 @@ import static org.apache.hop.core.gui.IGc.ELineStyle;
 
 public class PipelinePainter extends BasePainter<PipelineHopMeta, TransformMeta> {
 
-  private static final Class<?> PKG = PipelinePainter.class; // Needed by Translator
+  private static final Class<?> PKG = PipelinePainter.class; // For Translator
 
   public static final String STRING_PARTITIONING_CURRENT_TRANSFORM = "PartitioningCurrentTransform";
   public static final String STRING_TRANSFORM_ERROR_LOG = "TransformErrorLog";
@@ -894,8 +894,8 @@ public class PipelinePainter extends BasePainter<PipelineHopMeta, TransformMeta>
       areaOwners.add(
           new AreaOwner(
               AreaType.TRANSFORM_FAILURE_ICON,
-              pt.x + iconSize/2 - 8,
-              pt.y - 8,
+              xError,
+              yError,
               16,
               16,
               offset,

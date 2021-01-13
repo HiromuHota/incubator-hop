@@ -219,7 +219,7 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
         IHopFileTypeHandler,
         IGuiRefresher {
 
-  private static final Class<?> PKG = HopGui.class; // Needed by Translator
+  private static final Class<?> PKG = HopGui.class; // For Translator
 
   public static final String GUI_PLUGIN_TOOLBAR_PARENT_ID = "HopGuiPipelineGraph-Toolbar";
   public static final String TOOLBAR_ITEM_START = "HopGuiPipelineGraph-ToolBar-10010-Run";
@@ -2733,14 +2733,9 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
                 .append(Const.CR);
           }
           break;
-        case TRANSFORM_ERROR_ICON:
-          String log = (String) areaOwner.getParent();
-          tip.append(log);          
-          tipImage = GuiResource.getInstance().getImageError();
-          break;
         case TRANSFORM_FAILURE_ICON:
-          String redLog = (String) areaOwner.getParent();
-          tip.append(redLog);
+          String log = (String) areaOwner.getParent();
+          tip.append(log);
           tipImage = GuiResource.getInstance().getImageFailure();
           break;
         case HOP_COPY_ICON:
