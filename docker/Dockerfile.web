@@ -22,7 +22,7 @@ ENV JAVA_OPTS="-Xms1024m -Xmx2048m"
 
 RUN rm -rf webapps/* \
  && wget -q https://github.com/HiromuHota/incubator-hop/releases/download/hopweb%2Fnightly/hop.war -O webapps/ROOT.war \
- && wget -q https://github.com/HiromuHota/incubator-hop/releases/download/hopweb%2Fnightly/hop-assemblies-plugins-dist-0.60-SNAPSHOT.zip -O hop-assemblies-plugins-dist.zip \
+ && wget -q https://github.com/HiromuHota/incubator-hop/releases/download/hopweb%2Fnightly/hop-assemblies-plugins-dist-0.70-SNAPSHOT.zip -O hop-assemblies-plugins-dist.zip \
  && unzip -q hop-assemblies-plugins-dist.zip \
  && rm hop-assemblies-plugins-dist.zip \
  && mkdir config \
