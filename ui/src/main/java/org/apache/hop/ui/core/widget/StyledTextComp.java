@@ -212,6 +212,7 @@ public class StyledTextComp extends Composite {
     }
   }
 
+
   public Image getImage() {
     return image;
   }
