@@ -75,7 +75,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.hop</groupId>
-      <artifactId>hop-assemblies-demo</artifactId>
+      <artifactId>hop-assemblies-samples</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
       <exclusions>
