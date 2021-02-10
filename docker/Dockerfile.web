@@ -24,6 +24,5 @@ RUN rm -rf webapps/* \
  && wget -q https://github.com/HiromuHota/incubator-hop/releases/download/hopweb%2Fnightly/hop.war -O webapps/ROOT.war \
  && wget -q https://github.com/HiromuHota/incubator-hop/releases/download/hopweb%2Fnightly/hop-assemblies-plugins-dist-0.70-SNAPSHOT.zip -O hop-assemblies-plugins-dist.zip \
  && unzip -q hop-assemblies-plugins-dist.zip \
- && rm hop-assemblies-plugins-dist.zip \
- && mkdir config \
- && wget -q https://raw.githubusercontent.com/project-hop/hop/master/assemblies/static/src/main/resources/config/hop-config.json -O config/hop-config.json
+ && rm hop-assemblies-plugins-dist.zip
+COPY config config
