@@ -401,7 +401,7 @@ public class ActionSendNagiosPassiveCheck extends ActionBase implements Cloneabl
 
     // Target
     String realServername = resolve( serverName );
-    String realPassword = Utils.resolvePassword( variables, password );
+    String realPassword = Utils.resolvePassword( getVariables(), password );
     int realPort = Const.toInt( resolve( port ), DEFAULT_PORT );
     int realResponseTimeOut = Const.toInt( resolve( responseTimeOut ), DEFAULT_RESPONSE_TIME_OUT );
     int realConnectionTimeOut =
@@ -491,7 +491,7 @@ public class ActionSendNagiosPassiveCheck extends ActionBase implements Cloneabl
     return result;
   }
 
-  public boolean evaluates() {
+  @Override public boolean isEvaluation() {
     return true;
   }
 

@@ -372,18 +372,18 @@
       </exclusions>
     </dependency>
 
-<!--    <dependency>-->
-<!--      <groupId>org.apache.hop</groupId>-->
-<!--      <artifactId>hop-assemblies-plugins-action-ftp</artifactId>-->
-<!--      <version>${hop-plugins-actions.version}</version>-->
-<!--      <type>zip</type>-->
-<!--      <exclusions>-->
-<!--        <exclusion>-->
-<!--          <groupId>*</groupId>-->
-<!--          <artifactId>*</artifactId>-->
-<!--        </exclusion>-->
-<!--      </exclusions>-->
-<!--    </dependency>-->
+    <dependency>
+      <groupId>org.apache.hop</groupId>
+      <artifactId>hop-assemblies-plugins-action-ftp</artifactId>
+      <version>${hop-plugins-actions.version}</version>
+      <type>zip</type>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.hop</groupId>
@@ -1703,6 +1703,19 @@
 
     <dependency>
       <groupId>org.apache.hop</groupId>
+      <artifactId>hop-assemblies-plugins-transforms-metastructure</artifactId>
+      <version>${hop-plugins-transforms.version}</version>
+      <type>zip</type>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-assemblies-plugins-transforms-mongodb</artifactId>
       <version>${hop-plugins-transforms.version}</version>
       <type>zip</type>
@@ -2408,6 +2421,19 @@
 
     <dependency>
       <groupId>org.apache.hop</groupId>
+      <artifactId>hop-assemblies-plugins-databases-clickhouse</artifactId>
+      <version>${hop-plugins-databases.version}</version>
+      <type>zip</type>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hop</groupId>
       <artifactId>hop-assemblies-plugins-databases-postgresql</artifactId>
       <version>${hop-plugins-databases.version}</version>
       <type>zip</type>
@@ -2890,6 +2916,19 @@
     <dependency>
       <groupId>org.apache.hop</groupId>
       <artifactId>hop-assemblies-plugins-misc-import</artifactId>
+      <version>${hop-plugins-misc.version}</version>
+      <type>zip</type>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hop</groupId>
+      <artifactId>hop-assemblies-plugins-misc-passwords</artifactId>
       <version>${hop-plugins-misc.version}</version>
       <type>zip</type>
       <exclusions>

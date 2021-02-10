@@ -199,6 +199,8 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
   public static final String TOOLBAR_ITEM_ZOOM_LEVEL =
       "HopGuiWorkflowGraph-ToolBar-10500-Zoom-Level";
 
+  public static final String TOOLBAR_ITEM_EDIT_WORKFLOW = "HopGuiWorkflowGrpah-ToolBar-10450-EditWorkflow";
+
   private static final String STRING_PARALLEL_WARNING_PARAMETER = "ParallelActionsWarning";
 
   private static final int HOP_SEL_MARGIN = 9;
@@ -598,7 +600,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
             //
           case WORKFLOW_HOP_ICON:
             WorkflowHopMeta hop = (WorkflowHopMeta) areaOwner.getOwner();
-            if (hop.getFromAction().evaluates()) {
+            if (hop.getFromAction().isEvaluation()) {
               if (hop.isUnconditional()) {
                 hop.setUnconditional(false);
                 hop.setEvaluation(true);
@@ -1268,7 +1270,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
         return;
       }
 
-      if (!hopCandidate.getFromAction().evaluates()
+      if (!hopCandidate.getFromAction().isEvaluation()
           && hopCandidate.getFromAction().isUnconditional()) {
         hopCandidate.setUnconditional();
       } else {
@@ -1350,8 +1352,10 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
   @GuiToolbarElement(
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_ZOOM_LEVEL,
-      label = "  Zoom: ",
+      label = "i18n:org.apache.hop.ui.hopgui:HopGui.Toolbar.Zoom",
       toolTip = "Zoom in our out",
+      // TODO: i18n does not work on dropdown
+      // toolTip = "i18n::HopGui.Toolbar.Zoom.ToolTip",
       type = GuiToolbarElementType.COMBO,
       alignRight = true,
       comboValuesMethod = "getZoomLevels")
@@ -1410,7 +1414,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_START,
       // label = "Start",
-      toolTip = "Start the execution of the pipeline",
+      toolTip = "i18n::WorkflowGraph.Toolbar.Start.Tooltip",
       image = "ui/images/run.svg")
   @Override
   public void start() {
@@ -1425,7 +1429,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
                     () -> {
                       try {
                         workflowRunDelegate.executeWorkflow(
-                            hopGui.getVariables(), workflowMeta, null, 0);
+                            hopGui.getVariables(), workflowMeta, null);
                         ServerPushSessionFacade.stop();
                       } catch (Exception e) {
                         new ErrorDialog(
@@ -1444,7 +1448,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_STOP,
       // label = "Stop",
-      toolTip = "Stop the execution of the workflow",
+      toolTip = "i18n::WorkflowGraph.Toolbar.Stop.Tooltip",
       image = "ui/images/stop.svg")
   @Override
   public void stop() {
@@ -1452,7 +1456,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
     if ((isRunning() && !halting)) {
       halting = true;
       workflow.stopExecution();
-      log.logMinimal(BaseMessages.getString(PKG, "WorkflowLog.Log.ProcessingOfWorkflowStopped"));
+      log.logBasic(BaseMessages.getString(PKG, "WorkflowLog.Log.ProcessingOfWorkflowStopped"));
 
       halting = false;
 
@@ -1880,6 +1884,14 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
     editProperties(workflowMeta, hopGui, true);
   }
 
+  @GuiToolbarElement(
+    root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
+    id = TOOLBAR_ITEM_EDIT_WORKFLOW,
+    toolTip = "i18n::WorkflowGraph.Toolbar.EditWorkflow.Tooltip",
+    image = "ui/images/workflow.svg"
+    )
+  @GuiKeyboardShortcut(control=true, key='l')
+  @GuiOsxKeyboardShortcut(command = true, key='l')
   public void editWorkflowProperties() {
     editProperties(workflowMeta, hopGui, true);
   }
@@ -2819,7 +2831,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_SNAP_TO_GRID,
       // label = "Snap to grid",
-      toolTip = "Align the selected actions to the specified grid size",
+      toolTip = "i18n::WorkflowGraph.Toolbar.SnapToGrid.Tooltip",
       image = "ui/images/snap-to-grid.svg",
       disabledImage = "ui/images/snap-to-grid-disabled.svg")
   public void snapToGrid() {
@@ -2833,7 +2845,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
   @GuiToolbarElement(
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_ALIGN_LEFT,
-      toolTip = "Align the actions with the left-most action in your selection",
+      toolTip = "i18n::WorkflowGraph.Toolbar.AlignLeft.Tooltip",
       image = "ui/images/align-left.svg",
       disabledImage = "ui/images/align-left-disabled.svg")
   @GuiKeyboardShortcut(control = true, key = SWT.ARROW_LEFT)
@@ -2845,7 +2857,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
   @GuiToolbarElement(
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_ALIGN_RIGHT,
-      toolTip = "Align the actions with the right-most action in your selection",
+      toolTip = "i18n::WorkflowGraph.Toolbar.AlignRight.Tooltip",
       image = "ui/images/align-right.svg",
       disabledImage = "ui/images/align-right-disabled.svg")
   @GuiKeyboardShortcut(control = true, key = SWT.ARROW_RIGHT)
@@ -2857,7 +2869,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
   @GuiToolbarElement(
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_ALIGN_TOP,
-      toolTip = "Align the actions with the top-most action in your selection",
+      toolTip = "i18n::WorkflowGraph.Toolbar.AlignTop.Tooltip",
       image = "ui/images/align-top.svg",
       disabledImage = "ui/images/align-top-disabled.svg")
   @GuiKeyboardShortcut(control = true, key = SWT.ARROW_UP)
@@ -2869,7 +2881,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
   @GuiToolbarElement(
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_ALIGN_BOTTOM,
-      toolTip = "Align the actions with the bottom-most action in your selection",
+      toolTip = "i18n::WorkflowGraph.Toolbar.AlignBottom.Tooltip",
       image = "ui/images/align-bottom.svg",
       disabledImage = "ui/images/align-bottom-disabled.svg")
   @GuiKeyboardShortcut(control = true, key = SWT.ARROW_DOWN)
@@ -2881,8 +2893,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
   @GuiToolbarElement(
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_DISTRIBUTE_HORIZONTALLY,
-      toolTip =
-          "Distribute the selected actions evenly between the left-most and right-most action in your selection",
+      toolTip = "i18n::WorkflowGraph.Toolbar.DistributeHorizontal.Tooltip",
       image = "ui/images/distribute-horizontally.svg",
       disabledImage = "ui/images/distribute-horizontally-disabled.svg")
   @GuiKeyboardShortcut(alt = true, key = SWT.ARROW_RIGHT)
@@ -2894,8 +2905,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
   @GuiToolbarElement(
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_DISTRIBUTE_VERTICALLY,
-      toolTip =
-          "Distribute the selected actions evenly between the top-most and bottom-most action in your selection",
+      toolTip = "i18n::WorkflowGraph.Toolbar.DistributeVertical.Tooltip",
       image = "ui/images/distribute-vertically.svg",
       disabledImage = "ui/images/distribute-vertically-disabled.svg")
   @GuiKeyboardShortcut(alt = true, key = SWT.ARROW_UP)
@@ -2982,14 +2992,14 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_UNDO_ID,
       // label = "Undo",
-      toolTip = "Undo an operation",
+      toolTip = "i18n:org.apache.hop.ui.hopgui:HopGui.Toolbar.Undo.Tooltip",
       image = "ui/images/undo.svg",
       disabledImage = "ui/images/undo-disabled.svg",
       separator = true)
   @GuiKeyboardShortcut(control = true, key = 'z')
   @Override
   public void undo() {
-    workflowUndoDelegate.undoJobAction(this, workflowMeta);
+    workflowUndoDelegate.undoWorkflowAction(this, workflowMeta);
     forceFocus();
   }
 
@@ -2997,13 +3007,13 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_REDO_ID,
       // label = "Redo",
-      toolTip = "Redo an operation",
+      toolTip = "i18n:org.apache.hop.ui.hopgui:HopGui.Toolbar.Redo.Tooltip",
       image = "ui/images/redo.svg",
       disabledImage = "ui/images/redo-disabled.svg")
   @GuiKeyboardShortcut(control = true, shift = true, key = 'z')
   @Override
   public void redo() {
-    workflowUndoDelegate.redoJobAction(this, workflowMeta);
+    workflowUndoDelegate.redoWorkflowAction(this, workflowMeta);
     forceFocus();
   }
 
@@ -3317,8 +3327,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
       root = GUI_PLUGIN_TOOLBAR_PARENT_ID,
       id = TOOLBAR_ITEM_SHOW_EXECUTION_RESULTS,
       // label = "HopGui.Menu.ShowExecutionResults",
-      toolTip = "HopGui.Tooltip.ShowExecutionResults",
-      i18nPackageClass = HopGui.class,
+      toolTip = "i18n:org.apache.hop.ui.hopgui:HopGui.Tooltip.ShowExecutionResults",
       image = "ui/images/show-results.svg",
       separator = true)
   public void showExecutionResults() {
@@ -3509,7 +3518,9 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
           //
           for (String varName : executionConfiguration.getVariablesMap().keySet()) {
             String varValue = executionConfiguration.getVariablesMap().get(varName);
-            workflow.setVariable(varName, varValue);
+            if (StringUtils.isNotEmpty(varValue)) {
+              workflow.setVariable(varName, varValue);
+            }
           }
 
           // Set and activate the parameters...
@@ -3532,9 +3543,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
           //
           if (!Utils.isEmpty(executionConfiguration.getStartActionName())) {
             ActionMeta startActionMeta =
-                runWorkflowMeta.findAction(
-                    executionConfiguration.getStartActionName(),
-                    executionConfiguration.getStartActionNr());
+                runWorkflowMeta.findAction(executionConfiguration.getStartActionName());
             workflow.setStartActionMeta(startActionMeta);
           }
 
@@ -3554,7 +3563,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
             return;
           }
 
-          log.logMinimal(BaseMessages.getString(PKG, "WorkflowLog.Log.StartingWorkflow"));
+          log.logBasic(BaseMessages.getString(PKG, "WorkflowLog.Log.StartingWorkflow"));
           workflowThread = new Thread(() -> workflow.startExecution());
           workflowThread.start();
           workflowGridDelegate.previousNrItems = -1;
@@ -3620,7 +3629,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
     // Do a final check to see if it all ended...
     //
     if (workflow != null && workflow.isInitialized() && workflow.isFinished()) {
-      log.logMinimal(BaseMessages.getString(PKG, "WorkflowLog.Log.WorkflowHasEnded"));
+      log.logBasic(BaseMessages.getString(PKG, "WorkflowLog.Log.WorkflowHasEnded"));
     }
     updateGui();
   }
@@ -3677,11 +3686,12 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
                 hopGui.getProps().getAutoSave());
         int answer = md.open();
 
-        if ((answer & 0xFF) == 0) {
-          if (StringUtils.isEmpty(workflowMeta.getFilename())) {
+        if (answer == 0) { // Yes button
+          String filename = workflowMeta.getFilename();
+          if (StringUtils.isEmpty(filename)) {
             // Ask for the filename: saveAs
             //
-            String filename =
+            filename =
                 BaseDialog.presentFileDialog(
                     true,
                     hopGui.getShell(),
@@ -3692,6 +3702,8 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
               filename = hopGui.getVariables().resolve(filename);
               saveAs(filename);
             }
+          } else {
+            save();
           }
         }
         hopGui.getProps().setAutoSave(md.getToggleState());
@@ -3708,7 +3720,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
     // Is the lastChained action still valid?
     //
     if (lastChained != null
-        && workflowMeta.findAction(lastChained.getName(), lastChained.getNr()) == null) {
+        && workflowMeta.findAction(lastChained.getName()) == null) {
       lastChained = null;
     }
 

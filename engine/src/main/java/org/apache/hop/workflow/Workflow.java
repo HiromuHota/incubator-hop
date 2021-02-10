@@ -26,8 +26,6 @@ import org.apache.hop.core.IExecutor;
 import org.apache.hop.core.IExtensionData;
 import org.apache.hop.core.Result;
 import org.apache.hop.core.RowMetaAndData;
-import org.apache.hop.core.database.Database;
-import org.apache.hop.core.database.DatabaseMeta;
 import org.apache.hop.core.exception.HopException;
 import org.apache.hop.core.exception.HopWorkflowException;
 import org.apache.hop.core.extension.ExtensionPointHandler;
@@ -344,7 +342,7 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
   private void emergencyWriteJobTracker( Result res ) {
     ActionResult jerFinalResult =
       new ActionResult( res, this.getLogChannelId(), BaseMessages.getString( PKG, "Workflow.Comment.WorkflowFinished" ), null,
-        null, 0, null );
+        null, null );
     WorkflowTracker finalTrack = new WorkflowTracker( this.getWorkflowMeta(), jerFinalResult );
     // workflowTracker is up to date too.
     this.workflowTracker.addWorkflowTracker( finalTrack );
@@ -359,20 +357,20 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
    */
   private Result executeFromStart() throws HopException {
     try {
-      log.snap( Metrics.METRIC_JOB_START );
+      log.snap( Metrics.METRIC_WORKFLOW_START );
 
       setFinished( false );
       setStopped( false );
       HopEnvironment.setExecutionInformation( this );
 
-      log.logMinimal( BaseMessages.getString( PKG, "Workflow.Comment.WorkflowStarted" ) );
+      log.logBasic( BaseMessages.getString( PKG, "Workflow.Comment.WorkflowStarted" ) );
 
       ExtensionPointHandler.callExtensionPoint( log, this, HopExtensionPoint.WorkflowStart.id, this );
 
       // Start the tracking...
       ActionResult jerStart =
         new ActionResult( null, null, BaseMessages.getString( PKG, "Workflow.Comment.WorkflowStarted" ), BaseMessages
-          .getString( PKG, "Workflow.Reason.Started" ), null, 0, null );
+          .getString( PKG, "Workflow.Reason.Started" ), null, null );
       workflowTracker.addWorkflowTracker( new WorkflowTracker( workflowMeta, jerStart ) );
 
       setActive( true );
@@ -417,16 +415,16 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
         }
         jerEnd =
           new ActionResult( res, jes.getLogChannelId(), BaseMessages.getString( PKG, "Workflow.Comment.WorkflowFinished" ),
-            BaseMessages.getString( PKG, "Workflow.Reason.Finished" ), null, 0, null );
+            BaseMessages.getString( PKG, "Workflow.Reason.Finished" ), null, null );
       } else {
         res = executeFromStart( 0, res, startpoint, null, BaseMessages.getString( PKG, "Workflow.Reason.Started" ) );
         jerEnd =
           new ActionResult( res, startpoint.getAction().getLogChannel().getLogChannelId(), BaseMessages.getString(
-            PKG, "Workflow.Comment.WorkflowFinished" ), BaseMessages.getString( PKG, "Workflow.Reason.Finished" ), null, 0, null );
+            PKG, "Workflow.Comment.WorkflowFinished" ), BaseMessages.getString( PKG, "Workflow.Reason.Finished" ), null, null );
       }
       // Save this result...
       workflowTracker.addWorkflowTracker( new WorkflowTracker( workflowMeta, jerEnd ) );
-      log.logMinimal( BaseMessages.getString( PKG, "Workflow.Comment.WorkflowFinished" ) );
+      log.logBasic( BaseMessages.getString( PKG, "Workflow.Comment.WorkflowFinished" ) );
 
       setActive( false );
       if ( !isStopped() ) {
@@ -434,7 +432,7 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
       }
       return res;
     } finally {
-      log.snap( Metrics.METRIC_JOB_STOP );
+      log.snap( Metrics.METRIC_WORKFLOW_STOP );
     }
   }
 
@@ -557,53 +555,48 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
 
       // Track the fact that we are going to launch the next action...
       ActionResult jerBefore = new ActionResult( null, null, BaseMessages.getString( PKG, "Workflow.Comment.WorkflowStarted" ), reason,
-        actionMeta.getName(), actionMeta.getNr(), resolve( actionMeta.getAction().getFilename() ) );
+        actionMeta.getName(), resolve( actionMeta.getAction().getFilename() ) );
       workflowTracker.addWorkflowTracker( new WorkflowTracker( workflowMeta, jerBefore ) );
 
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
       Thread.currentThread().setContextClassLoader( action.getClass().getClassLoader() );
       // Execute this entry...
       IAction cloneJei = (IAction) action.clone();
-      ( (IVariables) cloneJei ).copyFrom( this );
+      cloneJei.copyFrom( this );
+      cloneJei.getLogChannel().setLogLevel( getLogLevel() );
       cloneJei.setMetadataProvider( metadataProvider );
       cloneJei.setParentWorkflow( this );
       cloneJei.setParentWorkflowMeta( this.getWorkflowMeta() );
       final long start = System.currentTimeMillis();
 
       cloneJei.getLogChannel().logDetailed( "Starting action" );
-      for ( IActionListener jobEntryListener : actionListeners ) {
-        jobEntryListener.beforeExecution( this, actionMeta, cloneJei );
+      for ( IActionListener actionListener : actionListeners ) {
+        actionListener.beforeExecution( this, actionMeta, cloneJei );
       }
       if ( interactive ) {
         if ( actionMeta.isPipeline() ) {
           getActiveActionPipeline().put( actionMeta, (ActionPipeline) cloneJei );
         }
-        if ( actionMeta.isJob() ) {
+        if ( actionMeta.isWorkflow() ) {
           getActiveActionWorkflows().put( actionMeta, (ActionWorkflow) cloneJei );
         }
       }
-      log.snap( Metrics.METRIC_JOBENTRY_START, cloneJei.toString() );
+      log.snap( Metrics.METRIC_ACTION_START, cloneJei.toString() );
       newResult = cloneJei.execute( prevResult, nr );
-      log.snap( Metrics.METRIC_JOBENTRY_STOP, cloneJei.toString() );
+      log.snap( Metrics.METRIC_ACTION_STOP, cloneJei.toString() );
 
       final long end = System.currentTimeMillis();
       if ( interactive ) {
         if ( actionMeta.isPipeline() ) {
           getActiveActionPipeline().remove( actionMeta );
         }
-        if ( actionMeta.isJob() ) {
+        if ( actionMeta.isWorkflow() ) {
           getActiveActionWorkflows().remove( actionMeta );
         }
       }
 
-      if ( cloneJei instanceof ActionPipeline ) {
-        String throughput = newResult.getReadWriteThroughput( (int) ( ( end - start ) / 1000 ) );
-        if ( throughput != null ) {
-          log.logMinimal( throughput );
-        }
-      }
-      for ( IActionListener jobEntryListener : actionListeners ) {
-        jobEntryListener.afterExecution( this, actionMeta, cloneJei, newResult );
+      for ( IActionListener actionListener : actionListeners ) {
+        actionListener.afterExecution( this, actionMeta, cloneJei, newResult );
       }
 
       Thread.currentThread().setContextClassLoader( cl );
@@ -619,7 +612,7 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
       //
       ActionResult jerAfter =
         new ActionResult( newResult, cloneJei.getLogChannel().getLogChannelId(), BaseMessages.getString( PKG,
-          "Workflow.Comment.WorkflowFinished" ), null, actionMeta.getName(), actionMeta.getNr(), resolve(
+          "Workflow.Comment.WorkflowFinished" ), null, actionMeta.getName(), resolve(
           actionMeta.getAction().getFilename() ) );
       workflowTracker.addWorkflowTracker( new WorkflowTracker( workflowMeta, jerAfter ) );
       synchronized ( actionResults ) {
@@ -677,7 +670,7 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
       // If the start point was an evaluation and the link color is correct:
       // green or red, execute the next action...
       //
-      if ( hi.isUnconditional() || ( actionMeta.evaluates() && ( !( hi.getEvaluation() ^ newResult.getResult() ) ) ) ) {
+      if ( hi.isUnconditional() || ( actionMeta.isEvaluation() && ( !( hi.getEvaluation() ^ newResult.getResult() ) ) ) ) {
         // Start this next transform!
         if ( log.isBasic() ) {
           log.logBasic( BaseMessages.getString( PKG, "Workflow.Log.StartingAction", nextAction.getName() ) );
@@ -1203,6 +1196,7 @@ public abstract class Workflow extends Variables implements IVariables, INamedPa
    */
   public void setLogLevel( LogLevel logLevel ) {
     this.logLevel = logLevel;
+    log.setLogLevel( logLevel );
   }
 
   /**

@@ -376,7 +376,7 @@ public class ActionWorkflow extends ActionBase implements Cloneable, IAction {
       //
       logDetailed("Loading workflow from XML file : [" + resolve(filename) + "]");
 
-      WorkflowMeta workflowMeta = getWorkflowMeta(metadataProvider, this);
+      WorkflowMeta workflowMeta = getWorkflowMeta(getMetadataProvider(), this);
 
       // Verify that we loaded something, complain if we did not...
       //
@@ -532,7 +532,7 @@ public class ActionWorkflow extends ActionBase implements Cloneable, IAction {
         //
         workflow =
             WorkflowEngineFactory.createWorkflowEngine(
-                this, resolve(runConfiguration), metadataProvider, workflowMeta, this);
+                this, resolve(runConfiguration), getMetadataProvider(), workflowMeta, this);
         workflow.setParentWorkflow(parentWorkflow);
         workflow.setLogLevel(jobLogLevel);
         workflow.shareWith(this);
@@ -581,18 +581,18 @@ public class ActionWorkflow extends ActionBase implements Cloneable, IAction {
         workflow.getWorkflowTracker().setParentWorkflowTracker(parentWorkflow.getWorkflowTracker());
 
         ActionWorkflowRunner runner = new ActionWorkflowRunner(workflow, result, nr, log);
-        Thread jobRunnerThread = new Thread(runner);
+        Thread workflowRunnerThread = new Thread(runner);
         // PDI-6518
-        // added UUID to thread name, otherwise threads do share names if workflows entries are
+        // added UUID to thread name, otherwise threads do share names if workflows actions are
         // executed in parallel in a
         // parent workflow
         // if that happens, contained pipelines start closing each other's connections
-        jobRunnerThread.setName(
+        workflowRunnerThread.setName(
             Const.NVL(
                     workflow.getWorkflowMeta().getName(), workflow.getWorkflowMeta().getFilename())
                 + " UUID: "
                 + UUID.randomUUID().toString());
-        jobRunnerThread.start();
+        workflowRunnerThread.start();
 
         // Keep running until we're done.
         //
@@ -782,7 +782,7 @@ public class ActionWorkflow extends ActionBase implements Cloneable, IAction {
   }
 
   @Override
-  public boolean evaluates() {
+  public boolean isEvaluation() {
     return true;
   }
 

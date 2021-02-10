@@ -68,7 +68,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Matt Created on 18-jun-04
  */
-public class ActionBase implements Cloneable, IVariables, ILoggingObject,
+public abstract class ActionBase implements IAction, Cloneable, ILoggingObject,
   IAttributes, IExtensionData, ICheckResultSource, IResourceHolder {
 
   /**
@@ -84,7 +84,7 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
   /**
    * ID as defined in the xml or annotation.
    */
-  private String configId;
+  private String pluginId;
 
   /**
    * Whether the action has changed.
@@ -94,7 +94,7 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
   /**
    * The variable bindings for the action
    */
-  protected IVariables variables = new Variables();
+  private IVariables variables = new Variables();
 
   /**
    * The map for transform variable bindings for the action
@@ -121,7 +121,7 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
    */
   protected String containerObjectId;
 
-  protected IHopMetadataProvider metadataProvider;
+  private IHopMetadataProvider metadataProvider;
 
   protected Map<String, Map<String, String>> attributesMap;
 
@@ -132,7 +132,7 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
   /**
    * Instantiates a new action base object.
    */
-  public ActionBase() {
+  protected ActionBase() {
     name = null;
     description = null;
     log = new LogChannel( this );
@@ -146,7 +146,7 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
    * @param name        the name of the action
    * @param description the description of the action
    */
-  public ActionBase( String name, String description ) {
+  protected ActionBase( String name, String description ) {
     setName( name );
     setDescription( description );
     log = new LogChannel( this );
@@ -192,7 +192,7 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
    * @return the plug-in type description
    */
   public String getTypeDesc() {
-    IPlugin plugin = PluginRegistry.getInstance().findPluginWithId( ActionPluginType.class, configId );
+    IPlugin plugin = PluginRegistry.getInstance().findPluginWithId( ActionPluginType.class, pluginId );
     return plugin.getDescription();
   }
 
@@ -220,8 +220,8 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
    *
    * @param Description the new description
    */
-  public void setDescription( String Description ) {
-    this.description = Description;
+  public void setDescription( String description ) {
+    this.description = description;
   }
 
   /**
@@ -235,7 +235,7 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
   }
 
   @Override public String getTypeId() {
-    return "JOBENTRY";
+    return ActionPluginType.ID;
   }
 
   /**
@@ -275,57 +275,12 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
   }
 
   /**
-   * Checks if the action is a dummy entry
-   *
-   * @return true if the action is a dummy entry, false otherwise
-   */
-  public boolean isDummy() {
-    return false;
-  }
-
-  /**
-   * Checks if the action is an evaluation.
-   *
-   * @return true if the action is an evaluation, false otherwise
-   */
-  public boolean isEvaluation() {
-    return true;
-  }
-
-  /**
    * Checks if the action executes a workflow
    *
    * @return true if the action executes a workflow, false otherwise
    */
-  public boolean isJob() {
-    return "WORKFLOW".equals( configId );
-  }
-
-  /**
-   * Checks if the action sends email
-   *
-   * @return true if the action sends email, false otherwise
-   */
-  public boolean isMail() {
-    return "MAIL".equals( configId );
-  }
-
-  /**
-   * Checks if the action executes a shell program
-   *
-   * @return true if the action executes a shell program, false otherwise
-   */
-  public boolean isShell() {
-    return "SHELL".equals( configId );
-  }
-
-  /**
-   * Checks if the action is of a special type (Start, Dummy, etc.)
-   *
-   * @return true if the action is of a special type, false otherwise
-   */
-  public boolean isSpecial() {
-    return "SPECIAL".equals( configId );
+  public boolean isWorkflow() {
+    return "WORKFLOW".equals( pluginId );
   }
 
   /**
@@ -334,40 +289,11 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
    * @return true if this action executes a pipeline, false otherwise
    */
   public boolean isPipeline() {
-    return "PIPELINE".equals( configId );
+    return "PIPELINE".equals( pluginId );
   }
 
   /**
-   * Checks if this action performs an FTP operation
-   *
-   * @return true if this action performs an FTP operation, false otherwise
-   */
-  public boolean isFtp() {
-    return "FTP".equals( configId );
-  }
-
-  /**
-   * Checks if this action performs an SFTP operation
-   *
-   * @return true if this action performs an SFTP operation, false otherwise
-   */
-  public boolean isSftp() {
-    return "SFTP".equals( configId );
-  }
-
-  /**
-   * Checks if this action performs an HTTP operation
-   *
-   * @return true if this action performs an HTTP operation, false otherwise
-   */
-  public boolean isHttp() {
-    return "HTTP".equals( configId );
-  }
-
-  // Add here for the new types?
-
-  /**
-   * This method is called by PDI whenever a action needs to serialize its settings to XML. It is called when saving
+   * This method is called by Hop whenever a action needs to serialize its settings to XML. It is called when saving
    * a workflow in HopGui. The method returns an XML string, containing the serialized settings. The string contains a series
    * of XML tags, typically one tag per setting. The helper class org.apache.hop.core.xml.XmlHandler is typically used
    * to construct the XML string.
@@ -378,7 +304,7 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
     StringBuilder retval = new StringBuilder();
     retval.append( "      " ).append( XmlHandler.addTagValue( "name", getName() ) );
     retval.append( "      " ).append( XmlHandler.addTagValue( "description", getDescription() ) );
-    retval.append( "      " ).append( XmlHandler.addTagValue( "type", configId ) );
+    retval.append( "      " ).append( XmlHandler.addTagValue( "type", pluginId ) );
 
     retval.append( AttributesUtil.getAttributesXml( attributesMap ) );
 
@@ -386,21 +312,21 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
   }
 
   /**
-   * This method is called by PDI whenever a action needs to read its settings from XML. The XML node containing the
+   * This method is called by Hop whenever a action needs to read its settings from XML. The XML node containing the
    * action's settings is passed in as an argument. Again, the helper class org.apache.hop.core.xml.XmlHandler is
    * typically used to conveniently read the settings from the XML node.
    *
-   * @param entrynode the top-level XML node
+   * @param node the top-level XML node
    * @throws HopXmlException if any errors occur during the loading of the XML
    */
-  public void loadXml( Node entrynode ) throws HopXmlException {
+  public void loadXml( Node node ) throws HopXmlException {
     try {
-      setName( XmlHandler.getTagValue( entrynode, "name" ) );
-      setDescription( XmlHandler.getTagValue( entrynode, "description" ) );
+      setName( XmlHandler.getTagValue( node, "name" ) );
+      setDescription( XmlHandler.getTagValue( node, "description" ) );
 
       // Load the attribute groups map
       //
-      attributesMap = AttributesUtil.loadAttributes( XmlHandler.getSubNode( entrynode, AttributesUtil.XML_TAG ) );
+      attributesMap = AttributesUtil.loadAttributes( XmlHandler.getSubNode( node, AttributesUtil.XML_TAG ) );
 
     } catch ( Exception e ) {
       throw new HopXmlException( "Unable to load base info for action", e );
@@ -450,7 +376,7 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
    *
    * @return false
    */
-  public boolean evaluates() {
+  public boolean isEvaluation() {
     return false;
   }
 
@@ -710,16 +636,16 @@ public class ActionBase implements Cloneable, IVariables, ILoggingObject,
    * @return the plugin id
    */
   public String getPluginId() {
-    return configId;
+    return pluginId;
   }
 
   /**
    * Sets the plugin id.
    *
-   * @param configId the new plugin id
+   * @param pluginId the new plugin id
    */
-  public void setPluginId( String configId ) {
-    this.configId = configId;
+  public void setPluginId( String pluginId ) {
+    this.pluginId = pluginId;
   }
 
   /**

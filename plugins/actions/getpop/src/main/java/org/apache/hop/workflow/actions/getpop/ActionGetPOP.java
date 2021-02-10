@@ -582,7 +582,7 @@ public class ActionGetPOP extends ActionBase implements Cloneable, IAction {
    * in case of param returns null.
    */
   public String getRealPassword( String password ) {
-    return Utils.resolvePassword( variables, password );
+    return Utils.resolvePassword( getVariables(), password );
   }
 
   public String getAttachmentFolder() {
@@ -1090,7 +1090,7 @@ public class ActionGetPOP extends ActionBase implements Cloneable, IAction {
     }
   }
 
-  public boolean evaluates() {
+  @Override public boolean isEvaluation() {
     return true;
   }
 

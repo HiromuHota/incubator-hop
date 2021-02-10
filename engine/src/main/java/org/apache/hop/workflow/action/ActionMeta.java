@@ -17,7 +17,6 @@
 
 package org.apache.hop.workflow.action;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.hop.base.IBaseMeta;
 import org.apache.hop.core.IAttributes;
 import org.apache.hop.core.Const;
@@ -32,14 +31,12 @@ import org.apache.hop.core.plugins.PluginRegistry;
 import org.apache.hop.core.variables.IVariables;
 import org.apache.hop.core.xml.IXml;
 import org.apache.hop.core.xml.XmlHandler;
-import org.apache.hop.i18n.BaseMessages;
 import org.apache.hop.workflow.WorkflowMeta;
 import org.apache.hop.workflow.actions.missing.MissingAction;
 import org.apache.hop.metadata.api.IHopMetadataProvider;
 import org.w3c.dom.Node;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,8 +56,6 @@ public class ActionMeta implements Cloneable, IXml, IGuiPosition, IChanged,
   private IAction action;
 
   private String suggestion = "";
-
-  private int nr; // Copy nr. 0 is the base copy...
 
   private boolean selected;
 
@@ -94,7 +89,6 @@ public class ActionMeta implements Cloneable, IXml, IGuiPosition, IChanged,
     retval.append( action.getXml() );
 
     retval.append( "      " ).append( XmlHandler.addTagValue( "parallel", launchingInParallel ) );
-    retval.append( "      " ).append( XmlHandler.addTagValue( "nr", nr ) );
     retval.append( "      " ).append( XmlHandler.addTagValue( "xloc", location.x ) );
     retval.append( "      " ).append( XmlHandler.addTagValue( "yloc", location.y ) );
 
@@ -104,28 +98,27 @@ public class ActionMeta implements Cloneable, IXml, IGuiPosition, IChanged,
     return retval.toString();
   }
 
-
   public ActionMeta( Node actionNode, IHopMetadataProvider metadataProvider, IVariables variables ) throws HopXmlException {
     try {
-      String stype = XmlHandler.getTagValue( actionNode, "type" );
+      String pluginId = XmlHandler.getTagValue( actionNode, "type" );
       PluginRegistry registry = PluginRegistry.getInstance();
-      IPlugin actionPlugin = registry.findPluginWithId( ActionPluginType.class, stype, true );
+      IPlugin actionPlugin = registry.findPluginWithId( ActionPluginType.class, pluginId, true );
       if ( actionPlugin == null ) {
         String name = XmlHandler.getTagValue( actionNode, "name" );
-        action = new MissingAction( name, stype );
+        setAction( new MissingAction( name, pluginId ) );
       } else {
-        action = registry.loadClass( actionPlugin, IAction.class );
+        setAction( registry.loadClass( actionPlugin, IAction.class ) );
       }
       // Get an empty Action of the appropriate class...
       if ( action != null ) {
         if ( actionPlugin != null ) {
           action.setPluginId( actionPlugin.getIds()[ 0 ] );
+          suggestion = Const.NVL(actionPlugin.getSuggestion(),"");
         }
         action.setMetadataProvider( metadataProvider ); // inject metadata
         action.loadXml( actionNode, metadataProvider, variables);
 
-        // Handle GUI information: nr & location?
-        setNr( Const.toInt( XmlHandler.getTagValue( actionNode, "nr" ), 0 ) );
+        // Handle GUI information: location?
         setLaunchingInParallel( "Y".equalsIgnoreCase( XmlHandler.getTagValue( actionNode, "parallel" ) ) );
         int x = Const.toInt( XmlHandler.getTagValue( actionNode, "xloc" ), 0 );
         int y = Const.toInt( XmlHandler.getTagValue( actionNode, "yloc" ), 0 );
@@ -142,8 +135,6 @@ public class ActionMeta implements Cloneable, IXml, IGuiPosition, IChanged,
           attributesMap =
             AttributesUtil.loadAttributes( XmlHandler.getLastSubNode( actionNode, AttributesUtil.XML_TAG ) );
         }
-
-        setDeprecationAndSuggestedActions();
       }
     } catch ( Throwable e ) {
       String message = "Unable to read Workflow action copy info from XML node : " + e.toString();
@@ -154,7 +145,6 @@ public class ActionMeta implements Cloneable, IXml, IGuiPosition, IChanged,
   public void clear() {
     location = new Point(0,0);
     action = null;
-    nr = 0;
     launchingInParallel = false;
     attributesMap = new HashMap<>();
   }
@@ -172,8 +162,6 @@ public class ActionMeta implements Cloneable, IXml, IGuiPosition, IChanged,
 
   public void replaceMeta( ActionMeta actionCopy ) {
     action = (IAction) actionCopy.action.clone();
-    nr = actionCopy.nr; // Copy nr. 0 is the base copy...
-
     selected = actionCopy.selected;
     if ( actionCopy.location != null ) {
       location = new Point( actionCopy.location.x, actionCopy.location.y );
@@ -184,7 +172,7 @@ public class ActionMeta implements Cloneable, IXml, IGuiPosition, IChanged,
   }
 
   public Object cloneDeep() {
-    ActionMeta ge = (ActionMeta) clone();
+    ActionMeta ge = clone();
 
     // Copy underlying object as well...
     ge.action = (IAction) action.clone();
@@ -197,21 +185,26 @@ public class ActionMeta implements Cloneable, IXml, IGuiPosition, IChanged,
       return false;
     }
     ActionMeta je = (ActionMeta) o;
-    return je.action.getName().equalsIgnoreCase( action.getName() ) && je.getNr() == getNr();
+    return je.action.getName().equalsIgnoreCase( action.getName() );
   }
 
   @Override
   public int hashCode() {
-    return action.getName().hashCode() ^ Integer.valueOf( getNr() ).hashCode();
+    return action.getName().hashCode();
   }
 
-  public void setAction( IAction je ) {
-    action = je;
+  public void setAction( IAction action ) {
+    this.action = action;
     if ( action != null ) {
       if ( action.getPluginId() == null ) {
         action.setPluginId( PluginRegistry.getInstance().getPluginId( ActionPluginType.class, action ) );
       }
-      setDeprecationAndSuggestedActions();
+      
+      // Check if action is deprecated by annotation
+      Deprecated deprecated = action.getClass().getDeclaredAnnotation(Deprecated.class);
+      if ( deprecated!=null ) {
+        this.isDeprecated = true;
+      }
     }
   }
 
@@ -266,14 +259,6 @@ public class ActionMeta implements Cloneable, IXml, IGuiPosition, IChanged,
     return action.hasChanged();
   }
 
-  public int getNr() {
-    return nr;
-  }
-
-  public void setNr( int n ) {
-    nr = n;
-  }
-
   public void setLaunchingInParallel( boolean p ) {
     launchingInParallel = p;
   }
@@ -314,13 +299,13 @@ public class ActionMeta implements Cloneable, IXml, IGuiPosition, IChanged,
     return action.isPipeline();
   }
 
-  public boolean isJob() {
-    return action.isJob();
+  public boolean isWorkflow() {
+    return action.isWorkflow();
   }
 
-  public boolean evaluates() {
+  public boolean isEvaluation() {
     if ( action != null ) {
-      return action.evaluates();
+      return action.isEvaluation();
     }
     return false;
   }
@@ -331,20 +316,12 @@ public class ActionMeta implements Cloneable, IXml, IGuiPosition, IChanged,
     }
     return true;
   }
-
-  public boolean isEvaluation() {
-    return action.isEvaluation();
-  }
-
-  public boolean isMail() {
-    return action.isMail();
-  }
-
+ 
   public String toString() {
     if ( action != null ) {
-      return action.getName() + "." + getNr();
+      return action.getName();
     } else {
-      return "null." + getNr();
+      return "null";
     }
   }
 
@@ -418,20 +395,5 @@ public class ActionMeta implements Cloneable, IXml, IGuiPosition, IChanged,
 
   public String getSuggestion() {
     return suggestion;
-  }
-
-  private void setDeprecationAndSuggestedActions() {
-    PluginRegistry registry = PluginRegistry.getInstance();
-    final List<IPlugin> deprecatedActions = registry.getPluginsByCategory( ActionPluginType.class,
-      BaseMessages.getString( WorkflowMeta.class, "ActionCategory.Category.Deprecated" ) );
-    for ( IPlugin p : deprecatedActions ) {
-      String[] ids = p.getIds();
-      if ( !ArrayUtils.isEmpty( ids ) && ids[ 0 ].equals( this.action != null ? this.action.getPluginId() : "" ) ) {
-        this.isDeprecated = true;
-        this.suggestion = registry.findPluginWithId( ActionPluginType.class, this.action.getPluginId() ) != null
-          ? registry.findPluginWithId( ActionPluginType.class, this.action.getPluginId() ).getSuggestion() : "";
-        break;
-      }
-    }
   }
 }

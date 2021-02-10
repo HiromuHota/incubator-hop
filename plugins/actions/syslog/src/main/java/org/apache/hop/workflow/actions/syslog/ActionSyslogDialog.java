@@ -358,7 +358,7 @@ public class ActionSyslogDialog extends ActionDialog implements IActionDialog {
     wlMessage.setLayoutData(fdlMessage);
 
     wMessage = new StyledTextComp( action, wMessageGroup, SWT.MULTI
-        | SWT.LEFT | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL, "" );
+        | SWT.LEFT | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL );
     props.setLook( wMessage );
     wMessage.addModifyListener( lsMod );
     FormData fdMessage = new FormData();
@@ -543,13 +543,5 @@ public class ActionSyslogDialog extends ActionDialog implements IActionDialog {
     action.setDatePattern( wDatePattern.getText() );
     action.addHostName( wAddHostName.getSelection() );
     dispose();
-  }
-
-  public boolean evaluates() {
-    return true;
-  }
-
-  public boolean isUnconditional() {
-    return false;
   }
 }
