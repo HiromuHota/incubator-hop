@@ -499,6 +499,11 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
     wsCanvas.setLayoutData(fdsCanvas);
 
     canvas = new Canvas(wsCanvas, SWT.NO_BACKGROUND | SWT.BORDER);
+    Listener listener = CanvasListener.getInstance();
+    canvas.addListener(SWT.MouseDown, listener);
+    canvas.addListener(SWT.MouseMove, listener);
+    canvas.addListener(SWT.MouseUp, listener);
+    canvas.addListener(SWT.Paint, listener);
     FormData fdCanvas = new FormData();
     fdCanvas.left = new FormAttachment(0, 0);
     fdCanvas.top = new FormAttachment(0, 0);
