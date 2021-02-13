@@ -832,12 +832,12 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
         } else {
           // A hop: show context dialog in mouseUp()
           //
-          canvas.setData( "mode", "select" );
           clickedPipelineHop = hop;
         }
       } else {
         // No area-owner & no hop means : background click:
         //
+        canvas.setData( "mode", "select" );
         startHopTransform = null;
         if (!control && e.button == 1) {
           selectionRegion = new org.apache.hop.core.gui.Rectangle(real.x, real.y, 0, 0);
