@@ -418,11 +418,9 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
 
     horizontalBar.setMinimum(1);
     horizontalBar.setMaximum(100);
-    horizontalBar.setIncrement(5);
     horizontalBar.setVisible(true);
     verticalBar.setMinimum(1);
     verticalBar.setMaximum(100);
-    verticalBar.setIncrement(5);
     verticalBar.setVisible(true);
 
     if (OsHelper.isWindows()) {

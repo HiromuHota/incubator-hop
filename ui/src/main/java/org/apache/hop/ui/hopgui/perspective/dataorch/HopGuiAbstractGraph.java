@@ -67,8 +67,6 @@ public abstract class HopGuiAbstractGraph extends Composite {
   protected ScrolledComposite wsCanvas;
   protected Canvas canvas;
 
-  protected ScrolledComposite scrolledcomposite;
-
   protected float magnification = 1.0f;
 
   private boolean changedState;
@@ -172,18 +170,18 @@ public abstract class HopGuiAbstractGraph extends Composite {
     }
     canvas.redraw( 0, 0,
         Math.max( canvas.getBounds().width, // case 1
-          Math.round( scrolledcomposite.getBounds().width / magnification ) ), //case 2
+          Math.round( wsCanvas.getBounds().width / magnification ) ), //case 2
         Math.max( canvas.getBounds().height, // case 3
-          Math.round( scrolledcomposite.getBounds().height / magnification ) ), // case 4
+          Math.round( wsCanvas.getBounds().height / magnification ) ), // case 4
         false );
   }
 
   protected void resize() {
     canvas.setSize(
       Math.max( Math.round( getMaximum().x * magnification ), // case 1
-        scrolledcomposite.getBounds().width ), // case 2
+        wsCanvas.getBounds().width ), // case 2
       Math.max( Math.round( getMaximum().y * magnification ), // case 3
-        scrolledcomposite.getBounds().height ) // case 4
+        wsCanvas.getBounds().height ) // case 4
     );
   }
 
@@ -366,13 +364,11 @@ public abstract class HopGuiAbstractGraph extends Composite {
       h.setMinimum( 1 );
       h.setMaximum( 100 );
       h.setThumb(hThumb);
-      h.setPageIncrement(10);
     }
     if (v != null) {
       v.setMinimum( 1 );
       v.setMaximum( 100 );
       v.setThumb(vThumb);
-      v.setPageIncrement(10);
     }
     canvas.setFocus();
   }
