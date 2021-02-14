@@ -370,7 +370,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
 
     // Add a canvas below it, use up all space
     //
-    wsCanvas = new ScrolledComposite( sashForm, SWT.V_SCROLL | SWT.H_SCROLL | SWT.NO_BACKGROUND );
+    wsCanvas = new ScrolledComposite( sashForm, SWT.V_SCROLL | SWT.H_SCROLL | SWT.NO_BACKGROUND | SWT.BORDER );
     wsCanvas.setAlwaysShowScrollBars( true );
     wsCanvas.setLayout( new FormLayout() );
     FormData fdsCanvas = new FormData();
@@ -380,7 +380,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
     fdsCanvas.bottom = new FormAttachment(100, 0);
     wsCanvas.setLayoutData( fdsCanvas );
 
-    canvas = new Canvas(wsCanvas, SWT.NO_BACKGROUND | SWT.BORDER);
+    canvas = new Canvas(wsCanvas, SWT.NO_BACKGROUND );
     Listener listener = CanvasListener.getInstance();
     canvas.addListener(SWT.MouseDown, listener);
     canvas.addListener(SWT.MouseMove, listener);

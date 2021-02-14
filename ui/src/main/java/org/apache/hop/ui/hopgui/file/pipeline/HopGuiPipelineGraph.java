@@ -486,7 +486,7 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
 
     // Add a canvas below it, use up all space initially
     //
-    wsCanvas = new ScrolledComposite(sashForm, SWT.V_SCROLL | SWT.H_SCROLL | SWT.NO_BACKGROUND);
+    wsCanvas = new ScrolledComposite(sashForm, SWT.V_SCROLL | SWT.H_SCROLL | SWT.NO_BACKGROUND | SWT.BORDER);
     wsCanvas.setAlwaysShowScrollBars(true);
     wsCanvas.setExpandHorizontal(true);
     wsCanvas.setExpandVertical(true);
@@ -498,7 +498,7 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
     fdsCanvas.bottom = new FormAttachment(100, 0);
     wsCanvas.setLayoutData(fdsCanvas);
 
-    canvas = new Canvas(wsCanvas, SWT.NO_BACKGROUND | SWT.BORDER);
+    canvas = new Canvas(wsCanvas, SWT.NO_BACKGROUND );
     Listener listener = CanvasListener.getInstance();
     canvas.addListener(SWT.MouseDown, listener);
     canvas.addListener(SWT.MouseMove, listener);
