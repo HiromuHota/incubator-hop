@@ -1563,7 +1563,6 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
     verticalScrollBar.setThumb(newVThumb);
     verticalScrollBar.setSelection((int) (verticalScrollBar.getSelection() * factor));*/
 
-    resize();
     redraw();
   }
 
@@ -2698,10 +2697,6 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
     Point max = workflowMeta.getMaximum();
     Point thumb = getThumb(area, max);
     return new Point(0, 0);
-  }
-
-  protected Point getMaximum() {
-    return workflowMeta.getMaximum();
   }
 
   @Override
