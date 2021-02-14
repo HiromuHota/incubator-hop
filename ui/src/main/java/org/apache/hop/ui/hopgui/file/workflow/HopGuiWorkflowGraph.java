@@ -427,6 +427,10 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
     verticalBar.setMinimum(1);
     verticalBar.setMaximum(100);
     verticalBar.setVisible(true);
+    if (!EnvironmentUtils.getInstance().isWeb()) {
+      horizontalBar.setIncrement(5);
+      verticalBar.setIncrement(5);
+    }
 
     if (OsHelper.isWindows()) {
       horizontalBar.addListener(
