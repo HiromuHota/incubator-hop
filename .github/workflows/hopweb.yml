@@ -103,5 +103,5 @@ jobs:
         java-version: 1.8
     - name: UI Testing
       run: mvn -B test
-      working-directory: ./integration
+      working-directory: ./integration-tests/hopweb
 
