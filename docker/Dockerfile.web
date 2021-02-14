@@ -25,4 +25,3 @@ RUN rm -rf webapps/* \
  && wget -q https://github.com/HiromuHota/incubator-hop/releases/download/hopweb%2Fnightly/hop-assemblies-plugins-dist-0.70-SNAPSHOT.zip -O hop-assemblies-plugins-dist.zip \
  && unzip -q hop-assemblies-plugins-dist.zip \
  && rm hop-assemblies-plugins-dist.zip
-COPY config config

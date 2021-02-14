@@ -7,11 +7,11 @@
     "projectConfigurations": [
       {
         "projectName": "default",
-        "projectHome": "config/projects/default",
+        "projectHome": "${HOP_CONFIG_FOLDER}/projects/default",
         "configFilename": "project-config.json"
       }, {
         "projectName": "samples",
-        "projectHome": "config/projects/samples",
+        "projectHome": "${HOP_CONFIG_FOLDER}/projects/samples",
         "configFilename": "project-config.json"
       }
     ]
