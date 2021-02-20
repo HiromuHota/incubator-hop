@@ -789,20 +789,6 @@ public class PipelinePainter extends BasePainter<PipelineHopMeta, TransformMeta>
 
     Point namePosition = getNamePosition(name, screen, iconSize);
 
-    if (transformMeta.isSelected()) {
-      int tmpAlpha = gc.getAlpha();
-      gc.setAlpha(192);
-      gc.setBackground(201, 232, 251);
-      gc.fillRoundRectangle(
-          namePosition.x - 8,
-          namePosition.y - 2,
-          gc.textExtent(name).x + 15,
-          25,
-          BasePainter.CORNER_RADIUS_5 + 15,
-          BasePainter.CORNER_RADIUS_5 + 15);
-      gc.setAlpha(tmpAlpha);
-    }
-
     // Help out the user working in single-click mode by allowing the name to be clicked to edit
     //
     if (isDrawingEditIcons()) {
@@ -814,7 +800,7 @@ public class PipelinePainter extends BasePainter<PipelineHopMeta, TransformMeta>
 
       gc.drawImage( EImage.EDIT, namePosition.x - 6, namePosition.y-2, magnification );
 
-      gc.setBackground(240, 240, 240);
+      gc.setBackground(EColor.LIGHTGRAY);
       gc.fillRoundRectangle(
         namePosition.x - 8,
         namePosition.y - 2,

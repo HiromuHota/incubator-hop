@@ -19,6 +19,7 @@ package org.apache.hop.ui.core.dialog;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hop.core.Const;
+import org.apache.hop.core.Props;
 import org.apache.hop.core.SwtUniversalImage;
 import org.apache.hop.core.config.HopConfig;
 import org.apache.hop.core.gui.AreaOwner;
@@ -298,7 +299,7 @@ public class ContextDialog extends Dialog {
     //
     iconSize = (int) Math.round(props.getZoomFactor() * props.getIconSize() * 0.75);
     margin = (int) (Const.MARGIN * props.getZoomFactor());
-    highlightColor = new Color(parent.getDisplay(), 201, 232, 251);
+    highlightColor = new Color(parent.getDisplay(), props.contrastColor(201, 232, 251));
   }
 
   public GuiAction open() {
@@ -362,7 +363,8 @@ public class ContextDialog extends Dialog {
     layoutData.right = new FormAttachment(100, 0);
     toolBar.setLayoutData(layoutData);
     toolBar.pack();
-
+    props.setLook(toolBar, Props.WIDGET_STYLE_TOOLBAR);
+    
     recallToolbarSettings();
 
     // Add a search bar at the top...

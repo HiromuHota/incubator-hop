@@ -1134,15 +1134,38 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
     lastButton = 0;
   }
 
+  @GuiContextAction(
+    id = "pipeline-graph-transform-1000-view-output",
+    parentId = HopGuiPipelineTransformContext.CONTEXT_ID,
+    type = GuiActionType.Info,
+    name = "View output",
+    tooltip = "Views output of a transform in a running or finished local pipeline",
+    image = "ui/images/database.svg",
+    category = "Preview",
+    categoryOrder = "3")
+  public void showTransformOutputData(HopGuiPipelineTransformContext context) {
+    TransformMeta dataTransformMeta = context.getTransformMeta();
+    if (outputRowsMap!=null) {
+      RowBuffer rowBuffer = outputRowsMap.get( dataTransformMeta.getName() );
+      if (rowBuffer!=null) {
+        showTransformOutputData( dataTransformMeta, rowBuffer );
+      }
+    }
+  }
+
   public boolean showTransformOutputData(AreaOwner areaOwner) {
     TransformMeta dataTransform = (TransformMeta) areaOwner.getParent();
     RowBuffer rowBuffer = (RowBuffer) areaOwner.getOwner();
+    return showTransformOutputData( dataTransform, rowBuffer );
+  }
+
+  private boolean showTransformOutputData( TransformMeta dataTransformMeta, RowBuffer rowBuffer ) {
     if (rowBuffer != null) {
       synchronized (rowBuffer.getBuffer()) {
         if (!rowBuffer.isEmpty()) {
           try {
-            String title = "Output of " + dataTransform.getName();
-            String message = "output rows of transform " + dataTransform.getName();
+            String title = "Output of " + dataTransformMeta.getName();
+            String message = "output rows of transform " + dataTransformMeta.getName();
             String prefix = "";
 
             if (pipeline != null && pipeline.getPipelineRunConfiguration() != null) {
@@ -1184,7 +1207,7 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
                     hopGui.getShell(),
                     variables,
                     SWT.NONE,
-                    dataTransform.getName(),
+                    dataTransformMeta.getName(),
                     rowBuffer.getRowMeta(),
                     rowBuffer.getBuffer());
             previewRowsDialog.setTitleMessage(title, prefix + message);
@@ -1858,6 +1881,7 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
       layoutData.right = new FormAttachment(100, 0);
       toolBar.setLayoutData(layoutData);
       toolBar.pack();
+      PropsUi.getInstance().setLook(toolBar, Props.WIDGET_STYLE_TOOLBAR);
 
       // enable / disable the icons in the toolbar too.
       //
