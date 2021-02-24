@@ -31,6 +31,7 @@ import org.apache.hop.ui.core.dialog.EnterSelectionDialog;
 import org.apache.hop.ui.core.dialog.EnterValueDialog;
 import org.apache.hop.ui.core.dialog.ErrorDialog;
 import org.apache.hop.ui.core.gui.GuiResource;
+import org.apache.hop.ui.util.EnvironmentUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -192,84 +193,86 @@ public class ConditionEditor extends Canvas {
       }
     } );
 
-    widget.addMouseMoveListener( e -> {
-      Point screen = new Point( e.x, e.y );
-      int area = getAreaCode( screen );
+    if (!EnvironmentUtils.getInstance().isWeb()) {
+      widget.addMouseMoveListener( e -> {
+        Point screen = new Point( e.x, e.y );
+        int area = getAreaCode( screen );
 
-      int nr = 0;
-      boolean need_redraw = false;
+        int nr = 0;
+        boolean need_redraw = false;
 
-      hoverCondition = -1;
-      hoverOperator = -1;
-      hover_not = false;
-      hover_up = false;
-      hover_left = false;
-      hover_fn = false;
-      hover_rightval = false;
-      hover_rightex = false;
+        hoverCondition = -1;
+        hoverOperator = -1;
+        hover_not = false;
+        hover_up = false;
+        hover_left = false;
+        hover_fn = false;
+        hover_rightval = false;
+        hover_rightex = false;
 
-      if ( area != AREA_ICON_ADD ) {
-        setToolTipText( null );
-      } else {
-        setToolTipText( BaseMessages.getString( PKG, "ConditionEditor.AddCondition.Label" ) );
-      }
+        if ( area != AREA_ICON_ADD ) {
+          setToolTipText( null );
+        } else {
+          setToolTipText( BaseMessages.getString( PKG, "ConditionEditor.AddCondition.Label" ) );
+        }
 
-      switch ( area ) {
-        case AREA_NOT:
-          hover_not = true;
-          nr = 1;
-          break;
-        case AREA_UP:
-          hover_up = getLevel() > 0;
-          nr = 1;
-          break;
-        case AREA_BACKGROUND:
-          break;
-        case AREA_SUBCONDITION:
-          hoverCondition = getNrSubcondition( screen );
-          nr = hoverCondition;
-          break;
-        case AREA_OPERATOR:
-          hoverOperator = getNrOperator( screen );
-          nr = hoverOperator;
-          break;
-        case AREA_LEFT:
-          hover_left = true;
-          nr = 1;
-          break;
-        case AREA_FUNCTION:
-          hover_fn = true;
-          nr = 1;
-          break;
-        case AREA_RIGHT_VALUE:
-          hover_rightval = true;
-          nr = 1;
-          break;
-        case AREA_RIGHT_EXACT:
-          hover_rightex = true;
-          nr = 1;
-          break;
-        case AREA_CONDITION:
-          break;
-        case AREA_NONE:
-          break;
-        default:
-          break;
-      }
+        switch ( area ) {
+          case AREA_NOT:
+            hover_not = true;
+            nr = 1;
+            break;
+          case AREA_UP:
+            hover_up = getLevel() > 0;
+            nr = 1;
+            break;
+          case AREA_BACKGROUND:
+            break;
+          case AREA_SUBCONDITION:
+            hoverCondition = getNrSubcondition( screen );
+            nr = hoverCondition;
+            break;
+          case AREA_OPERATOR:
+            hoverOperator = getNrOperator( screen );
+            nr = hoverOperator;
+            break;
+          case AREA_LEFT:
+            hover_left = true;
+            nr = 1;
+            break;
+          case AREA_FUNCTION:
+            hover_fn = true;
+            nr = 1;
+            break;
+          case AREA_RIGHT_VALUE:
+            hover_rightval = true;
+            nr = 1;
+            break;
+          case AREA_RIGHT_EXACT:
+            hover_rightex = true;
+            nr = 1;
+            break;
+          case AREA_CONDITION:
+            break;
+          case AREA_NONE:
+            break;
+          default:
+            break;
+        }
 
-      if ( area != previous_area || nr != previous_area_nr ) {
-        need_redraw = true;
-      }
+        if ( area != previous_area || nr != previous_area_nr ) {
+          need_redraw = true;
+        }
 
-      if ( need_redraw ) {
-        offsetx = -sbHorizontal.getSelection();
-        offsety = -sbVertical.getSelection();
-        widget.redraw();
-      }
+        if ( need_redraw ) {
+          offsetx = -sbHorizontal.getSelection();
+          offsety = -sbVertical.getSelection();
+          widget.redraw();
+        }
 
-      previous_area = area;
-      previous_area_nr = nr;
-    } );
+        previous_area = area;
+        previous_area_nr = nr;
+      } );
+    }
 
     widget.addMouseListener( new MouseAdapter() {
       @Override
@@ -1307,8 +1310,10 @@ public class ConditionEditor extends Canvas {
       // Set the bar's parameters...
       sbHorizontal.setMaximum( maxdrawn.width );
       sbHorizontal.setMinimum( 0 );
-      sbHorizontal.setPageIncrement( size_widget.width );
-      sbHorizontal.setIncrement( 10 );
+      if (!EnvironmentUtils.getInstance().isWeb()) {
+        sbHorizontal.setPageIncrement( size_widget.width );
+        sbHorizontal.setIncrement( 10 );
+      }
     }
 
     // Vertical scrollbar behavior
@@ -1323,8 +1328,10 @@ public class ConditionEditor extends Canvas {
       // Set the bar's parameters...
       sbVertical.setMaximum( maxdrawn.height );
       sbVertical.setMinimum( 0 );
-      sbVertical.setPageIncrement( size_widget.height );
-      sbVertical.setIncrement( 10 );
+      if (!EnvironmentUtils.getInstance().isWeb()) {
+        sbVertical.setPageIncrement( size_widget.height );
+        sbVertical.setIncrement( 10 );
+      }
     }
   }
 
