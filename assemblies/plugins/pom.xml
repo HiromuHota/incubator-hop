@@ -39,6 +39,7 @@
     <module>vfs</module>
     <module>misc</module>
     <module>engines</module>
+    <module>valuetypes</module>
     <module>dist</module>
   </modules>
 
