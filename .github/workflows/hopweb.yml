@@ -62,12 +62,17 @@ jobs:
           assemblies/web/target/hop.war
           assemblies/plugins/dist/target/hop-assemblies-plugins-dist-*.zip
           assemblies/client/target/hop-client-*.zip
+    - uses: actions/upload-artifact@v2
+      with:
+        name: maven-artifact
+        path: |
+          assemblies/web/target/hop.war
+          assemblies/plugins/dist/target/hop-assemblies-*.zip
 
   docker:
     name: Docker build
     needs: maven
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/web'
     steps:
     - uses: actions/checkout@v2
     - name: Set up Docker Buildx
@@ -77,10 +82,18 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - uses: actions/download-artifact@v2
+      with:
+        name: maven-artifact
+        path: artifacts
+    - name: Unzip artifacts
+      run: |
+        unzip artifacts/web/target/hop.war -d assemblies/web/target/webapp
+        unzip artifacts/plugins/dist/target/hop-assemblies-*.zip -d assemblies/plugins/dist/target/
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
-        context: ./docker
+        context: ./
         file: ./docker/Dockerfile.web
         push: true
         tags: hiromuhota/hopweb:nightly
