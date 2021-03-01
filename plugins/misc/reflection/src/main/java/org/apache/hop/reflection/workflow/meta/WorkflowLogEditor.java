@@ -50,7 +50,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Editor that allows you to change Workflow Log metadata
  *
- * @see HopServer
+ * @see WorkflowLog
  */
 public class WorkflowLogEditor extends MetadataEditor<WorkflowLog> {
   private static final Class<?> PKG = WorkflowLogEditor.class; // For Translator
