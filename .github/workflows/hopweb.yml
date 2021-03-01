@@ -88,6 +88,8 @@ jobs:
         path: artifacts
     - name: Unzip artifacts
       run: |
+        mkdir -p assemblies/web/target
+        mkdir -p assemblies/plugins/dist/target
         unzip artifacts/web/target/hop.war -d assemblies/web/target/webapp
         unzip artifacts/plugins/dist/target/hop-assemblies-*.zip -d assemblies/plugins/dist/target/
     - name: Build and push
