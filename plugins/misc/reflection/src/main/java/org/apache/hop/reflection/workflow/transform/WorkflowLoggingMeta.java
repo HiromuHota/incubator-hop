@@ -42,7 +42,7 @@ import org.w3c.dom.Node;
   name = "i18n::WorkflowLogging.Transform.Name",
   description = "i18n::WorkflowLogging.Transform.Description",
   categoryDescription = "i18n:org.apache.hop.pipeline.transform:BaseTransform.Category.Input",
-  image = "ui/images/show-log.svg",
+  image = "workflow-log.svg",
   keywords = "audit,log,metrics")
 public class WorkflowLoggingMeta extends BaseTransformMeta
     implements ITransformMeta<WorkflowLogging, WorkflowLoggingData> {
@@ -91,8 +91,8 @@ public class WorkflowLoggingMeta extends BaseTransformMeta
     // Workflow log channel ID
     inputRowMeta.addValueMeta(new ValueMetaString("workflowLogChannelId", 32, -1));
 
-    // Pipeline log channel ID
-    inputRowMeta.addValueMeta(new ValueMetaString("workflowLogChannelId", 32, -1));
+    // Parent log channel ID
+    inputRowMeta.addValueMeta(new ValueMetaString("workflowParentLogChannelId", 32, -1));
 
     // Logging text of the workflow
     inputRowMeta.addValueMeta(new ValueMetaString("workflowLogging", 1000000, -1));

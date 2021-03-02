@@ -744,7 +744,7 @@ public class GuiResource {
     imageShowHistory =
         loadAsResource(display, "ui/images/show-history.svg", ConstUi.SMALL_ICON_SIZE);
     imageShow = loadAsResource(display, "ui/images/show.svg", ConstUi.SMALL_ICON_SIZE);
-    imageShowLog = loadAsResource(display, "ui/images/show-log.svg", ConstUi.SMALL_ICON_SIZE);
+    imageShowLog = loadAsResource(display, "ui/images/log.svg", ConstUi.SMALL_ICON_SIZE);
     imageShowPerf = loadAsResource(display, "ui/images/show-perf.svg", ConstUi.SMALL_ICON_SIZE);
     imageShowResults =
         loadAsResource(display, "ui/images/show-results.svg", ConstUi.SMALL_ICON_SIZE);
@@ -881,13 +881,7 @@ public class GuiResource {
       Image image = null;
       try {
         ClassLoader classLoader = registry.getClassLoader(plugin);
-        image =
-            SwtSvgImageUtil.getImage(
-                Display.getCurrent(),
-                classLoader,
-                plugin.getImageFile(),
-                ConstUi.SMALL_ICON_SIZE,
-                ConstUi.SMALL_ICON_SIZE);
+        image = getImage(plugin.getImageFile(), classLoader, ConstUi.SMALL_ICON_SIZE, ConstUi.SMALL_ICON_SIZE);
       } catch (Throwable t) {
         log.logError(
             "Error occurred loading image ["
