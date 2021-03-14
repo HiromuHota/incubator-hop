@@ -5032,7 +5032,7 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
               toolBarWidgets.enableToolbarItem(TOOLBAR_ITEM_PAUSE, running && !paused);
 
               hopGui.setUndoMenu(pipelineMeta);
-              hopGui.handleFileCapabilities(fileType, running, paused);
+              hopGui.handleFileCapabilities(fileType, pipelineMeta.hasChanged(), running, paused);
 
               HopGuiPipelineGraph.super.redraw();
             });

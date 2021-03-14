@@ -15,7 +15,7 @@ specific language governing permissions and limitations
 under the License.
 ////
 [[database-plugins-universe]]
-:documentationPath: /plugins/databases/
+:documentationPath: /database/databases/
 :language: en_US
 :page-alternativeEditUrl: https://github.com/apache/incubator-hop/edit/master/plugins/databases/universe/src/main/doc/universe.adoc
 = IBM Universe

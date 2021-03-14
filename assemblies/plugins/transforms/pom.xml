@@ -63,10 +63,10 @@
         <module>detectemptystream</module>
         <module>detectlastrow</module>
         <module>dimensionlookup</module>
+        <module>dropbox</module>
         <module>dynamicsqlrow</module>
         <module>edi2xml</module>
         <module>excelinput</module>
-        <module>exceloutput</module>
         <module>excelwriter</module>
         <module>execprocess</module>
         <module>execsqlrow</module>
@@ -85,6 +85,7 @@
         <module>getsubfolders</module>
         <module>gettablenames</module>
         <module>getvariable</module>
+        <module>googleanalytics</module>
         <module>http</module>
         <module>httppost</module>
         <module>insertupdate</module>
@@ -95,7 +96,6 @@
         <module>json</module>
         <module>kafka</module>
         <module>ldap</module>
-        <module>ldifinput</module>
         <module>loadfileinput</module>
         <module>mail</module>
         <module>mailinput</module>
@@ -143,7 +143,6 @@
         <module>streamschemamerge</module>
         <module>stringcut</module>
         <module>stringoperations</module>
-        <module>syslog</module>
         <module>systemdata</module>
         <module>switchcase</module>
         <module>synchronizeaftermerge</module>

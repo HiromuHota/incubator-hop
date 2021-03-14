@@ -15,7 +15,7 @@ specific language governing permissions and limitations
 under the License.
 ////
 [[database-plugins-greenplum]]
-:documentationPath: /plugins/databases/
+:documentationPath: /database/databases/
 :language: en_US
 :page-alternativeEditUrl: https://github.com/apache/incubator-hop/edit/master/plugins/databases/greenplum/src/main/doc/greenplum.adoc
 = Greenplum
