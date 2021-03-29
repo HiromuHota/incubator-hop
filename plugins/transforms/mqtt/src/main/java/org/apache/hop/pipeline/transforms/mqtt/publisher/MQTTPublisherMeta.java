@@ -115,14 +115,14 @@ public class MQTTPublisherMeta
   }
 
   /**
-   * @return Target message field name in Kettle stream
+   * @return Target message field name in Hop stream
    */
   public String getField() {
     return field;
   }
 
   /**
-   * @param field Target field name in Kettle stream
+   * @param field Target field name in Hop stream
    */
   public void setField( String field ) {
     this.field = field;
@@ -316,7 +316,8 @@ public class MQTTPublisherMeta
     }
   }
 
-  public void loadXML(Node transformNode, IHopMetadataProvider metadataProvider )
+  @Override
+  public void loadXml(Node transformNode, IHopMetadataProvider metadataProvider )
       throws HopXmlException {
 
     try {
@@ -349,7 +350,8 @@ public class MQTTPublisherMeta
     }
   }
 
-  public String getXML() throws HopException {
+  @Override
+  public String getXml() throws HopException {
     StringBuilder retval = new StringBuilder();
     if ( broker != null ) {
       retval.append( "    " ).append( XmlHandler.addTagValue( "BROKER", broker ) );

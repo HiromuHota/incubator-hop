@@ -29,10 +29,7 @@ import org.apache.hop.pipeline.transform.BaseTransform;
 import org.apache.hop.pipeline.transform.ITransform;
 import org.apache.hop.pipeline.transform.TransformMeta;
 import org.apache.hop.pipeline.transforms.mqtt.key.SSLSocketFactoryGenerator;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
@@ -123,13 +120,13 @@ public class MQTTPublisher extends BaseTransform<MQTTPublisherMeta, MQTTPublishe
 
       int numErrors = 0;
       if ( Utils.isEmpty( inputField ) ) {
-        logError( BaseMessages.getString( MQTTPublisherMeta.PKG, "MQTTClientStep.Log.FieldNameIsNull" ) ); //$NON-NLS-1$
+        logError( BaseMessages.getString( MQTTPublisherMeta.PKG, "MQTTClientStep.Log.FieldNameIsNull" ) );
         numErrors++;
       }
       data.inputFieldNr = inputRowMeta.indexOfValue( inputField );
       if ( data.inputFieldNr < 0 ) {
         logError( BaseMessages
-            .getString( MQTTPublisherMeta.PKG, "MQTTClientStep.Log.CouldntFindField", inputField ) ); //$NON-NLS-1$
+            .getString( MQTTPublisherMeta.PKG, "MQTTClientStep.Log.CouldntFindField", inputField ) );
         numErrors++;
       }
 
