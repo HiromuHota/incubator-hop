@@ -497,7 +497,10 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
   }
 
   public void mouseDown(MouseEvent e) {
-    mouseHover(e);
+    if (EnvironmentUtils.getInstance().isWeb()) {
+      // RAP does not support certain mouse events.
+      mouseHover(e);
+    }
     doubleClick = false;
 
     if (ignoreNextClick) {
@@ -549,11 +552,11 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
             } else if (e.button == 2 || (e.button == 1 && shift)) {
               // SHIFT CLICK is start of drag to create a new hop
               //
-              canvas.setData( "mode", "hop" );
+              canvas.setData("mode", "hop");
               startHopAction = actionCopy;
 
             } else {
-              canvas.setData( "mode", "drag" );
+              canvas.setData("mode", "drag");
               selectedActions = workflowMeta.getSelectedActions();
               selectedAction = actionCopy;
               //
@@ -620,7 +623,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
         } else {
           // No area-owner means: background:
           //
-          canvas.setData( "mode", "select" );
+          canvas.setData("mode", "select");
           startHopAction = null;
           if (!control) {
             selectionRegion = new org.apache.hop.core.gui.Rectangle(real.x, real.y, 0, 0);
@@ -629,7 +632,10 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
         }
       }
     }
-    mouseMove( e );
+    if (EnvironmentUtils.getInstance().isWeb()) {
+      // RAP does not support certain mouse events.
+      mouseMove(e);
+    }
   }
 
   private enum SingleClickType {
@@ -640,10 +646,13 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
   }
 
   public void mouseUp(MouseEvent e) {
-    // canvas.setData( "mode", null ); does not work.
-    canvas.setData( "mode", "null" );
+    // canvas.setData("mode", null); does not work.
+    canvas.setData("mode", "null");
+    if (EnvironmentUtils.getInstance().isWeb()) {
+      // RAP does not support certain mouse events.
+      mouseMove(e);
+    }
 
-    mouseMove( e );
     boolean control = (e.stateMask & SWT.MOD1) != 0;
 
     boolean singleClick = false;
@@ -2631,7 +2640,7 @@ public class HopGuiWorkflowGraph extends HopGuiAbstractGraph
     } finally {
       gc.dispose();
     }
-    CanvasFacade.setData( canvas, magnification, workflowMeta, HopGuiWorkflowGraph.class );
+    CanvasFacade.setData(canvas, magnification, workflowMeta, HopGuiWorkflowGraph.class);
   }
 
   protected Point getOffset() {
