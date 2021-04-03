@@ -3221,7 +3221,9 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
               new SvgFile(
                   BasePropertyHandler.getProperty("PipelineCanvas_image"),
                   getClass().getClassLoader());
-          gc.drawImage(svgFile, 200, 200, 400, 124, gc.getMagnification(), 0);
+          gc.drawImage(svgFile, 200, 200, 32, 40, gc.getMagnification(), 0);
+          gc.setBackground( IGc.EColor.BACKGROUND );
+          gc.drawText(BaseMessages.getString(PKG, "PipelineGraph.NewPipelineBackgroundMessage"), 260, 220 );
         }
 
       } catch (Exception e) {
@@ -3729,9 +3731,8 @@ public class HopGuiPipelineGraph extends HopGuiAbstractGraph
 
         MessageBox messageDialog =
             new MessageBox(hopShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO | SWT.CANCEL);
-        messageDialog.setText("Save file?");
-        messageDialog.setMessage(
-            "Do you want to save file '" + buildTabName() + "' before closing?");
+        messageDialog.setText(BaseMessages.getString(PKG, "PipelineGraph.SaveFile.Dialog.Header"));
+        messageDialog.setMessage(BaseMessages.getString(PKG, "PipelineGraph.SaveFile.Dialog.Message", buildTabName()));
         int answer = messageDialog.open();
         if ((answer & SWT.YES) != 0) {
           if (StringUtils.isEmpty(this.getFilename())) {
