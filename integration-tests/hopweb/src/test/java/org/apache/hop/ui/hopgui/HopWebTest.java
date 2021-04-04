@@ -63,15 +63,12 @@ public class HopWebTest {
 
   @Test
   public void testContextDialog() {
-    By xpath = By.xpath(
-        "//div[starts-with(text(), 'Search') and not(contains(text(), 'string'))]"
-      );
+    By xpath = By.xpath("//div[text() = 'Select the item to create']");
     assertEquals(0, driver.findElements(xpath).size());
 
     clickElement("//div[text() = 'File']");
     clickElement("//div[text() = 'New']");
-    // TODO: driver.findElements(xpath).size() is now 2 for some reason, but should be 1.
-    assertTrue( 1 <= driver.findElements(xpath).size());
+    assertEquals(1, driver.findElements(xpath).size());
   }
 
   @Test
@@ -90,7 +87,7 @@ public class HopWebTest {
     // Create a new Pipeline
     clickElement("//div[text() = 'File']");
     clickElement("//div[text() = 'New']");
-    element = driver.findElement(By.xpath("//div[starts-with(text(), 'Search') and not(contains(text(), 'string'))]"));
+    element = driver.findElement(By.xpath("//div[starts-with(text(), 'Search:')]"));
     element = element.findElement(By.xpath("./../..//input"));
     element.sendKeys(Keys.UP);
     element.sendKeys(Keys.LEFT);
